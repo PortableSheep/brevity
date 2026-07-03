@@ -1,0 +1,34 @@
+{
+  "name": "brevity-node",
+  "version": "0.1.0",
+  "description": "Brevity-inspired micro framework for Node.js (TypeScript edition)",
+  "type": "module",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run build:packages && tsx examples/app.ts",
+    "start": "npm run build:packages && tsx examples/app.ts",
+    "build": "npm run build:packages && tsc -p tsconfig.json",
+    "build:packages": "npm run build --workspace @brevity/core && npm run build --workspace @brevity/plugin-cache && npm run build --workspace @brevity/plugin-debug && npm run build --workspace @brevity/plugin-viewer && npm run build --workspace @brevity/plugin-validation",
+    "typecheck": "npm run build:packages && tsc -p tsconfig.json --noEmit",
+    "test": "npm run build:packages && node --import tsx --test test/**/*.test.ts",
+    "publish:dry-run": "npm pack --workspace @brevity/core && npm pack --workspace @brevity/plugin-cache && npm pack --workspace @brevity/plugin-debug && npm pack --workspace @brevity/plugin-viewer && npm pack --workspace @brevity/plugin-validation",
+    "publish:all": "npm publish --workspace @brevity/core --access public && npm publish --workspace @brevity/plugin-cache --access public && npm publish --workspace @brevity/plugin-debug --access public && npm publish --workspace @brevity/plugin-viewer --access public && npm publish --workspace @brevity/plugin-validation --access public",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "vitepress": "^1.6.4"
+  }
+}

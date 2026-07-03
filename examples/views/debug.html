@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{title}}</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0d1117; color: #e6edf3; line-height: 1.6; padding: 2rem; }
+      .container { max-width: 900px; margin: 0 auto; }
+      h1 { color: #79c0ff; margin-bottom: 1.5rem; font-size: 1.8rem; }
+      .stats { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+      .stat-box { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 1rem; }
+      .stat-box strong { color: #58a6ff; }
+      .log-entry { background: #161b22; border-left: 4px solid #30363d; border-radius: 4px; padding: 1rem; margin: 0.75rem 0; }
+      .log-info { border-left-color: #58a6ff; }
+      .log-warn { border-left-color: #d29922; }
+      .log-error { border-left-color: #da3633; }
+      .log-debug { border-left-color: #8957e5; }
+      .log-time { color: #8b949e; font-size: 0.85rem; font-weight: 600; }
+      .log-level { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: 700; margin-right: 0.5rem; }
+      .level-info { background: #0d419f; color: #58a6ff; }
+      .level-warn { background: #4d3b1a; color: #d29922; }
+      .level-error { background: #67221a; color: #da3633; }
+      .level-debug { background: #3b2d4d; color: #8957e5; }
+      .log-msg { color: #e6edf3; font-weight: 500; }
+      .log-data { background: #0d1117; border: 1px solid #30363d; border-radius: 3px; padding: 0.75rem; margin-top: 0.5rem; font-family: "Courier New", monospace; font-size: 0.85rem; color: #79c0ff; }
+      .log-data pre { white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📋 Debug Logs</h1>
+      <div class="stats">
+        <div class="stat-box"><strong>Total:</strong> {{total}}</div>
+        <div class="stat-box"><strong>Info:</strong> {{infoCount}}</div>
+        <div class="stat-box"><strong>Warn:</strong> {{warnCount}}</div>
+        <div class="stat-box"><strong>Error:</strong> {{errorCount}}</div>
+      </div>
+      <div>{{{logsHtml}}}</div>
+    </div>
+  </body>
+</html>

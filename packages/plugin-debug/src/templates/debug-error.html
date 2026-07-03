@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Debug Error</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0d1117; color: #e6edf3; line-height: 1.6; padding: 2rem; }
+      .container { max-width: 900px; margin: 0 auto; }
+      .error-box { background: #da3633; border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; }
+      .error-box h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+      .error-box p { font-size: 0.95rem; opacity: 0.9; }
+      .stack { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 1rem; overflow-x: auto; font-size: 0.85rem; margin: 1rem 0; }
+      details { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 1rem; margin: 1rem 0; }
+      summary { cursor: pointer; font-weight: 600; color: #58a6ff; }
+      .log-section { background: #161b22; border-radius: 6px; padding: 1.5rem; }
+      .log-section h2 { font-size: 1.2rem; margin-bottom: 1rem; color: #79c0ff; }
+      .log-entry { padding: 0.5rem 0.75rem; border-left: 3px solid #30363d; margin: 0.5rem 0; font-size: 0.9rem; font-family: "Courier New", monospace; }
+      .log-info { border-left-color: #58a6ff; }
+      .log-warn { border-left-color: #d29922; background: rgba(210, 153, 34, 0.1); }
+      .log-error { border-left-color: #da3633; background: rgba(218, 54, 51, 0.1); }
+      .log-debug { border-left-color: #8957e5; opacity: 0.8; }
+      .log-time { color: #8b949e; font-weight: 600; }
+      .log-msg { color: #e6edf3; }
+      .empty { opacity: 0.6; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="error-box">
+        <h1>🐛 Debug Error</h1>
+        <p>{{message}}</p>
+      </div>
+      {{stackSection}}
+      {{requestSection}}
+      <div class="log-section">
+        <h2>📋 Recent Logs ({{logCount}})</h2>
+        <div>{{{logsSection}}}</div>
+      </div>
+    </div>
+  </body>
+</html>
