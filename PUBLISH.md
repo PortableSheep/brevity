@@ -41,6 +41,7 @@ npm version minor --workspace @brevity/plugin-cache
 npm version minor --workspace @brevity/plugin-debug
 npm version minor --workspace @brevity/plugin-viewer
 npm version minor --workspace @brevity/plugin-validation
+npm version minor --workspace @brevity/web
 ```
 
 Or manually edit each `packages/*/package.json` and change `"version": "0.1.0"` to `"0.2.0"`.
@@ -62,6 +63,7 @@ npm publish --workspace @brevity/plugin-cache --access public
 npm publish --workspace @brevity/plugin-debug --access public
 npm publish --workspace @brevity/plugin-viewer --access public
 npm publish --workspace @brevity/plugin-validation --access public
+npm publish --workspace @brevity/web --access public
 ```
 
 Or use the publish script:
@@ -108,7 +110,7 @@ Add to root package.json:
 ```json
 {
   "scripts": {
-    "publish:all": "npm publish --workspace @brevity/core --access public && npm publish --workspace @brevity/plugin-cache --access public && npm publish --workspace @brevity/plugin-debug --access public && npm publish --workspace @brevity/plugin-viewer --access public && npm publish --workspace @brevity/plugin-validation --access public"
+    "publish:all": "npm run build:packages && npm publish --workspace @brevity/core --access public && npm publish --workspace @brevity/plugin-cache --access public && npm publish --workspace @brevity/plugin-debug --access public && npm publish --workspace @brevity/plugin-viewer --access public && npm publish --workspace @brevity/plugin-validation --access public && npm publish --workspace @brevity/web --access public"
   }
 }
 ```
@@ -128,6 +130,7 @@ Test without publishing:
 ```bash
 npm pack --workspace @brevity/core
 npm pack --workspace @brevity/plugin-cache
+npm pack --workspace @brevity/web
 # etc.
 
 # Check the tarballs contain the right files

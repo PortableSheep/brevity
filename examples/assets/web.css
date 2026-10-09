@@ -1,0 +1,5 @@
+body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 40rem; padding: 0 1rem; }
+label, input, button { display: block; margin: 0.5rem 0; }
+input, button { font: inherit; padding: 0.5rem; }
+[aria-invalid="true"] { border: 2px solid #a00; }
+[role="alert"] { border: 2px solid #a00; padding: 1rem; }

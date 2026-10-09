@@ -27,6 +27,7 @@ The framework is split into publishable packages:
 | Package | Purpose |
 |---------|---------|
 | **@brevity/core** | Router, DI container, request/response |
+| **@brevity/web** | Optional escaped pages, accessible forms, explicit static assets |
 | **@brevity/plugin-cache** | Memory & Redis caching adapters |
 | **@brevity/plugin-debug** | Dev-mode error pages & logs |
 | **@brevity/plugin-viewer** | Template rendering |
@@ -49,6 +50,7 @@ npm run docs:build   # Build static docs
 
 - **[Getting Started](QUICK_START.md)** — Copy-paste your first app
 - **[Architecture](docs/guide/architecture.md)** — How Brevity works
+- **[Optional Web Layer](packages/web/README.md)** — Callback pages, forms, assets, and island data
 - **[Plugin System](docs/guide/plugins.md)** — Build your own plugins
 - **[API Reference](docs/api/core.md)** — Complete API docs
 - **[Debugging](docs/guide/debugging.md)** — Dev tooling

@@ -15,6 +15,7 @@ export default defineConfig({
         { text: "Architecture", link: "/guide/architecture" },
         { text: "Plugins", link: "/guide/plugins" },
         { text: "Debug Mode", link: "/guide/debugging" },
+        { text: "Optional Web Layer", link: "/guide/web" },
       ],
       "/api/": [{ text: "Core APIs", link: "/api/core" }],
     },
