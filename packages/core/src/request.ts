@@ -1,5 +1,6 @@
 import type { IncomingMessage } from "node:http";
 import { validateRules, type ValidationRules, type ValidationResult } from "./validation.js";
+import { HttpError } from "./http-error.js";
 
 export class Request {
   public readonly method: string;
@@ -9,6 +10,7 @@ export class Request {
   public readonly query: Record<string, string>;
   public readonly params: Record<string, string>;
   public body: Record<string, unknown> | null = null;
+  public form: URLSearchParams | null = null;
 
   constructor(public readonly raw: IncomingMessage, routeParams: Record<string, string> = {}) {
     this.method = raw.method ?? "GET";
@@ -39,23 +41,68 @@ export class Request {
     return (this.params[key] as T) ?? defaultValue;
   }
 
-  async parseBody(): Promise<Record<string, unknown>> {
-    const chunks: Buffer[] = [];
-    for await (const chunk of this.raw) {
-      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  async parseBody(maxBodyBytes = 1024 * 1024): Promise<Record<string, unknown>> {
+    if (this.body !== null) return this.body;
+    if (!Number.isSafeInteger(maxBodyBytes) || maxBodyBytes < 0) {
+      throw new RangeError("maxBodyBytes must be a non-negative safe integer");
     }
-    const raw = Buffer.concat(chunks).toString("utf8");
-    if (!raw) {
+    const length = this.headers["content-length"];
+    if (length !== undefined && Number(length) > maxBodyBytes) {
+      throw new HttpError(413, "Payload Too Large");
+    }
+    const chunks: Buffer[] = [];
+    let size = 0;
+    // Keep the socket writable when rejecting a chunked upload.
+    try {
+      for await (const chunk of this.raw.iterator({ destroyOnReturn: false })) {
+        const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+        size += buffer.length;
+        if (size > maxBodyBytes) throw new HttpError(413, "Payload Too Large");
+        chunks.push(buffer);
+      }
+    } catch (error) {
+      if (error instanceof HttpError) throw error;
+      if (this.raw.aborted || this.raw.destroyed) throw new HttpError(400, "Request Aborted");
+      throw error;
+    }
+    if (!size) {
       this.body = {};
       return this.body;
     }
-
-    const ct = String(this.headers["content-type"] ?? "").toLowerCase();
-    if (ct.includes("application/json")) {
-      this.body = JSON.parse(raw) as Record<string, unknown>;
+    const encoding = this.headers["content-encoding"];
+    if (encoding && encoding.toLowerCase() !== "identity") {
+      throw new HttpError(415, "Unsupported Content Encoding");
+    }
+    let raw: string;
+    try {
+      raw = new TextDecoder("utf-8", { fatal: true }).decode(Buffer.concat(chunks, size));
+    } catch {
+      throw new HttpError(400, "Invalid UTF-8 Body");
+    }
+    const ct = String(this.headers["content-type"] ?? "").split(";")[0].trim().toLowerCase();
+    if (ct === "application/json" || /^application\/[\w.+-]+\+json$/.test(ct)) {
+      let value: unknown;
+      try {
+        value = JSON.parse(raw);
+      } catch {
+        throw new HttpError(400, "Invalid JSON Body");
+      }
+      if (!value || typeof value !== "object" || Array.isArray(value)) {
+        throw new HttpError(400, "JSON Body Must Be an Object");
+      }
+      this.body = value as Record<string, unknown>;
       return this.body;
     }
-    this.body = Object.fromEntries(new URLSearchParams(raw).entries());
+    if (ct !== "application/x-www-form-urlencoded") {
+      throw new HttpError(415, "Unsupported Media Type");
+    }
+    try {
+      decodeURIComponent(raw.replaceAll("+", " "));
+    } catch {
+      throw new HttpError(400, "Invalid Form Encoding");
+    }
+    this.form = new URLSearchParams(raw);
+    this.body = Object.fromEntries(this.form.entries());
     return this.body;
   }
 

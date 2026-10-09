@@ -55,13 +55,15 @@ npm run docs:build   # Build static docs
 
 ## ✨ Features
 
-- **Minimal core** — Only 2KB for routing + DI
+- **Minimal core** — HTTP routing, middleware, and explicit DI; web helpers stay optional
 - **Typed routes** — Built-in route params: `{i:id}`, `{s:name}`, `{*:path}`
 - **Plugin system** — Service-provider style, boot safely
 - **TypeScript first** — Strict types, no `any` escapes
+- **Optional decorators** — Controllers and routes via a separate, dependency-free entry point
 - **Validation** — Simple, composable rules
 - **Caching** — Memory adapter (Redis plugin planned)
 - **Dev tooling** — Styled errors, request logs, debug dashboard
+- **Bounded HTTP input** — Configurable body limits, controlled errors, isolated request bindings
 
 ## 🎯 Best For
 
@@ -120,11 +122,38 @@ app.router.post("/users", (req, res, container) => {
 app.listen(3000);
 ```
 
+### Optional controller decorators
+
+Keep callback routes, or opt into standard TypeScript 5+ decorators:
+
+```typescript
+import { createApp, type Request, type Response } from "@brevity/core";
+import { Controller, Get, registerControllers } from "@brevity/core/decorators";
+
+@Controller("/users")
+class UsersController {
+  @Get("/{i:id}")
+  show(req: Request, res: Response): void {
+    res.json({ id: req.param("id") });
+  }
+}
+
+const app = createApp();
+registerControllers(app.router, new UsersController());
+app.listen(3000);
+```
+
+No reflection library, automatic discovery, or dependency-injection decorators.
+Construct controllers yourself and pass dependencies through their constructors.
+The normal core entry point does not load decorator support.
+Leave `experimentalDecorators` and `emitDecoratorMetadata` disabled.
+See the [decorator API](docs/api/core.md#optional-controller-decorators) and
+[constructor-injection example](examples/controllers.ts).
+
 ## 📊 Comparison
 
 | Feature | Brevity | Express | Fastify | Hono |
 |---------|---------|---------|---------|------|
-| Bundle size | 2KB | 50KB | 32KB | 17KB |
 | TypeScript | ✅ | Partial | ✅ | ✅ |
 | Plugin system | ✅ | Middleware | Middleware | Hooks |
 | Learning curve | Minimal | Medium | Medium | Minimal |

@@ -1,4 +1,5 @@
 import { ServiceProvider } from "./provider.js";
+import { AsyncLocalStorage } from "node:async_hooks";
 
 export type BindingKey = string | symbol;
 export type BindingFactory<T = unknown> = (container: Container) => T;
@@ -15,6 +16,11 @@ export class Container {
   #instances = new Map<BindingKey, unknown>();
   #providers = new Map<string, ServiceProvider>();
   #booted = false;
+  #scope = new AsyncLocalStorage<ReadonlyMap<BindingKey, unknown>>();
+
+  runScoped<T>(instances: ReadonlyMap<BindingKey, unknown>, callback: () => T): T {
+    return this.#scope.run(instances, callback);
+  }
 
   bind<T>(key: BindingKey, factory: BindingFactory<T>): void {
     this.#bindings.set(key, { factory, singleton: false });
@@ -29,10 +35,12 @@ export class Container {
   }
 
   has(key: BindingKey): boolean {
-    return this.#bindings.has(key) || this.#instances.has(key);
+    return this.#scope.getStore()?.has(key) === true || this.#bindings.has(key) || this.#instances.has(key);
   }
 
   get<T>(key: BindingKey): T {
+    const scope = this.#scope.getStore();
+    if (scope?.has(key)) return scope.get(key) as T;
     if (this.#instances.has(key)) return this.#instances.get(key) as T;
     const binding = this.#bindings.get(key);
     if (!binding) throw new Error(`Container binding not found: ${String(key)}`);

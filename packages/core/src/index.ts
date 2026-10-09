@@ -1,5 +1,5 @@
 import { createServer, type Server } from "node:http";
-import { Router } from "./router.js";
+import { Router, type RouterOptions } from "./router.js";
 import { Container } from "./container.js";
 import { ServiceProvider } from "./provider.js";
 import { Request } from "./request.js";
@@ -10,6 +10,9 @@ import { Validator } from "./validation.js";
 
 export { Router, Container, ServiceProvider, Request, Response, Viewer, Validator, Plugin };
 export type { PluginLike };
+export type { HttpMethod, RouteHandler, MiddlewareHandler } from "./router.js";
+export type { RouterOptions };
+export { HttpError } from "./http-error.js";
 
 export type App = {
   router: Router;
@@ -21,12 +24,12 @@ export type App = {
   listen: (port?: number, host?: string) => Server;
 };
 
-export type CreateAppOptions = {
+export type CreateAppOptions = RouterOptions & {
   plugins?: PluginLike[];
 };
 
 export function createApp(options: CreateAppOptions = {}): App {
-  const router = new Router();
+  const router = new Router(options);
   const container = new Container();
   const plugins: string[] = [];
   router.setContainer(container);
@@ -47,7 +50,12 @@ export function createApp(options: CreateAppOptions = {}): App {
     },
     listen(port = 3000, host = "127.0.0.1") {
       const server = createServer((req, res) => {
-        void router.dispatch(req, res);
+        void router.dispatch(req, res)
+          .catch(error => router.handleError(error, null, new Response(res)))
+          .catch(error => {
+            console.error("[brevity] response failed", error);
+            res.destroy();
+          });
       });
       server.listen(port, host);
       return server;
