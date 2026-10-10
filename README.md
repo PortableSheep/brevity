@@ -173,6 +173,11 @@ See [Evaluating Brevity](docs/guide/evaluating.md) for the comparison contract a
 limits on what line counts or example apps can establish. No performance,
 learning-time, or production-readiness advantage has been demonstrated.
 
+The [support inbox](examples/support-inbox/README.md) is a second complete
+application with persistent data and an equivalent Express implementation.
+Its [reproducible results](examples/support-inbox/RESULTS.md) show modest
+application-glue savings, not a universal framework ranking.
+
 Brevity is still an educational, evolving framework. Authentication, deployment,
 operational readiness, and application-specific security require deliberate work;
 the examples are not production templates.

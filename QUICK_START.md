@@ -18,6 +18,11 @@ Read the [optional web guide](docs/guide/web.md) for the complete page/form flow
 Core does not require web helpers or a frontend runtime. React, Svelte, Vue, or
 other browser applications can use the same HTTP backend independently.
 
+For persistence, request details, search, pagination, and status updates, run the
+[support inbox example](examples/support-inbox/README.md). It includes an
+equivalent Express implementation and reproducible measurements. Both are
+loopback-only demos without authenticated administration.
+
 ## Option 2: Use the Existing Starter Template
 
 The **starter/** folder is a minimal, copy-paste template for new projects:

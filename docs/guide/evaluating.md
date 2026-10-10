@@ -113,6 +113,61 @@ unbound-server adapter with the existing `app.listen(0)` API. A reusable
 enhanced-form transport helper requires evidence from another application first.
 None of these findings justifies moving RSVP rules into core.
 
+## Second application: support inbox
+
+The repository now includes two runnable implementations of one acceptance
+contract in `examples/support-inbox`: Brevity core/web and Express 5.1.0.
+Both create and validate support requests, retain invalid input, persist to a
+local JSON store, show details, search/filter/paginate the inbox, and update
+request status. Both use ordinary forms and the same optional character counter.
+
+| Comparable authored source | Brevity | Express |
+|---|---:|---:|
+| HTTP adapter and templates, nonblank lines | 117 | 150 |
+| Runnable app, nonblank lines | 309 | 342 |
+| Runnable app, source bytes | 17,271 | 19,593 |
+| Including common build configuration, nonblank lines | 359 | 392 |
+
+Each app total includes the shared validation, repository, runtime configuration,
+CSS, and browser code once. The measured difference is 33 nonblank lines and
+2,322 source bytes: about 10% of the runnable source in this particular example,
+not a large reduction in all application work. The Brevity page HTML is slightly
+larger because of its generated field IDs. Both implementations serve the same
+322-byte native browser script; neither requires a browser framework.
+
+Core/web have two direct production package entries and no additional runtime
+package dependencies. Express's measured production graph has 42 distinct
+name/version pairs. Those counts are dependency observations, not a security,
+startup-time, loaded-code, or performance score.
+
+The repeatable report and all counting/fixture rules are in
+`examples/support-inbox/RESULTS.md`; run instructions and limitations are in its
+`README.md`. From that directory, after package build/install:
+
+```sh
+npm run typecheck
+npm run build
+npm test
+npm run smoke
+node scripts/measure.mjs | cmp - measurements.json
+```
+
+The last command checks the committed report against the actual installed
+libraries, source inventory, and served HTTP fixture payloads. Different Node,
+framework, or dependency versions can legitimately change the report. Both
+implementations passed the shared contract and compiled-process restart smoke,
+and the report was reproduced after integration into the framework branch.
+
+The concrete reduction comes from escaped fragment composition, accessible
+field/error feedback, and exact asset handling. Domain input rules and
+persistence remain shared application code. Expected domain errors still need
+mapping to core `HttpError`, and HEAD page routes are explicitly registered.
+This is evidence of modest glue reduction, not proof of faster development.
+
+The local inbox is unauthenticated and loopback-only; its JSON store coordinates
+one process/repository instance, not a production database. No new framework
+features were added to make the comparison favorable.
+
 ## Current boundaries
 
 `@brevity/core` and `@brevity/web` have no runtime package dependencies. They still
