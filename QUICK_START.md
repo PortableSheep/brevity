@@ -1,6 +1,24 @@
 # Quick Start
 
-## Option 1: Use the Starter Template (Recommended)
+## Option 1: Try HTML-first pages in this repository
+
+The web example uses the public `@brevity/core` and optional `@brevity/web` APIs:
+
+```bash
+npm ci
+npm run build
+node --import tsx examples/web-app.ts
+```
+
+Open `http://127.0.0.1:3000/contact`. Submit an empty name to see accessible form
+errors, or a valid name for a redirect to the confirmation page. This is a small
+rendering example, not a persistent or authenticated application.
+
+Read the [optional web guide](docs/guide/web.md) for the complete page/form flow.
+Core does not require web helpers or a frontend runtime. React, Svelte, Vue, or
+other browser applications can use the same HTTP backend independently.
+
+## Option 2: Use the Existing Starter Template
 
 The **starter/** folder is a minimal, copy-paste template for new projects:
 
@@ -22,7 +40,7 @@ That's it! Read the [starter README](starter/README.md) for usage patterns.
 
 ---
 
-## Option 2: Manual Setup
+## Option 3: Manual API Setup
 
 Create a new TypeScript project:
 
@@ -30,7 +48,7 @@ Create a new TypeScript project:
 mkdir my-app
 cd my-app
 npm init -y
-npm install @brevity/core @brevity/plugin-cache @brevity/plugin-debug @brevity/plugin-viewer @brevity/plugin-validation
+npm install @brevity/core
 npm install -D typescript tsx @types/node
 ```
 
@@ -53,15 +71,8 @@ Create `src/index.ts`:
 
 ```typescript
 import { createApp } from "@brevity/core";
-import { ViewerPlugin } from "@brevity/plugin-viewer";
-import { DebugPlugin } from "@brevity/plugin-debug";
 
-const app = createApp({
-  plugins: [
-    new ViewerPlugin({ baseDir: "./views" }),
-    new DebugPlugin({ enabled: true }),
-  ],
-});
+const app = createApp();
 
 app.router.get("/", (_req, res) => {
   res.send("<h1>Hello Brevity!</h1>");
@@ -82,7 +93,7 @@ npx tsx src/index.ts
 ## Learning Resources
 
 - [Starter Template](starter/README.md) — Copy-paste app template
-- [Full Example App](examples/) — Production patterns
+- [Example Apps](examples/) — Repository examples, not production templates
 - [Architecture Guide](docs/guide/architecture.md)
 - [Plugin System](docs/guide/plugins.md)
 - [API Reference](docs/api/core.md)
@@ -91,18 +102,10 @@ npx tsx src/index.ts
 
 ## Comparison with Other Frameworks
 
-| Feature | Brevity | Express | Hono |
-|---------|---------|---------|------|
-| **Size** | ~2KB | ~50KB | ~17KB |
-| **Setup Time** | ~2 min | ~2 min | ~2 min |
-| **Plugin System** | ✅ | Middleware | Middleware |
-| **TypeScript** | ✅ Built-in | Requires setup | ✅ Built-in |
-| **Learning Curve** | Minimal | Medium | Minimal |
+We do not publish estimated setup times or unqualified bundle-size comparisons.
+The useful question is how much code a complete equivalent feature needs,
+including its templates, validation, persistence, and browser enhancements.
+See [Evaluating Brevity](docs/guide/evaluating.md) for the measurement contract.
 
-Brevity is **best for**:
-- Learning web frameworks
-- Hobby/personal projects
-- Microservices
-- When you want a minimal, opinionated starting point
-
-**Start the starter and customize from there.** Happy building! 🚀
+Repository examples exercise the current source. Registry installations use the
+published version and do not automatically include unreleased branch changes.

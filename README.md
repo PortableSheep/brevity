@@ -1,10 +1,15 @@
 # Brevity Node (TypeScript)
 
-A minimal, educational web framework for Node.js with TypeScript support, plugins, and an optional dependency injection container.
+A small TypeScript backend for APIs and server-rendered pages. Start with ordinary
+HTTP routes and forms; add browser components only where they help.
+
+Core handles HTTP, middleware, and explicit dependency wiring. The optional
+`@brevity/web` package adds escaped callback templates, form feedback, assets, and
+component data. Frontend compilation and business rules stay application-owned.
 
 ## 🚀 Getting Started
 
-**Start a new project in ~30 seconds:**
+**Try the existing starter:**
 
 ```bash
 cp -r starter ~/my-app
@@ -69,17 +74,22 @@ npm run docs:build   # Build static docs
 
 ## 🎯 Best For
 
+- HTML-first pages and forms with targeted browser enhancements
+- APIs for independently built frontends, not just React
 - Learning how web frameworks work
 - Building microservices
 - Hobby/personal projects
-- Serverless functions (Lambda, Vercel)
-- When you want opinionated defaults with minimal magic
+- Small Node services with explicit dependencies and optional web helpers
 
 ## 🤔 Not For
 
 - Large monoliths (use Nest.js or Express with advanced patterns)
 - When you need a mature middleware ecosystem (use Express)
 - If you want database ORMs built-in (add them yourself, keep framework slim)
+- A drop-in Angular, Nest, or Next.js replacement
+
+Brevity's current `listen()` runs a Node HTTP server. A serverless host needs its
+own integration; Lambda/Vercel deployment is not provided out of the box.
 
 ## 📖 Example
 
@@ -152,16 +162,20 @@ Leave `experimentalDecorators` and `emitDecoratorMetadata` disabled.
 See the [decorator API](docs/api/core.md#optional-controller-decorators) and
 [constructor-injection example](examples/controllers.ts).
 
-## 📊 Comparison
+## 📊 What we are proving
 
-| Feature | Brevity | Express | Fastify | Hono |
-|---------|---------|---------|---------|------|
-| TypeScript | ✅ | Partial | ✅ | ✅ |
-| Plugin system | ✅ | Middleware | Middleware | Hooks |
-| Learning curve | Minimal | Medium | Medium | Minimal |
-| Production-ready | ⚠️ | ✅ | ✅ | ✅ |
+The goal is less application glue, not the shortest possible controller. Count a
+complete flow: templates, validation, persistence, error handling, configuration,
+and any browser code. A component's code and runtime still count even when it is
+optional or loaded on only one page.
 
-Brevity is educational and great for small projects. For production apps at scale, consider Express or Fastify.
+See [Evaluating Brevity](docs/guide/evaluating.md) for the comparison contract and
+limits on what line counts or example apps can establish. No performance,
+learning-time, or production-readiness advantage has been demonstrated.
+
+Brevity is still an educational, evolving framework. Authentication, deployment,
+operational readiness, and application-specific security require deliberate work;
+the examples are not production templates.
 
 ## 📝 License
 
