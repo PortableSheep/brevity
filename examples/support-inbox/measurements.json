@@ -1,0 +1,638 @@
+{
+  "rules": "Physical/nonblank lines and UTF-8 bytes; all application/template/browser/runtime config files included once per runnable app. Tests/build config/tooling separate. Installed runtime library JS counts all shipped JS, not only executed code. Gzip level 9 per asset, not HTTP compression.",
+  "frameworkRevision": "6ea67baf511b97a0f780f2d1b71c741920b54efe",
+  "node": "v22.21.1",
+  "lock": {
+    "bytes": 52604,
+    "sha256": "eb080d65a67fc1f3a9aeadc1bbd469f95e04cc10e97633ce6fa16370db2887e8"
+  },
+  "files": {
+    "src/brevity.ts": {
+      "physical": 74,
+      "nonblank": 72,
+      "bytes": 3662
+    },
+    "src/brevity-views.ts": {
+      "physical": 46,
+      "nonblank": 45,
+      "bytes": 4044
+    },
+    "src/express.ts": {
+      "physical": 96,
+      "nonblank": 94,
+      "bytes": 5125
+    },
+    "src/express-views.ts": {
+      "physical": 57,
+      "nonblank": 56,
+      "bytes": 4903
+    },
+    "src/domain.ts": {
+      "physical": 147,
+      "nonblank": 137,
+      "bytes": 6479
+    },
+    "public/app.css": {
+      "physical": 24,
+      "nonblank": 24,
+      "bytes": 1478
+    },
+    "public/app.js": {
+      "physical": 7,
+      "nonblank": 7,
+      "bytes": 322
+    },
+    "src/config.ts": {
+      "physical": 25,
+      "nonblank": 24,
+      "bytes": 1286
+    },
+    "package.json": {
+      "physical": 27,
+      "nonblank": 27,
+      "bytes": 739
+    },
+    "tsconfig.json": {
+      "physical": 13,
+      "nonblank": 13,
+      "bytes": 265
+    },
+    "tsconfig.test.json": {
+      "physical": 5,
+      "nonblank": 5,
+      "bytes": 138
+    },
+    ".npmrc": {
+      "physical": 2,
+      "nonblank": 2,
+      "bytes": 36
+    },
+    ".gitignore": {
+      "physical": 3,
+      "nonblank": 3,
+      "bytes": 26
+    },
+    "test/acceptance.test.ts": {
+      "physical": 235,
+      "nonblank": 226,
+      "bytes": 13795
+    },
+    "test/domain.test.ts": {
+      "physical": 48,
+      "nonblank": 47,
+      "bytes": 2701
+    },
+    "test/browser.test.ts": {
+      "physical": 19,
+      "nonblank": 18,
+      "bytes": 967
+    },
+    "scripts/measure.mjs": {
+      "physical": 161,
+      "nonblank": 159,
+      "bytes": 8995
+    },
+    "scripts/smoke.mjs": {
+      "physical": 71,
+      "nonblank": 70,
+      "bytes": 3292
+    }
+  },
+  "categories": {
+    "brevityGlue": {
+      "physical": 120,
+      "nonblank": 117,
+      "bytes": 7706
+    },
+    "expressGlue": {
+      "physical": 153,
+      "nonblank": 150,
+      "bytes": 10028
+    },
+    "sharedBusiness": {
+      "physical": 147,
+      "nonblank": 137,
+      "bytes": 6479
+    },
+    "sharedBrowser": {
+      "physical": 31,
+      "nonblank": 31,
+      "bytes": 1800
+    },
+    "sharedRuntimeConfig": {
+      "physical": 25,
+      "nonblank": 24,
+      "bytes": 1286
+    },
+    "buildConfig": {
+      "physical": 50,
+      "nonblank": 50,
+      "bytes": 1204
+    },
+    "acceptanceTests": {
+      "physical": 302,
+      "nonblank": 291,
+      "bytes": 17463
+    },
+    "measurementTooling": {
+      "physical": 232,
+      "nonblank": 229,
+      "bytes": 12287
+    }
+  },
+  "runnable": {
+    "brevity": {
+      "includedCategories": [
+        "brevityGlue",
+        "sharedBusiness",
+        "sharedBrowser",
+        "sharedRuntimeConfig"
+      ],
+      "physical": 323,
+      "nonblank": 309,
+      "bytes": 17271
+    },
+    "express": {
+      "includedCategories": [
+        "expressGlue",
+        "sharedBusiness",
+        "sharedBrowser",
+        "sharedRuntimeConfig"
+      ],
+      "physical": 356,
+      "nonblank": 342,
+      "bytes": 19593
+    }
+  },
+  "dependencies": {
+    "brevity": {
+      "direct": [
+        "@brevity/core@0.1.0",
+        "@brevity/web@0.1.0"
+      ],
+      "transitive": [],
+      "uniqueProductionPackages": 2
+    },
+    "express": {
+      "direct": [
+        "express@5.1.0"
+      ],
+      "transitive": [
+        "accepts@2.0.0",
+        "body-parser@2.3.0",
+        "bytes@3.1.2",
+        "content-disposition@1.1.0",
+        "content-type@1.0.5",
+        "content-type@2.1.0",
+        "cookie-signature@1.2.2",
+        "cookie@0.7.2",
+        "debug@4.4.3",
+        "depd@2.0.0",
+        "encodeurl@2.0.0",
+        "escape-html@1.0.3",
+        "etag@1.8.1",
+        "finalhandler@2.1.1",
+        "forwarded@0.2.0",
+        "fresh@2.0.0",
+        "http-errors@2.0.1",
+        "iconv-lite@0.7.3",
+        "ipaddr.js@1.9.1",
+        "is-promise@4.0.0",
+        "merge-descriptors@2.0.0",
+        "mime-types@3.0.2",
+        "ms@2.1.3",
+        "negotiator@1.1.0",
+        "on-finished@2.4.1",
+        "once@1.4.0",
+        "parseurl@1.3.3",
+        "path-to-regexp@8.4.2",
+        "proxy-addr@2.0.8",
+        "qs@6.16.0",
+        "range-parser@1.3.0",
+        "raw-body@3.0.2",
+        "router@2.2.0",
+        "safer-buffer@2.1.2",
+        "send@1.2.1",
+        "serve-static@2.2.1",
+        "statuses@2.0.2",
+        "type-is@2.1.0",
+        "unpipe@1.0.0",
+        "vary@1.1.2",
+        "wrappy@1.0.2"
+      ],
+      "uniqueProductionPackages": 42
+    }
+  },
+  "runtimeLibraries": {
+    "brevity": {
+      "total": {
+        "physical": 768,
+        "nonblank": 768,
+        "bytes": 28703
+      },
+      "packages": {
+        "@brevity/core@0.1.0": {
+          "files": 11,
+          "physical": 601,
+          "nonblank": 601,
+          "bytes": 21402,
+          "sha256": "6360d50ef26f06da7631d50d6e43e9b67e68a46d5fb4a45c7a4cd73419108f79"
+        },
+        "@brevity/web@0.1.0": {
+          "files": 4,
+          "physical": 167,
+          "nonblank": 167,
+          "bytes": 7301,
+          "sha256": "2e10c6dba250ab4a3762e07ddc56efd4153d361cc634d84a8748685ee65eed54"
+        }
+      }
+    },
+    "express": {
+      "total": {
+        "physical": 24111,
+        "nonblank": 20405,
+        "bytes": 751807
+      },
+      "packages": {
+        "accepts@2.0.0": {
+          "files": 1,
+          "physical": 238,
+          "nonblank": 204,
+          "bytes": 5253,
+          "sha256": "937f09887ab4252481d91420badddf0840ddf6e26a714435ad13344f8962adc9"
+        },
+        "body-parser@2.3.0": {
+          "files": 7,
+          "physical": 804,
+          "nonblank": 692,
+          "bytes": 17892,
+          "sha256": "f52e3f2de4aabfd9b5435f882fd9ed4505be327b8b6bf089671e8e38bfd21505"
+        },
+        "bytes@3.1.2": {
+          "files": 1,
+          "physical": 170,
+          "nonblank": 143,
+          "bytes": 3613,
+          "sha256": "9e4a19bcf47506e9ead1af33e05120df97159097de40b80a9a1f0e95b2c88086"
+        },
+        "content-disposition@1.1.0": {
+          "files": 1,
+          "physical": 536,
+          "nonblank": 442,
+          "bytes": 12563,
+          "sha256": "5f3271fee3b491f42e5d98d6e2280792ffc43a073a7dd77d30f4e894397b19ea"
+        },
+        "content-type@1.0.5": {
+          "files": 1,
+          "physical": 225,
+          "nonblank": 181,
+          "bytes": 5002,
+          "sha256": "91fbf59c14738a54bd0217deb364fbc757f19edea8905495ad9e12d849f7633a"
+        },
+        "content-type@2.1.0": {
+          "files": 1,
+          "physical": 176,
+          "nonblank": 176,
+          "bytes": 5757,
+          "sha256": "f7d183c0f0068ba9290778e1fc43ec17a0f775c445a7051b4f3ef93ce6d8075a"
+        },
+        "cookie-signature@1.2.2": {
+          "files": 1,
+          "physical": 47,
+          "nonblank": 42,
+          "bytes": 1413,
+          "sha256": "e667e80a933ca99e0c587c170c2157bfa8fe755abf3d2a5db94280bdf06de44b"
+        },
+        "cookie@0.7.2": {
+          "files": 1,
+          "physical": 335,
+          "nonblank": 276,
+          "bytes": 8166,
+          "sha256": "72c4bcda86d9e2afa1250a7d6a1f1374182ac7fb4f6f1633d21aac080ce97ba5"
+        },
+        "debug@4.4.3": {
+          "files": 4,
+          "physical": 837,
+          "nonblank": 735,
+          "bytes": 18060,
+          "sha256": "566b72b0f83757cbd5ba308d35c5b40001f9a51a09c94c5ca1f6c5a1a9911259"
+        },
+        "depd@2.0.0": {
+          "files": 2,
+          "physical": 615,
+          "nonblank": 476,
+          "bytes": 12444,
+          "sha256": "bc5bb1d1d4815a20f0fbff9f86d4361315d8e21f9e8c379ab39655609b7b87b0"
+        },
+        "encodeurl@2.0.0": {
+          "files": 1,
+          "physical": 60,
+          "nonblank": 49,
+          "bytes": 1578,
+          "sha256": "72f9b9a4f90b9c22ec4d9325abc083bc296f6cba355fa791b077043e2686fd3d"
+        },
+        "escape-html@1.0.3": {
+          "files": 1,
+          "physical": 78,
+          "nonblank": 65,
+          "bytes": 1362,
+          "sha256": "77c62a75d215e18a3f942961f9d5cc3162103e3149f4de2acb9bcbee22faca53"
+        },
+        "etag@1.8.1": {
+          "files": 1,
+          "physical": 131,
+          "nonblank": 107,
+          "bytes": 2479,
+          "sha256": "429dc485f6a70cc4dad1421f45e4137ea0478ac9e219b96f6b9058e419c92f63"
+        },
+        "express@5.1.0": {
+          "files": 7,
+          "physical": 2751,
+          "nonblank": 2329,
+          "bytes": 61182,
+          "sha256": "1d150a5a5752a375397b625a9c3b3c49537f380845e698934bb53962b4c68696"
+        },
+        "finalhandler@2.1.1": {
+          "files": 1,
+          "physical": 293,
+          "nonblank": 239,
+          "bytes": 5818,
+          "sha256": "f5943aff8a59900fc0bed6f8e85dfcaa15c4662c95ea727ae1f5356c2632a618"
+        },
+        "forwarded@0.2.0": {
+          "files": 1,
+          "physical": 90,
+          "nonblank": 76,
+          "bytes": 1578,
+          "sha256": "d079be5098d964ceac59ab319312ac6d49f2e39af093367b26ca0d8c851cf2b9"
+        },
+        "fresh@2.0.0": {
+          "files": 1,
+          "physical": 136,
+          "nonblank": 112,
+          "bytes": 2705,
+          "sha256": "4ed7b0de83cefc1855b0186e4af85dc35b89b4cf2b5ded8b2b31d5ea1d2b6ba7"
+        },
+        "http-errors@2.0.1": {
+          "files": 1,
+          "physical": 290,
+          "nonblank": 234,
+          "bytes": 6430,
+          "sha256": "f596034d51a404db63daabcbd10ea915cf0ef542a2a5485e5beb908cbb7aa99d"
+        },
+        "iconv-lite@0.7.3": {
+          "files": 14,
+          "physical": 2796,
+          "nonblank": 2363,
+          "bytes": 109543,
+          "sha256": "beca19eeba4ae41e7b306f3e4772959df21499b949b9864f89eac7737a0c0429"
+        },
+        "ipaddr.js@1.9.1": {
+          "files": 2,
+          "physical": 674,
+          "nonblank": 617,
+          "bytes": 29071,
+          "sha256": "6401266ea583daac0388e962bfd4bf742f62a0a7a3cf04dc89d1027104bb7d37"
+        },
+        "is-promise@4.0.0": {
+          "files": 2,
+          "physical": 9,
+          "nonblank": 8,
+          "bytes": 352,
+          "sha256": "1b8af6e56c0cb3fab4118fbec37bc0c99bd167b248682f2067672346f15f3929"
+        },
+        "merge-descriptors@2.0.0": {
+          "files": 1,
+          "physical": 26,
+          "nonblank": 20,
+          "bytes": 616,
+          "sha256": "e1f47682e2a92dc0e5d5bd79c624a6567a20fc6b06d7b3ced89fe1762a21af4b"
+        },
+        "mime-types@3.0.2": {
+          "files": 2,
+          "physical": 268,
+          "nonblank": 213,
+          "bytes": 6043,
+          "sha256": "9ced8673024957a5b9847f74c956cb60e6be02b3e0daa95ec88e4cbad5195639"
+        },
+        "ms@2.1.3": {
+          "files": 1,
+          "physical": 162,
+          "nonblank": 151,
+          "bytes": 3024,
+          "sha256": "e33ffe3221b107a440b1a5e0bad396a1141ad974e6ab97f2b1141f3588677262"
+        },
+        "negotiator@1.1.0": {
+          "files": 6,
+          "physical": 800,
+          "nonblank": 636,
+          "bytes": 16668,
+          "sha256": "bbb7b7004917f8280296cc78c545e96968cfba3f206b056af846820b2a1345a1"
+        },
+        "on-finished@2.4.1": {
+          "files": 1,
+          "physical": 234,
+          "nonblank": 186,
+          "bytes": 4430,
+          "sha256": "3a0bd80dbd15c5ef557924b2065f6ef6450cd1dfb72fad65d97619f383b01c56"
+        },
+        "once@1.4.0": {
+          "files": 1,
+          "physical": 42,
+          "nonblank": 38,
+          "bytes": 935,
+          "sha256": "0c06372fa7e9ca41eb53cd69d4161903b1ab25113a856b3f59dbc6a5fc2b735d"
+        },
+        "parseurl@1.3.3": {
+          "files": 1,
+          "physical": 158,
+          "nonblank": 129,
+          "bytes": 2809,
+          "sha256": "ca00d914c989b4d2ce702434f0fb9a019b971e3a928162d7100d870fd9f60898"
+        },
+        "path-to-regexp@8.4.2": {
+          "files": 1,
+          "physical": 431,
+          "nonblank": 431,
+          "bytes": 14528,
+          "sha256": "c2c0ecef7490f8faa2b3b52a71623b614e795f4b8d9fddb02c467b3207c037a8"
+        },
+        "proxy-addr@2.0.8": {
+          "files": 1,
+          "physical": 359,
+          "nonblank": 287,
+          "bytes": 7340,
+          "sha256": "3987681cb1185eb70c564eba1e99dc0fce0c881a62d5e384e4b02c45b8bd4d71"
+        },
+        "qs@6.16.0": {
+          "files": 11,
+          "physical": 6203,
+          "nonblank": 5315,
+          "bytes": 290306,
+          "sha256": "8fa28b3077b2bb67f9eb95321c1a2628cf6d6d7f0611a1909ec31c3752909b57"
+        },
+        "range-parser@1.3.0": {
+          "files": 1,
+          "physical": 181,
+          "nonblank": 144,
+          "bytes": 3205,
+          "sha256": "42b58d77c4cd5bdae0ff8d447a0eed62c486a435a6942b4b40569644485e8d70"
+        },
+        "raw-body@3.0.2": {
+          "files": 1,
+          "physical": 336,
+          "nonblank": 277,
+          "bytes": 7171,
+          "sha256": "f47d71f2cd505d6dc9c3a7b6bfb097b0559d22b0410f2d691ea3eb98d44a13f3"
+        },
+        "router@2.2.0": {
+          "files": 3,
+          "physical": 1237,
+          "nonblank": 1001,
+          "bytes": 25354,
+          "sha256": "c7668d62d45f37b364255e85fc86c2877a94c7f3f15f01cc73e3ec531631ee50"
+        },
+        "safer-buffer@2.1.2": {
+          "files": 3,
+          "physical": 541,
+          "nonblank": 488,
+          "bytes": 19328,
+          "sha256": "85efa0d1061f645a444b2874039a6de42c37cfa4c457fab369c1f28c890aa12b"
+        },
+        "send@1.2.1": {
+          "files": 1,
+          "physical": 997,
+          "nonblank": 824,
+          "bytes": 20341,
+          "sha256": "02ccf01a903a6cb9a9b01cd385a375717d3874c5f0393cba138f0f6107ef7384"
+        },
+        "serve-static@2.2.1": {
+          "files": 1,
+          "physical": 208,
+          "nonblank": 170,
+          "bytes": 4489,
+          "sha256": "3c435d6fb79a87cc3bb477e96efb14d090b6da61246e1216a6c7b870c61bd006"
+        },
+        "statuses@2.0.2": {
+          "files": 1,
+          "physical": 146,
+          "nonblank": 116,
+          "bytes": 2610,
+          "sha256": "f330d1cfa8a55c619c06eafb97c32ecb8ed6da7b6924934665c4005474fb446c"
+        },
+        "type-is@2.1.0": {
+          "files": 1,
+          "physical": 240,
+          "nonblank": 206,
+          "bytes": 5396,
+          "sha256": "4cffb1a2c136f33a5f348c0c73647770fe2abf18d7ba125d51a71f0f90b1f40a"
+        },
+        "unpipe@1.0.0": {
+          "files": 1,
+          "physical": 69,
+          "nonblank": 54,
+          "bytes": 1118,
+          "sha256": "8a75324e50ddef2eaea1296af27e20c2bf5d38e74925d48dc995025a98178324"
+        },
+        "vary@1.1.2": {
+          "files": 1,
+          "physical": 149,
+          "nonblank": 124,
+          "bytes": 2930,
+          "sha256": "98b7d080313032db1e451c8ca990be4e467d2c76202c65aeff9bb5c5237c7cdc"
+        },
+        "wrappy@1.0.2": {
+          "files": 1,
+          "physical": 33,
+          "nonblank": 29,
+          "bytes": 905,
+          "sha256": "19356d542750386bc6d18408fcb71cf78c82f850d95dcfc9f12ab84950fd60ae"
+        }
+      }
+    }
+  },
+  "localFrameworkSource": {
+    "core": {
+      "physical": 693,
+      "nonblank": 614,
+      "bytes": 24053
+    },
+    "web": {
+      "physical": 217,
+      "nonblank": 195,
+      "bytes": 8391
+    }
+  },
+  "browser": {
+    "public/app.css": {
+      "rawBytes": 1478,
+      "gzipBytes": 686
+    },
+    "public/app.js": {
+      "rawBytes": 322,
+      "gzipBytes": 227
+    },
+    "total": {
+      "rawBytes": 1800,
+      "gzipBytes": 913
+    }
+  },
+  "servedBrowser": {
+    "brevity": {
+      "pages": {
+        "/requests/new": {
+          "rawBytes": 1729,
+          "gzipBytes": 739
+        },
+        "/inbox": {
+          "rawBytes": 1084,
+          "gzipBytes": 578
+        },
+        "/requests/00000000-0000-4000-8000-000000000001": {
+          "rawBytes": 1218,
+          "gzipBytes": 681
+        },
+        "/assets/app.css": {
+          "rawBytes": 1478,
+          "gzipBytes": 686
+        },
+        "/assets/app.js": {
+          "rawBytes": 322,
+          "gzipBytes": 227
+        }
+      },
+      "firstFormWithAssets": {
+        "rawBytes": 3529,
+        "gzipBytes": 1652
+      }
+    },
+    "express": {
+      "pages": {
+        "/requests/new": {
+          "rawBytes": 1591,
+          "gzipBytes": 699
+        },
+        "/inbox": {
+          "rawBytes": 1084,
+          "gzipBytes": 578
+        },
+        "/requests/00000000-0000-4000-8000-000000000001": {
+          "rawBytes": 1182,
+          "gzipBytes": 662
+        },
+        "/assets/app.css": {
+          "rawBytes": 1478,
+          "gzipBytes": 686
+        },
+        "/assets/app.js": {
+          "rawBytes": 322,
+          "gzipBytes": 227
+        }
+      },
+      "firstFormWithAssets": {
+        "rawBytes": 3391,
+        "gzipBytes": 1612
+      }
+    }
+  }
+}
