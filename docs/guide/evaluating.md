@@ -29,6 +29,8 @@ or move domain code into the framework just to reduce the application count.
 ## Count what developers maintain
 
 Report physical and nonblank lines with a reproducible file inventory:
+Also report source bytes: compressed or long template/CSS lines can make a
+line-only comparison misleading.
 
 | Category | Include |
 |---|---|
@@ -74,6 +76,42 @@ Useful follow-up evidence includes:
   record blockers without inventing an onboarding-time claim.
 - Identify repeated general web glue across independent applications before
   proposing another helper. Keep their business rules application-owned.
+
+## RSVP prototype audit
+
+A read-only audit on October 9, 2026 counted the isolated invitation prototype
+after core/web integration and the Svelte conditional editor. These are snapshot
+observations, not an equivalent-framework comparison or an onboarding study.
+Physical lines use line splitting; nonblank lines exclude blank lines but include
+comments. Categories are at file level and include mixed responsibilities.
+
+| File group | Physical lines | Nonblank lines | Source bytes |
+|---|---:|---:|---:|
+| Server domain/schema/repository | 290 | 277 | 15,871 |
+| HTTP glue and mixed controllers | 216 | 212 | 12,423 |
+| Templates and CSS | 178 | 172 | 29,475 |
+| Native browser code, Svelte component, and mount | 347 | 343 | 17,263 |
+| Configuration | 85 | 84 | 2,214 |
+| **Application and configuration** | **1,116** | **1,088** | **77,246** |
+| Tests, separately | 737 | 705 | 41,714 |
+
+Lockfiles, compiled output, installed dependencies, vendored package archives, and
+session screenshots/browser scripts were excluded from authored totals. The
+prototype README was also counted separately: 105 physical / 68 nonblank lines.
+For perspective, its CSS occupies 6,377 bytes on only eight physical lines.
+Short files do not imply little UI code.
+
+The audit found public core/web imports, no custom stream-buffer/parser replay,
+and no custom escaping implementation. Request token policy, strict field limits,
+conditional visibility, and historical form versions remain application code.
+The controllers mix transport and domain orchestration, so the HTTP group is
+not a pure measure of framework overhead.
+
+Potential simplifications are finishing fragment-based template composition,
+reducing repeated accessible field/error markup, and replacing a test-only
+unbound-server adapter with the existing `app.listen(0)` API. A reusable
+enhanced-form transport helper requires evidence from another application first.
+None of these findings justifies moving RSVP rules into core.
 
 ## Current boundaries
 
