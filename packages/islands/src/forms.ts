@@ -18,13 +18,20 @@ export function enhanceForm(initialForm: HTMLFormElement, options: EnhancedFormO
     target.dispatchEvent(new CustomEvent("brevity:form-error", { detail: error, bubbles: true }));
   };
   const submit = async (event: SubmitEvent) => {
-    const action = new URL(form.action, location.href);
-    if (form.method.toLowerCase() !== "post" || action.origin !== location.origin
+    // Read attributes: controls named "action"/"method"/"target"/"enctype" shadow the form's IDL properties.
+    const attr = (name: string) => form.getAttribute(name)?.trim() ?? "";
+    const action = new URL(attr("action") || location.href, location.href);
+    const method = attr("method").toLowerCase() || "get";
+    const enctype = attr("enctype").toLowerCase() || "application/x-www-form-urlencoded";
+    const browsingTarget = attr("target");
+    if (method !== "post" || action.origin !== location.origin
       || event.submitter?.hasAttribute("formaction") || event.submitter?.hasAttribute("formmethod")
-      || event.submitter?.hasAttribute("formenctype") || form.target && form.target !== "_self"
-      || form.enctype === "text/plain") return;
+      || event.submitter?.hasAttribute("formenctype") || event.submitter?.hasAttribute("formtarget")
+      || browsingTarget && browsingTarget !== "_self"
+      || enctype === "text/plain") return;
+    const multipart = enctype === "multipart/form-data";
     const data = new FormData(form, event.submitter);
-    if (form.enctype !== "multipart/form-data" && [...data.values()].some(value => typeof value !== "string")) return;
+    if (!multipart && [...data.values()].some(value => typeof value !== "string")) return;
     event.preventDefault();
     if (pending) return;
     pending = true;
@@ -40,7 +47,7 @@ export function enhanceForm(initialForm: HTMLFormElement, options: EnhancedFormO
     for (const { control } of controls) control.disabled = true;
     request = new AbortController();
     try {
-      const body = form.enctype === "multipart/form-data" ? data : new URLSearchParams(
+      const body = multipart ? data : new URLSearchParams(
         [...data.entries()].map(([key, value]) => [key, String(value)]),
       );
       const response = await fetch(action, {

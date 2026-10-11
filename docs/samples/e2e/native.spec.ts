@@ -69,6 +69,34 @@ test("enhanced form retains 422 and 409 input, focuses errors, restores pending 
   expect(new URL(page.url()).pathname).toBe("/native/form");
 });
 
+test("controls named action, method, target, or enctype do not shadow the form's submission attributes", async ({ page }) => {
+  await page.goto("/native/form");
+  await expect(page.locator("[data-ready]")).toHaveCount(1);
+  await page.evaluate(() => {
+    const form = document.querySelector<HTMLFormElement>("#enhanced-form form")!;
+    for (const name of ["method", "target", "enctype"]) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = "shadow";
+      form.append(input);
+    }
+    const button = document.createElement("button");
+    button.name = "action";
+    button.value = "publish";
+    button.textContent = "Publish";
+    form.append(button);
+  });
+  await page.getByLabel("Note", { exact: true }).fill("valid note");
+  const request = page.waitForRequest(req => req.method() === "POST");
+  await page.getByRole("button", { name: "Publish", exact: true }).click();
+  const sent = await request;
+  expect(sent.resourceType()).toBe("fetch");
+  expect(new URL(sent.url()).pathname).toBe("/native/form");
+  expect(new URLSearchParams(sent.postData() ?? "").get("action")).toBe("publish");
+  await expect(page.getByText("Saved", { exact: true })).toBeVisible();
+});
+
 test("fetch errors are reported without losing input or disabling native controls", async ({ page }) => {
   await page.goto("/native/form");
   await expect(page.locator("[data-ready]")).toHaveCount(1);
