@@ -3,3 +3,8 @@ dist/
 docs/.vitepress/cache/
 docs/.vitepress/dist/
 .DS_Store
+docs/samples/island/dist/
+docs/samples/prisma/*.db
+notebook.db*
+playwright-report/
+test-results/

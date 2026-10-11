@@ -1,78 +1,35 @@
-# Getting Started
+# Getting started
 
-## Requirements
+Brevity is a TypeScript HTTP micro-framework, not an ORM, auth engine, or frontend
+compiler. Start with a route and bring other tools as needed.
 
-- Node.js 20+
-- npm 10+
+## Choose your starting point
 
-## Install and run
+- **Learn end to end:** [Build a notebook](./tutorial.md), including a native form,
+  retained errors, SQLite persistence, and real HTTP tests.
+- **Explore this repository:** run `npm ci`, `npm run dev`, then visit
+  `http://127.0.0.1:3000`. The existing example demonstrates plugins and providers.
+- **Use the starter:** see the repository's `QUICK_START.md` and `starter/`.
+  Package installation/publishing instructions live in `PUBLISH.md`.
 
-```bash
-npm install
-npm run dev
-```
+Core supports Node.js 20+. The checked documentation toolchain runs on Node.js
+22 (npm 10+); use that version when following the tutorial in this repository.
+All TypeScript samples use ESM and standard TS5 decorators, with
+`experimentalDecorators` and `emitDecoratorMetadata` disabled.
 
-Then open `http://127.0.0.1:3000`.
+## The shape of an app
 
-## Project layout
+<<< @/samples/first-route.ts
 
-```text
-src/
-  core/
-    container.ts
-    provider.ts
-    router.ts
-    request.ts
-    validation.ts
-    response.ts
-    viewer.ts
-    plugin.ts
-packages/
-  core/
-    src/index.ts
-  plugin-cache/
-    src/index.ts
-  plugin-debug/
-    src/index.ts
-  plugin-viewer/
-    src/index.ts
-  plugin-validation/
-    src/index.ts
-examples/
-  app.ts
-  bootstrap.ts
-  middleware/
-    example-middleware.ts
-  providers/
-    app-provider.ts
-  routes/
-    example-routes.ts
-  services/
-    user-service.ts
-  support/
-    debug-view.ts
-  views/home.html
-  views/debug.html
-test/
-  *.test.ts
-docs/
-```
+An import does not start a server. Your entry point calls `app.listen(port, host)`,
+which returns a Node HTTP `Server` and defaults to loopback. Explicitly configure
+the host if your deployment needs an external listener.
 
-## Verify quality
+Routes send their own responses. Parameters arrive as strings; generic type
+arguments on request helpers are not runtime validation. Choose your own
+persistence, access-control, and deployment policies.
 
-```bash
-npm run typecheck
-npm run test
-npm run build
-```
+## Where next?
 
-## Optional features
-
-Use plugins for the non-core pieces:
-
-- `CachePlugin`
-- `ViewerPlugin`
-- `DebugPlugin`
-- `ValidationPlugin`
-
-See [Plugins](/guide/plugins) for the full split.
+[Tutorial](./tutorial.md) · [Recipes](/recipes/) · [Core API](/api/core) ·
+[Web API](/api/web) · [Evidence](./evaluating.md)

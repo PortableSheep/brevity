@@ -33,7 +33,7 @@ The framework is split into publishable packages:
 |---------|---------|
 | **@brevity/core** | Router, DI container, request/response |
 | **@brevity/web** | Optional escaped pages, accessible forms, explicit static assets |
-| **@brevity/plugin-cache** | Memory & Redis caching adapters |
+| **@brevity/plugin-cache** | Memory & no-op caching adapters |
 | **@brevity/plugin-debug** | Dev-mode error pages & logs |
 | **@brevity/plugin-viewer** | Template rendering |
 | **@brevity/plugin-validation** | Request validation |
@@ -53,12 +53,22 @@ npm run docs:build   # Build static docs
 
 ## 📚 Documentation
 
+- **[Notebook Tutorial](docs/guide/tutorial.md)** — Native forms, retained errors, SQLite, and HTTP tests
+- **[Integration Recipes](docs/recipes/index.md)** — Checked Drizzle, Prisma, Supabase PKCE, Svelte, and Playwright
 - **[Getting Started](QUICK_START.md)** — Copy-paste your first app
 - **[Architecture](docs/guide/architecture.md)** — How Brevity works
 - **[Optional Web Layer](packages/web/README.md)** — Callback pages, forms, assets, and island data
 - **[Plugin System](docs/guide/plugins.md)** — Build your own plugins
 - **[API Reference](docs/api/core.md)** — Complete API docs
+- **[Web API Reference](docs/api/web.md)** — Escaped fragments, forms, assets, and JSON state
 - **[Debugging](docs/guide/debugging.md)** — Dev tooling
+
+Tutorial/recipe listings import executable files from `docs/samples/`.
+`npm test` and `npm run typecheck` include `npm run docs:check` (TypeScript,
+Prisma client generation, Svelte checks/build, and HTTP contracts).
+`npm run docs:e2e` adds Chromium form tests after `npx playwright install chromium`.
+The docs CI runs both plus `npm run docs:build`; integrations remain root dev
+dependencies, never core/web runtime dependencies.
 
 ## ✨ Features
 
@@ -83,7 +93,7 @@ npm run docs:build   # Build static docs
 
 ## 🤔 Not For
 
-- Large monoliths (use Nest.js or Express with advanced patterns)
+- Applications that require a batteries-included platform and established operational conventions
 - When you need a mature middleware ecosystem (use Express)
 - If you want database ORMs built-in (add them yourself, keep framework slim)
 - A drop-in Angular, Nest, or Next.js replacement

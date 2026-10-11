@@ -14,21 +14,36 @@
     "start": "npm run build:packages && tsx examples/app.ts",
     "build": "npm run build:packages && tsc -p tsconfig.json",
     "build:packages": "npm run build --workspace @brevity/core && npm run build --workspace @brevity/plugin-cache && npm run build --workspace @brevity/plugin-debug && npm run build --workspace @brevity/plugin-viewer && npm run build --workspace @brevity/plugin-validation && npm run build --workspace @brevity/web",
-    "typecheck": "npm run build:packages && tsc -p tsconfig.json --noEmit",
-    "test": "npm run build:packages && node --import tsx --test test/**/*.test.ts",
+    "typecheck": "npm run build:packages && tsc -p tsconfig.json --noEmit && npm run docs:check",
+    "test": "npm run build:packages && node --import tsx --test test/**/*.test.ts && npm run docs:check",
     "publish:dry-run": "npm run build:packages && npm pack --workspace @brevity/core && npm pack --workspace @brevity/plugin-cache && npm pack --workspace @brevity/plugin-debug && npm pack --workspace @brevity/plugin-viewer && npm pack --workspace @brevity/plugin-validation && npm pack --workspace @brevity/web",
     "publish:all": "npm run build:packages && npm publish --workspace @brevity/core --access public && npm publish --workspace @brevity/plugin-cache --access public && npm publish --workspace @brevity/plugin-debug --access public && npm publish --workspace @brevity/plugin-viewer --access public && npm publish --workspace @brevity/plugin-validation --access public && npm publish --workspace @brevity/web --access public",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "docs:check": "node scripts/check-docs.mjs",
+    "docs:e2e": "playwright test --config docs/samples/playwright.config.ts",
+    "docs:app": "tsx docs/samples/tutorial/start.ts"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
+    "@libsql/client": "0.15.15",
+    "@playwright/test": "1.56.0",
+    "@prisma/client": "6.12.0",
+    "@supabase/ssr": "0.7.0",
+    "@supabase/supabase-js": "2.57.4",
+    "@sveltejs/vite-plugin-svelte": "5.1.1",
     "@types/node": "^22.17.0",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2",
-    "vitepress": "^1.6.4"
+    "vitepress": "^1.6.4",
+    "cookie": "1.0.2",
+    "drizzle-orm": "0.45.4",
+    "prisma": "6.12.0",
+    "svelte": "5.57.2",
+    "svelte-check": "4.3.3",
+    "vite": "6.4.4"
   }
 }

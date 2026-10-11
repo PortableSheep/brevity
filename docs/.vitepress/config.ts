@@ -2,16 +2,19 @@ import { defineConfig } from "vitepress";
 
 export default defineConfig({
   title: "Brevity Node",
-  description: "A slim TypeScript microframework inspired by Brevity",
+  description: "Small core. Serious possibilities. A light TypeScript micro-framework.",
+  appearance: "dark",
   themeConfig: {
     nav: [
-      { text: "Guide", link: "/guide/getting-started" },
+      { text: "Learn", link: "/guide/tutorial" },
+      { text: "Recipes", link: "/recipes/" },
       { text: "API", link: "/api/core" },
-      { text: "Sample App", link: "/sample-app" },
+      { text: "Evidence", link: "/guide/evaluating" },
     ],
     sidebar: {
       "/guide/": [
         { text: "Getting Started", link: "/guide/getting-started" },
+        { text: "Build a Notebook", link: "/guide/tutorial" },
         { text: "Architecture", link: "/guide/architecture" },
         { text: "Plugins", link: "/guide/plugins" },
         { text: "Debug Mode", link: "/guide/debugging" },
@@ -19,8 +22,25 @@ export default defineConfig({
         { text: "Evaluating Brevity", link: "/guide/evaluating" },
         { text: "Roadmap", link: "/guide/roadmap" },
       ],
-      "/api/": [{ text: "Core APIs", link: "/api/core" }],
+      "/recipes/": [
+        { text: "Recipe Index & Tested Versions", link: "/recipes/" },
+        { text: "Drizzle + SQLite", link: "/recipes/drizzle" },
+        { text: "Prisma", link: "/recipes/prisma" },
+        { text: "Supabase Passwordless PKCE", link: "/recipes/supabase" },
+        { text: "Svelte Island", link: "/recipes/svelte" },
+        { text: "HTTP Tests with listen(0)", link: "/recipes/testing" },
+        { text: "Playwright E2E", link: "/recipes/playwright" },
+        { text: "Decorators or Plain Routes", link: "/recipes/decorators" },
+        { text: "Domain Errors", link: "/recipes/errors" },
+        { text: "Explicit HEAD Routes", link: "/recipes/head" },
+      ],
+      "/api/": [
+        { text: "Core", link: "/api/core" },
+        { text: "Optional Web Layer", link: "/api/web" },
+        { text: "Optional Plugins", link: "/api/plugins" },
+      ],
     },
-    socialLinks: [{ icon: "github", link: "https://example.com" }],
+    search: { provider: "local" },
+    footer: { message: "Explicit by design. Expert tools by choice." },
   },
 });

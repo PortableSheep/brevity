@@ -1,81 +1,41 @@
 # Architecture
 
+Brevity keeps the HTTP boundary explicit and lets expert tools own their layers.
+
 ```text
-Incoming HTTP request
-  -> Router.dispatch()
-    -> Request/Response wrappers
-    -> Container request/response injection
-    -> Provider boot lifecycle
-    -> Middleware chain
-    -> Route handler
-    -> JSON/HTML response
+Node HTTP request
+  -> method/path match
+  -> Request and Response
+  -> async-local request/response bindings
+  -> provider boot (once)
+  -> bounded body parsing (except GET/HEAD)
+  -> middleware in registration order
+  -> matched handler or not-found handler
+  -> explicit JSON/HTML response
 ```
 
-## Core flow
+Setup, parsing, middleware, and handler failures go through the router's
+error hook/default handler. Middleware does not precede automatic body parsing:
+raw-stream integrations must opt out and enforce their own bounds.
 
-1. App creates `Router` and `Container`.
-2. `router.dispatch` wraps node req/res.
-3. Container receives `request` and `response`.
-4. Plugins/providers are registered.
-5. Providers are booted once.
-6. Middleware pipeline runs.
-7. Matching route handler executes.
+## Ownership
 
-## Design goals
+| Layer | Owns |
+|---|---|
+| `@brevity/core` | Router, bounded parsing, responses, errors, explicit DI/providers |
+| `@brevity/core/decorators` | Optional standard TS5 route annotations, explicit controller construction |
+| `@brevity/web` | Escaped callback fragments, form feedback, safe JSON state, exact asset maps |
+| Optional plugins | Cache, viewer registration, validation registration, development diagnostics |
+| Application | Schema, domain validation, persistence, auth/CSRF, resource ownership, deployment |
+| Specialist tools | ORM/query building, identity provider, browser compiler, E2E runner |
 
-- Keep everything framework-core in small files
-- Favor explicit control over magic
-- Prefer composition (middleware + providers) over inheritance
-- Provide development debugging utilities without production bloat
+The container uses async-local request/response overrides, not global mutation.
+Services keep their registered singleton/transient lifetime; a singleton is
+not automatically request-scoped. Constructor dependencies stay explicit.
 
-## Core modules
+Core/web have no runtime package dependencies. Node's runtime and any selected
+application integrations still count. Small dependency graphs do not establish
+speed, reliability, or security.
 
-| Module | Purpose | Lines |
-|--------|---------|-------|
-| `container.ts` | Dependency injection & service registration | ~100 |
-| `router.ts` | HTTP routing & middleware pipeline | ~150 |
-| `provider.ts` | Service provider lifecycle | ~30 |
-| `request.ts` | Request parsing & validation | ~80 |
-| `validation.ts` | Shared validation helpers | ~60 |
-| `response.ts` | Response building | ~50 |
-| `plugin.ts` | Plugin base types | ~20 |
-| `viewer.ts` | Template rendering | ~40 |
-| `plugins/*` | Optional feature plugins | varies |
-
-## Development Features
-
-### Debug Service
-
-Development-only debugging utilities usually registered via `DebugPlugin`:
-
-```typescript
-app.usePlugin(new DebugPlugin({ enabled: process.env.NODE_ENV !== "production" }));
-```
-
-Features:
-- **Styled error pages** with stack traces and request context
-- **Request/response logging** with timestamps
-- **In-memory log history** (last 100 entries)
-- **Structured data** for debugging complex issues
-- **Zero overhead in production** when disabled
-
-See [Debug Mode Guide](/guide/debugging) for usage.
-
-### Plugin boundary
-
-Core remains:
-
-- `Router`
-- `Request`
-- `Response`
-- `Container`
-- `ServiceProvider`
-
-Optional features move into plugins:
-
-- `CachePlugin`
-- `ViewerPlugin`
-- `DebugPlugin`
-- `ValidationPlugin`
-
-See [Plugins](/guide/plugins) for details.
+See the [API contracts](/api/core), [integration recipes](/recipes/),
+and [roadmap boundaries](./roadmap.md).

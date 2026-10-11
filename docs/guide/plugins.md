@@ -17,9 +17,10 @@ Brevity treats plugins as **enhanced service providers**. Core stays tiny; optio
 - Viewer / templating
 - Debug tools
 - Validation helpers
-- Auth / sessions
-- Logging / metrics
-- Rate limiting
+
+Auth/session policy, durable logging/metrics, and rate limiting are application
+integrations, not existing built-in plugins. Start with the
+[Supabase recipe](/recipes/supabase) for identity wiring.
 
 ## Built-in plugins
 
@@ -61,6 +62,8 @@ const viewer = app.container.get("viewer");
 ### DebugPlugin
 
 Registers a `debug` binding with auto-dev mode defaults.
+This enables the service's logging, not automatic request logging or diagnostic
+routes. [Wire and gate those explicitly](./debugging.md).
 
 ```ts
 app.usePlugin(new DebugPlugin());
