@@ -8,11 +8,15 @@ and middleware contracts.
 npm install @brevity/core @brevity/web
 ```
 
-Use `html` callback templates and layouts for escaped text and marked fragment
+Use [file views](./views.md) as the primary full-page format. Inline `html`
+callback templates remain useful for small cases and escaped fragment
 composition, `createFormState` for explicit retained values and accessible errors,
 `staticAssets` for exact URL-to-file mappings, and `jsonScript` for optional
 application-compiled island data. Validation rules, CSRF, authorization, persistence,
 and frontend compilation remain application-owned.
+
+The optional [native islands package](./islands.md) adds deferred browser mounts
+and enhanced-form transport without a client framework or any core change.
 
 The package's `README.md` contains API signatures, safety boundaries, and island
 data examples. The runnable repository example is `examples/web-app.ts`:

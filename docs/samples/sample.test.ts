@@ -86,7 +86,7 @@ test("built island is allowlisted and native form is still usable", async t => {
   t.after(() => store.close());
   const origin = await serve(t, islandApp(store));
   const markup = await (await fetch(origin)).text();
-  assert.match(markup, /type="application\/json" id="note-state"/);
+  assert.match(markup, /data-brevity-island="counter"/);
   assert.match(markup, /method="post" action="\/notes"/);
   const asset = await fetch(`${origin}/assets/counter.js`);
   assert.equal(asset.status, 200);

@@ -32,12 +32,12 @@ A feature moves into a Brevity package only after a second app repeats the same 
    - Show testing with `app.listen(0)`; the rewrite's custom test adapter was its own duplication, not a missing API.
    - Document HEAD semantics explicitly, and decide whether to offer an opt-in HEAD-to-GET alias.
    - Show the `InputError` → `HttpError` mapping pattern, which both apps needed.
-2. **Fragment-first form recipes in `@brevity/web`.** Both apps hand-built field, error, and summary markup around `createFormState`. Add documented fragment recipes, possibly a tiny accessible control helper (label, hint, error, focus), and an error-summary class/focus convention. No template engine.
+2. **File views and opt-in native islands.** User-approved optional `@brevity/views` (Eta 3.5.0, layouts/partials, escaping) and `@brevity/islands` (deferred native mounts and enhanced forms) keep those concerns outside core. The checked notebook demonstrates file views and Svelte mounting; native browser fixtures cover hydration/form transport. The RSVP port remains the application proof, not an assumed productivity win.
 3. **Starter templates.** One HTML-only starter and one with an optional island, each with working build, test, and E2E commands. Measure time-to-first-route with someone unfamiliar with Brevity.
 
 ### Next (needs a second app to prove it)
 
-4. **Enhanced-form transport.** A small optional helper: progressive `fetch` submit, pending state, retained 422 errors, 409 conflicts, focus, and acknowledgement hooks. Native forms stay the wire protocol. Extract it only after the support inbox (or another app) repeats the island's glue.
+4. **Validate enhanced-form transport in the RSVP port.** The optional islands helper offers progressive `fetch` submit, pending state, retained 422 errors, 409 conflicts, focus, and response hooks. Native forms stay the wire protocol. Keep product semantics in applications and publish the port's measured outcome.
 5. **Integration recipes, not engines.** Checked recipes for:
    - Supabase server-side PKCE, with cookies, refresh, logout, and local Mailpit E2E.
    - Drizzle transaction and shutdown ownership.

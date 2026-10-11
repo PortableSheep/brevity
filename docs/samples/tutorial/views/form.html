@@ -1,0 +1,11 @@
+<% const field = it.form.field("text", { describedBy: "text-hint" }); %>
+<%= it.form.errorSummary() %>
+<form method="post" action="/notes">
+  <label for="<%= field.id %>">Note</label>
+  <p id="text-hint">Write between 1 and 200 characters.</p>
+  <textarea id="<%= field.id %>" name="<%= field.name %>"
+    aria-invalid="<%= field.invalid %>" aria-describedby="<%= field.describedBy %>"
+    maxlength="200"><%= field.value %></textarea>
+  <%= it.form.fieldErrors("text") %>
+  <button type="submit">Save note</button>
+</form>

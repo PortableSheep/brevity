@@ -1,0 +1,8 @@
+<% for (const hydrate of ["load", "idle", "interaction", "visible"]) { %>
+  <section id="<%= hydrate %>"<% if (hydrate === "visible") { %> style="margin-top:200vh"<% } %>>
+    <%= it.island("counter", { text: hydrate }, {
+      hydrate, fallback: await it.partial("fallback", { hydrate }),
+    }) %>
+  </section>
+<% } %>
+<%= it.island("broken", {}, { fallback: await it.partial("fallback", { hydrate: "broken" }) }) %>

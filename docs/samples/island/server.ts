@@ -1,17 +1,25 @@
 import { fileURLToPath } from "node:url";
-import { html, jsonScript, staticAssets } from "@brevity/web";
+import { html, staticAssets } from "@brevity/web";
+import { createIslands, islandManifest } from "@brevity/islands";
 import { createNotebook } from "../tutorial/app.js";
 import type { NoteStore } from "../tutorial/store.js";
+import { nativeRoutes } from "../native/server.js";
 
 export function islandApp(store: NoteStore) {
-  const app = createNotebook(store, form => html`
-    <div id="note-counter"></div>
-    ${jsonScript("note-state", { initialText: form.value("text") })}
-    <script type="module" src="/assets/counter.js"></script>`);
+  const island = createIslands({ manifest: "/assets/islands.json", loader: "/assets/loader.js" });
+  const app = createNotebook(store, form => island("counter", { initialText: form.value("text") }, {
+    fallback: html`<div id="note-counter">Character counter available with JavaScript.</div>`,
+  }));
+  app.router.get("/assets/islands.json", (_req, res) =>
+    res.json(islandManifest({ counter: "/assets/counter.js" })));
   app.use(staticAssets({
     "/assets/counter.js": {
       file: fileURLToPath(new URL("./dist/counter.js", import.meta.url)),
     },
+    "/assets/loader.js": {
+      file: fileURLToPath(import.meta.resolve("@brevity/islands/loader.js")),
+    },
   }));
+  nativeRoutes(app);
   return app;
 }

@@ -17,10 +17,12 @@ function pages(dir) {
 // Tutorial and recipes import executable source; reject unverified inline code.
 for (const path of [
   resolve(root, "docs/guide/tutorial.md"),
+  resolve(root, "docs/guide/views.md"),
+  resolve(root, "docs/guide/islands.md"),
   ...pages(resolve(root, "docs/recipes")),
 ]) {
   const source = readFileSync(path, "utf8");
-  if (/^```(?:ts|typescript|js|javascript|svelte|prisma)\b/m.test(source)) {
+  if (/^```(?:ts|typescript|js|javascript|svelte|prisma|html)\b/m.test(source)) {
     throw new Error(`Use a checked snippet import instead of inline code in ${relative(root, path)}`);
   }
   for (const match of source.matchAll(/^<<<\s+(\S+)/gm)) {
@@ -37,4 +39,11 @@ run("npx", ["prisma", "generate", "--schema", "docs/samples/prisma/schema.prisma
 run("npx", ["tsc", "-p", "docs/samples/tsconfig.json"]);
 run("npx", ["svelte-check", "--tsconfig", "docs/samples/island/client/tsconfig.json"]);
 run("npx", ["vite", "build", "--config", "docs/samples/island/vite.config.ts"]);
+run(process.execPath, ["docs/samples/native/build.mjs"]);
+const loader = readFileSync(resolve(root, "packages/islands/dist/loader.js"));
+const { gzipSync } = await import("node:zlib");
+const measured = `**${loader.length.toLocaleString("en-US")} minified bytes / ${gzipSync(loader).length} gzip bytes**`;
+if (!readFileSync(resolve(root, "docs/guide/islands.md"), "utf8").includes(measured)) {
+  throw new Error(`Update islands guide loader measurement: ${measured}`);
+}
 run(process.execPath, ["--import", "tsx", "--test", "docs/samples/sample.test.ts"]);

@@ -1,6 +1,6 @@
 import { createApp, HttpError } from "@brevity/core";
-import { createFormState, renderPage, type FormState, type HtmlFragment } from "@brevity/web";
-import { notePage, emptyForm } from "./page.js";
+import { createFormState, type FormState, type HtmlFragment } from "@brevity/web";
+import { views, emptyForm } from "./page.js";
 import type { NoteStore } from "./store.js";
 
 export function createNotebook(store: NoteStore, enhance?: (form: FormState) => HtmlFragment) {
@@ -15,7 +15,7 @@ export function createNotebook(store: NoteStore, enhance?: (form: FormState) => 
   });
   app.router.get("/", async (_req, res) => {
     const form = emptyForm();
-    renderPage(res, notePage, { notes: await store.list(), form, enhancement: enhance?.(form) });
+    await views.render(res, "notes", { notes: await store.list(), form, enhancement: enhance?.(form) });
   });
   app.router.head("/", (_req, res) => res.send(""));
   app.router.post("/notes", async (req, res) => {
@@ -28,7 +28,7 @@ export function createNotebook(store: NoteStore, enhance?: (form: FormState) => 
         values: { text }, labels: { text: "Note" },
         errors: { text: ["Write between 1 and 200 characters."] },
       });
-      renderPage(res, notePage, {
+      await views.render(res, "notes", {
         notes: await store.list(), form, enhancement: enhance?.(form),
       }, { status: 422 });
       return;

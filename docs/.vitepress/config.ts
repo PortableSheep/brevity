@@ -19,6 +19,8 @@ export default defineConfig({
         { text: "Plugins", link: "/guide/plugins" },
         { text: "Debug Mode", link: "/guide/debugging" },
         { text: "Optional Web Layer", link: "/guide/web" },
+        { text: "File Views", link: "/guide/views" },
+        { text: "Native Islands", link: "/guide/islands" },
         { text: "Evaluating Brevity", link: "/guide/evaluating" },
         { text: "Roadmap", link: "/guide/roadmap" },
       ],

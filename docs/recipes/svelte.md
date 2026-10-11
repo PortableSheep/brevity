@@ -6,21 +6,22 @@ Node.js 22. The browser compiler remains application tooling.
 Start with the tutorial's native HTML form. Add a character counter that observes
 its textarea; it does not replace submission, validation, or error rendering.
 
-## Server: safe state and an exact asset map
+## Server: native islands and an exact asset map
 
 <<< @/samples/island/server.ts
 
-`jsonScript` creates an inert `application/json` element. It serializes `<`,
-`>`, `&`, and line separators safely, including a retained value containing
-`</script>`. Never put state into executable inline JS or use raw JSON as HTML.
+`createIslands` emits safely serialized props in an escaped data attribute,
+an external loader, and a no-JS fallback. It reuses web's JSON escaping,
+including retained values containing `</script>`. The JSON manifest maps
+component names to module URLs. Never put state into executable inline JS.
 `staticAssets` serves only explicitly mapped paths; it is not a directory server.
 
 ## Browser: mount one component
 
 <<< @/samples/island/client/main.ts
 
-Validate parsed state before passing it to the component. Mount after the form
-exists, using a module script.
+Export a `defineIsland` default mount, validate state, and delegate to the
+optional Svelte 5 adapter. The native loader imports it after the form exists.
 
 <<< @/samples/island/client/NoteCounter.svelte
 
@@ -49,3 +50,6 @@ For a local preview, use the checked example entry point:
 
 It listens on `http://127.0.0.1:3107` with a temporary SQLite file. The
 [Playwright recipe](./playwright.md) runs it automatically.
+
+See [native islands](/guide/islands) for deferred hydration, plain TypeScript
+components, enhanced forms, and CSP/asset contracts.

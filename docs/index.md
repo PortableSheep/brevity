@@ -15,7 +15,7 @@ features:
   - title: Start with a route
     details: One app, one handler, one response. Add middleware and explicit dependency wiring when your application needs them.
   - title: HTML first, islands by choice
-    details: Escaped fragments, retained form errors, and safe JSON state live in the optional web package. Your frontend compiler stays yours.
+    details: HTML files with layouts and partials in optional views. Lazy plain-TypeScript islands and native-form enhancement in optional islands. Your frontend compiler stays yours.
   - title: Bring the specialists
     details: Drizzle or Prisma for data. Supabase for identity. Svelte for an island. Playwright for the browser. Recipes, not replacement engines.
   - title: Know the boundaries
@@ -34,6 +34,13 @@ handler's return value: send the response explicitly.
 `@brevity/core` and `@brevity/web` have no runtime package dependencies.
 That makes the framework surface small; it does not make your database,
 identity provider, or browser compiler disappear.
+
+Write complete pages in [HTML file views](/guide/views), with Eta 3.5.0 and
+escape-by-default interpolation. Add [native islands](/guide/islands) only where
+interaction helps: load, visible, idle, or interaction scheduling, usable
+no-JS fallback, and optional Svelte mounting. Both packages are opt-in; core
+has no template engine, compiler, or client framework. Inline `html` remains
+useful for fragments and small cases.
 
 The [support inbox comparison](/guide/evaluating#second-application-support-inbox)
 found about **10% fewer nonblank runnable source lines** and **2 vs 42 production

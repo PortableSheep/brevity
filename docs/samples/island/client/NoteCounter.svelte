@@ -12,4 +12,4 @@
   });
 </script>
 
-<p aria-live="polite">{length} / 200 characters</p>
+<p id="note-counter" aria-live="polite">{length} / 200 characters</p>

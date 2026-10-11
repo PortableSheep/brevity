@@ -1,0 +1,15 @@
+{
+  "name": "@brevity/views",
+  "version": "0.1.0",
+  "description": "Optional file views with Eta, layouts, and safe partial resolution",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist", "README.md"],
+  "scripts": { "build": "tsc -p tsconfig.json", "prepack": "npm run build" },
+  "dependencies": { "eta": "3.5.0" },
+  "peerDependencies": { "@brevity/core": "^0.1.0", "@brevity/web": "^0.1.0" },
+  "engines": { "node": ">=20" },
+  "publishConfig": { "access": "public" }
+}

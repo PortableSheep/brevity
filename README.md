@@ -4,8 +4,10 @@ A small TypeScript backend for APIs and server-rendered pages. Start with ordina
 HTTP routes and forms; add browser components only where they help.
 
 Core handles HTTP, middleware, and explicit dependency wiring. The optional
-`@brevity/web` package adds escaped callback templates, form feedback, assets, and
-component data. Frontend compilation and business rules stay application-owned.
+`@brevity/views` package renders HTML files with Eta layouts/partials.
+`@brevity/web` supplies escaped fragments, form feedback, assets, and safe JSON;
+`@brevity/islands` adds opt-in native browser mounts and enhanced forms.
+Frontend compilation and business rules stay application-owned.
 
 ## 🚀 Getting Started
 
@@ -32,7 +34,9 @@ The framework is split into publishable packages:
 | Package | Purpose |
 |---------|---------|
 | **@brevity/core** | Router, DI container, request/response |
-| **@brevity/web** | Optional escaped pages, accessible forms, explicit static assets |
+| **@brevity/web** | Optional escaped fragments, accessible forms, explicit static assets |
+| **@brevity/views** | Optional file views with Eta 3.5.0, layouts, partials and caching |
+| **@brevity/islands** | Optional lazy native components, enhanced forms and Svelte adapter |
 | **@brevity/plugin-cache** | Memory & no-op caching adapters |
 | **@brevity/plugin-debug** | Dev-mode error pages & logs |
 | **@brevity/plugin-viewer** | Template rendering |
@@ -58,6 +62,8 @@ npm run docs:build   # Build static docs
 - **[Getting Started](QUICK_START.md)** — Copy-paste your first app
 - **[Architecture](docs/guide/architecture.md)** — How Brevity works
 - **[Optional Web Layer](packages/web/README.md)** — Callback pages, forms, assets, and island data
+- **[File Views](docs/guide/views.md)** — Escape-by-default HTML files, layouts, partials
+- **[Native Islands](docs/guide/islands.md)** — Plain TypeScript enhancements and optional Svelte
 - **[Plugin System](docs/guide/plugins.md)** — Build your own plugins
 - **[API Reference](docs/api/core.md)** — Complete API docs
 - **[Web API Reference](docs/api/web.md)** — Escaped fragments, forms, assets, and JSON state

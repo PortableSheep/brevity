@@ -1,0 +1,13 @@
+<% const field = it.form.field("text"); %>
+<section id="enhanced-form">
+  <%= it.form.errorSummary() %>
+  <% if (it.saved) { %><p>Saved</p><% } %>
+  <form method="post" action="/native/form">
+    <label for="<%= field.id %>">Note</label>
+    <input id="<%= field.id %>" name="text" value="<%= field.value %>"
+      aria-invalid="<%= field.invalid %>" aria-describedby="<%= field.describedBy %>">
+    <%= it.form.fieldErrors("text") %>
+    <button type="submit">Save</button>
+    <button type="button" disabled>Unavailable</button>
+  </form>
+</section>

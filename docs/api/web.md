@@ -3,11 +3,13 @@
 Entry point: **`@brevity/web`**, verified against `packages/web/src/index.ts`.
 No template compiler, client runtime, persistence, or identity engine.
 
-Runtime exports: `html`, `escapeHtml`, `trustedHtml`, `serializeJson`, `jsonScript`,
+Runtime exports: `HtmlFragment`, `html`, `escapeHtml`, `trustedHtml`, `serializeJson`, `jsonScript`,
 `renderPage`, `createFormState`, and `staticAssets`.
 Type exports: `HtmlFragment`, `HtmlValue`, `Template`, `Layout`, `PageOptions`,
 `FormOptions`, `FormField`, `FormState`, and `StaticAsset`.
-`HtmlFragment` is a **type-only public export**, not a public constructor import.
+`HtmlFragment` is also a runtime class export so optional template integrations
+can recognize trusted fragments with `instanceof`. Its constructor, like
+`trustedHtml`, accepts already-trusted markup; prefer `html` for escaped content.
 
 ## Escaped fragments
 
@@ -65,7 +67,7 @@ invalid. Apply it, the label association, and aria-invalid to your own control.
 No input controls, validation rules, DOM focusing, transport, or error class
 conventions are automatically supplied.
 
-<<< @/samples/tutorial/page.ts
+<<< @/samples/tutorial/views/form.html
 
 ## JSON state
 

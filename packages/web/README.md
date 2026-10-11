@@ -10,6 +10,10 @@ npm install @brevity/core @brevity/web
 
 ## Pages and partials
 
+Prefer `@brevity/views` for complete HTML files with layouts/partials; inline
+`html` remains available for small pages and fragments. `@brevity/islands`
+optionally provides deferred native mounts and progressive-form transport.
+
 ```ts
 import { createApp } from "@brevity/core";
 import { html, renderPage, type HtmlFragment } from "@brevity/web";
@@ -47,6 +51,9 @@ independently sanitized HTML. Never call it on request input, error messages,
 database text, or arbitrary template-engine output. An application may use its
 own template engine, but must own its escaping policy before marking output trusted.
 `escapeHtml(text): string` is available for integrations that need escaped text.
+The existing `HtmlFragment` class is exported at runtime for integrations'
+`instanceof` checks. Constructing it directly trusts markup just like
+`trustedHtml`; do not construct it from untrusted text.
 
 ## Forms: explicit errors and retained values
 

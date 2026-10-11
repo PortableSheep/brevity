@@ -25,7 +25,7 @@ The tutorial's tested dependencies are Drizzle **0.45.4** and `@libsql/client`
 **0.15.15**. They are documentation-only root dev dependencies; core/web gain
 no runtime dependencies. SQLite here is a local libSQL file, not a hosted service.
 
-For your own app, install `@brevity/core`, `@brevity/web`, `drizzle-orm@0.45.4`,
+For your own app, install `@brevity/core`, `@brevity/web`, `@brevity/views`, `drizzle-orm@0.45.4`,
 and `@libsql/client@0.15.15` (see `PUBLISH.md` if consuming local packages).
 Keep the same ESM/strict TypeScript settings:
 
@@ -53,17 +53,29 @@ The [HTTP test recipe](/recipes/testing) exercises this exact app module.
 
 ## 3. Build the native form
 
-Create a page from escaped fragments. `createFormState` snapshots values and
+Keep complete pages in HTML files with the optional [views package](./views.md).
+Eta 3.5.0 is the default engine; Brevity does not invent a template language.
+Configure the view root/layout once:
+
+<<< @/samples/tutorial/page.ts
+
+`createFormState` snapshots values and
 errors; it does **not** validate input or invent controls. We use its field IDs,
 hint/error associations, and linked error summary to build our own markup.
 
-<<< @/samples/tutorial/page.ts
+<<< @/samples/tutorial/views/layout.html
+
+<<< @/samples/tutorial/views/notes.html
+
+<<< @/samples/tutorial/views/form.html
 
 The optional `enhancement` slot is unused in the basic app. The
 [Svelte recipe](/recipes/svelte) adds an island through that slot later, without
 changing the form's wire protocol.
 
-Strings interpolate as escaped text, nested fragments as markup.
+Eta's `<%= ... %>` escapes text; partials, layout bodies, and web form feedback
+are trusted Brevity fragments. Use inline `html` for small fragments/small cases,
+not as the primary full-page format.
 Do not use `trustedHtml` on note text. Escaping is not URL validation,
 CSRF protection, or authorization.
 
@@ -137,8 +149,9 @@ the form in a browser with JavaScript both enabled and disabled.
 ## Onboarding checkpoint
 
 You should be able to explain where each concern lives: HTTP in `app.ts`, markup
-in `page.ts`, data in `store.ts`, lifecycle in `start.ts`, and socket cleanup in
-`testing.ts`. Try adding a timestamp to a note: change the schema, migrate it,
+in `views/*.html`, renderer configuration in `page.ts`, data in `store.ts`,
+lifecycle in `start.ts`, and socket cleanup in `testing.ts`.
+Try adding a timestamp to a note: change the schema, migrate it,
 render it, and extend the test. Record any blockers; we have not measured
 onboarding time or claimed this tutorial proves faster development.
 
