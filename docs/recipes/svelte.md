@@ -21,7 +21,7 @@ component names to module URLs. Never put state into executable inline JS.
 <<< @/samples/island/client/main.ts
 
 Export a `defineIsland` default mount, validate state, and delegate to the
-optional Svelte 5 adapter. The native loader imports it after the form exists.
+Svelte 5 adapter from `@brevity/islands-svelte`. The native loader imports it after the form exists.
 
 <<< @/samples/island/client/NoteCounter.svelte
 

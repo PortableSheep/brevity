@@ -1,7 +1,7 @@
 # @brevity/islands
 
-Optional native islands. Zero direct runtime dependencies; web is a required
-peer, Svelte 5 an optional peer used only by `@brevity/islands/svelte`.
+Optional native islands. Zero direct runtime dependencies; web is the only
+peer. The Svelte 5 adapter lives in the separate `@brevity/islands-svelte`.
 
 ```ts
 import { createIslands, islandManifest } from "@brevity/islands";
@@ -32,7 +32,7 @@ controls, retains server-rendered 422/409 feedback, focuses errors and handles
 redirects. Give it a stable containing target ID present in returned HTML.
 Handle `brevity:form-error` visibly; validation/auth/CSRF remain application-owned.
 
-`svelteIsland(Component)` in `/svelte` adapts Svelte 5 mount/unmount. Native
+`svelteIsland(Component)` in `@brevity/islands-svelte` adapts Svelte 5. Native
 loader has no framework runtime. Vite is optional application build tooling.
 Use same-origin script/connect CSP; no inline executable script is generated.
 Nonce support is explicit; dynamic module CSP and asset hashing stay app-owned.

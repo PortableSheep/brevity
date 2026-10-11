@@ -1,0 +1,19 @@
+{
+  "name": "@brevity/islands-svelte",
+  "version": "0.1.0",
+  "description": "Svelte 5 adapter for @brevity/islands",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build"
+  },
+  "peerDependencies": { "@brevity/islands": "^0.1.0", "svelte": "^5.0.0" },
+  "engines": { "node": ">=20" },
+  "publishConfig": { "access": "public" }
+}

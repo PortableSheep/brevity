@@ -1,7 +1,7 @@
 import { mount, unmount, type Component } from "svelte";
-import { defineIsland } from "./client.js";
+import { defineIsland } from "@brevity/islands/client";
 
-/** Svelte 5 is an optional peer, never part of the native loader. */
+/** Svelte 5 adapter; kept out of @brevity/islands so native apps never resolve Svelte. */
 export function svelteIsland<Props extends Record<string, unknown>>(component: Component<Props>) {
   return defineIsland<Props>((target, props) => {
     const container = document.createElement("div");

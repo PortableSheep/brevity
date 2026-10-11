@@ -6,19 +6,35 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
-    "./client": { "types": "./dist/client.d.ts", "import": "./dist/client.js" },
-    "./forms": { "types": "./dist/forms.d.ts", "import": "./dist/forms.js" },
-    "./svelte": { "types": "./dist/svelte.d.ts", "import": "./dist/svelte.js" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
+    },
+    "./forms": {
+      "types": "./dist/forms.d.ts",
+      "import": "./dist/forms.js"
+    },
     "./loader.js": "./dist/loader.js"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json && node ../../scripts/build-islands.mjs",
     "prepack": "npm run build"
   },
-  "peerDependencies": { "@brevity/web": "^0.1.0", "svelte": "^5.0.0" },
-  "peerDependenciesMeta": { "svelte": { "optional": true } },
-  "engines": { "node": ">=20" },
-  "publishConfig": { "access": "public" }
+  "peerDependencies": {
+    "@brevity/web": "^0.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

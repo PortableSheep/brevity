@@ -6,7 +6,7 @@ const json = path => JSON.parse(readFileSync(new URL(path, root), "utf8"));
 const lock = json("package-lock.json");
 const loader = readFileSync(new URL("packages/islands/dist/loader.js", root));
 const packages = {};
-for (const name of ["core", "web", "views", "islands"]) {
+for (const name of ["core", "web", "views", "islands", "islands-svelte"]) {
   const pkg = json(`packages/${name}/package.json`);
   const graph = new Set();
   function visit(dependency, parent = "") {

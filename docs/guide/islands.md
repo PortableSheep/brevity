@@ -4,7 +4,8 @@ An **island** is a small browser component mounted into a server-rendered page.
 The surrounding page and forms remain ordinary HTML. You do not need a client
 router or a second application. `@brevity/islands` is optional and has **zero
 direct runtime dependencies**; its required peer is `@brevity/web` (which peers
-on core). Svelte 5 is an optional peer used only by its separate adapter.
+on core). It has no Svelte peer: the Svelte 5 adapter is the separate
+`@brevity/islands-svelte` package, so native-only apps never resolve Svelte.
 
 ## Server markup
 
@@ -104,7 +105,7 @@ paths are resolved relative to the manifest URL.
 
 <<< @/samples/island/vite.config.ts
 
-`svelteIsland(Component)` mounts Svelte 5 with props and unmounts on disposal.
+`svelteIsland(Component)` from `@brevity/islands-svelte` mounts Svelte 5 with props and unmounts on disposal.
 It replaces the fallback only after mounting into a new container. There is
 no Svelte runtime in the native loader. The application installs/compiles
 Svelte. A Preact adapter is not included; any framework can implement the same
@@ -157,9 +158,15 @@ There is no throughput, startup-time, or productivity claim.
 | core | 0 | none |
 | web | 0 | none (required core peer) |
 | views | 1 | Eta 3.5.0 only (required core/web peers) |
-| islands | 0 | none (required web peer; optional Svelte 5 peer) |
+| islands | 0 | none (required web peer) |
+| islands-svelte | 0 | none (required islands + Svelte 5 peers) |
 
 With required Brevity peers included, views needs four production package
 entries including itself (views, Eta, web, core); native islands needs three
 (islands, web, core). Optional application tools/frameworks are not in those
 counts. Installing both packages together needs five entries total.
+
+Keep the Svelte adapter out of `@brevity/islands`: an optional peer still
+makes npm treat an installed `svelte` as part of the production graph. If your
+islands are prebuilt, `@brevity/islands-svelte` and `svelte` can stay in
+`devDependencies`.
