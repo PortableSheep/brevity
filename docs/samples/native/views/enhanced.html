@@ -1,0 +1,11 @@
+<% const field = it.form.field("text"); %>
+<%= it.form.errorSummary() %>
+<% if (it.saved) { %><p>Saved</p><% } %>
+<form method="post" action="/native/enhanced">
+  <label for="<%= field.id %>">Note</label>
+  <input id="<%= field.id %>" name="text" value="<%= field.value %>"
+    aria-invalid="<%= field.invalid %>" aria-describedby="<%= field.describedBy %>">
+  <%= it.form.fieldErrors("text") %>
+  <button type="submit">Save</button>
+</form>
+<%= it.island("counter", { text: it.saved ? "after save" : "nested" }, { fallback: await it.partial("fallback", { hydrate: "nested" }) }) %>

@@ -40,3 +40,15 @@ test("built standalone loader stays within its measured ~1 KB gzip budget", asyn
   assert.ok(gzipSync(loader).length <= 1100);
   assert.doesNotMatch(loader.toString(), /from\s*["']@brevity/);
 });
+
+test("createEnhance wraps content in a stable target with an external directive script", async () => {
+  const { createEnhance } = await import("@brevity/islands");
+  const enhanced = createEnhance({ script: "/assets/enhance.js", nonce: "n" });
+  const markup = String(enhanced("rsvp", html`<form method="post"></form>`));
+  assert.equal(markup, '<div id="rsvp" data-brevity-enhance><form method="post"></form></div><script type="module" src="/assets/enhance.js" nonce="n"></script>');
+  for (const id of ["", "1x", 'a"b', "a b"]) assert.throws(() => enhanced(id, html``), TypeError);
+  assert.throws(() => createEnhance({ script: "//evil/x.js" }), TypeError);
+  const script = await readFile(new URL("../packages/islands/dist/enhance.js", import.meta.url));
+  assert.ok(gzipSync(script).length <= 1400);
+  assert.doesNotMatch(script.toString(), /from\s*["']@brevity/);
+});

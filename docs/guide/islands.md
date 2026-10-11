@@ -80,6 +80,38 @@ Completed HTML replacements emit `brevity:form-response` with `{ status }`.
 Dispose aborts in-flight work. Do not replace the target or navigate while
 keeping old listeners alive.
 
+Form controls named `action`, `method`, `target`, or `enctype` (for example
+`<button name="action" value="publish">`) are safe: submission attributes are
+read from the form's HTML attributes, not its shadowable DOM properties.
+
+### Nested islands restart after replacement
+
+Around each replacement, `enhanceForm` dispatches `brevity:before-replace` and
+`brevity:replaced` on the target. When the islands loader is on the page, it
+disposes islands inside the old markup and starts islands in the new markup,
+so an island inside a re-rendered 422 form keeps working without app glue.
+Include the loader in the initial page if replacements can contain islands;
+scripts inside replaced HTML do not execute.
+
+## Form enhancement directive
+
+When a page only needs a progressively enhanced form, skip the loader,
+manifest, and island module. `createEnhance` wraps server-rendered markup in a
+stable target marked `data-brevity-enhance`, plus the standalone
+`@brevity/islands/enhance.js` script that calls `enhanceForm` on its first form:
+
+<<< @/samples/native/views/enhanced.html
+
+<<< @/samples/native/server.ts#enhance-setup
+
+<<< @/samples/native/server.ts#enhance-route
+
+Render with the same target ID for GET, 422 and 409 responses.
+
+Serve `enhance.js` with `staticAssets` like the loader. With JavaScript
+disabled the form submits natively. This example also nests a counter island
+that the loader restarts after each replacement.
+
 ## Assets: no Vite required
 
 <<< @/samples/native/build.mjs
@@ -146,11 +178,13 @@ with JS disabled.
 
 Run `node scripts/build-islands.mjs` after install/build, then
 `node scripts/measure-islands.mjs` for loader and dependency-graph reporting.
-The loader is **1,743 minified bytes / 859 gzip bytes** (esbuild 0.28.1, ES2022,
+The loader is **1,998 minified bytes / 941 gzip bytes** (esbuild 0.28.1, ES2022,
 Node 22.21.1, Node zlib's
 default gzip). This includes scheduling, manifest fetch, dynamic import, errors
 and disposal; it excludes components, the separate form helper, Svelte and
-props/page HTML. Gzip here is measured compression, not a server setting.
+props/page HTML. The standalone form directive `enhance.js` (which bundles
+`enhanceForm` and needs no loader) is **2,943 minified bytes / 1,332 gzip
+bytes**. Gzip here is measured compression, not a server setting.
 There is no throughput, startup-time, or productivity claim.
 
 | Package | Direct runtime dependencies | External runtime graph (excluding peers) |

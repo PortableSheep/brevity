@@ -31,13 +31,20 @@ for application-owned client navigation. There is no automatic DOM observer.
 controls, retains server-rendered 422/409 feedback, focuses errors and handles
 redirects. Give it a stable containing target ID present in returned HTML.
 Handle `brevity:form-error` visibly; validation/auth/CSRF remain application-owned.
+When the loader is present, islands inside a replaced target are disposed and
+restarted automatically (`brevity:before-replace` / `brevity:replaced`).
+
+Forms-only pages can skip the loader: `createEnhance({ script })` returns
+`enhanced(id, html)`, which wraps markup in `data-brevity-enhance` and loads
+`@brevity/islands/enhance.js` to call `enhanceForm` automatically.
 
 `svelteIsland(Component)` in `@brevity/islands-svelte` adapts Svelte 5. Native
 loader has no framework runtime. Vite is optional application build tooling.
 Use same-origin script/connect CSP; no inline executable script is generated.
 Nonce support is explicit; dynamic module CSP and asset hashing stay app-owned.
 
-Loader measurement: 1,743 bytes minified / 859 bytes default gzip,
+Loader measurement: 1,998 bytes minified / 941 bytes default gzip; standalone
+form directive `enhance.js`: 2,943 / 1,332,
 esbuild 0.28.1, ES2022. Excludes components, forms helper, Svelte and page props.
 Reproduce with the repository's `scripts/build-islands.mjs`.
 See `docs/guide/islands.md` for checked examples and limitations.

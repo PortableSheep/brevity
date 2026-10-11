@@ -74,7 +74,9 @@ export function enhanceForm(initialForm: HTMLFormElement, options: EnhancedFormO
       if (!replacement || !nextForm) throw new Error("Enhanced form response is missing its target/form");
       if (stopped) return;
       form.removeEventListener("submit", submit);
+      target.dispatchEvent(new CustomEvent("brevity:before-replace", { bubbles: true }));
       target.replaceChildren(...replacement.childNodes);
+      target.dispatchEvent(new CustomEvent("brevity:replaced", { bubbles: true }));
       form = nextForm;
       form.addEventListener("submit", submit);
       const focus = target.querySelector<HTMLElement>('[role="alert"], [aria-invalid="true"]');

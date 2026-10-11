@@ -18,7 +18,8 @@
       "types": "./dist/forms.d.ts",
       "import": "./dist/forms.js"
     },
-    "./loader.js": "./dist/loader.js"
+    "./loader.js": "./dist/loader.js",
+    "./enhance.js": "./dist/enhance.js"
   },
   "files": [
     "dist",

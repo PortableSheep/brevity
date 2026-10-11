@@ -212,3 +212,33 @@ test("enhanced redirect uses native navigation", async ({ page }) => {
   await expect(page.getByLabel("Note", { exact: true })).toHaveValue("");
   await expect(page.locator("[data-ready]")).toHaveCount(1);
 });
+
+test("data-brevity-enhance upgrades a form without a manifest and restarts nested islands after replacement", async ({ page }) => {
+  const scripts: string[] = [];
+  page.on("request", req => { if (req.resourceType() === "script") scripts.push(new URL(req.url()).pathname); });
+  await page.goto("/native/enhanced");
+  await expect(page.locator("#enhanced-note [data-hydrated] output")).toHaveText("nested");
+  await page.getByLabel("Note", { exact: true }).fill("  ");
+  const blank = page.waitForRequest(req => req.method() === "POST");
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  expect((await blank).resourceType()).toBe("fetch");
+  await expect(page.getByRole("alert")).toBeFocused();
+  await expect(page.locator("#enhanced-note [data-hydrated] output")).toHaveText("nested");
+  await page.getByLabel("Note", { exact: true }).fill("hello");
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page.getByText("Saved", { exact: true })).toBeVisible();
+  await expect(page.locator("#enhanced-note [data-hydrated] output")).toHaveText("after save");
+  await expect(page.locator("#enhanced-note output")).toHaveCount(1);
+  expect(new URL(page.url()).pathname).toBe("/native/enhanced");
+  expect(scripts).toContain("/native/enhance.js");
+});
+
+test("enhanced directive page still submits natively with JavaScript disabled", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("/native/enhanced");
+  await page.getByLabel("Note", { exact: true }).fill("no js");
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page.getByText("Saved", { exact: true })).toBeVisible();
+  await context.close();
+});

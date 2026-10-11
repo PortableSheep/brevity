@@ -7,6 +7,13 @@ export function defineIsland<Props>(component: Island<Props>): Island<Props> {
   return component;
 }
 
+const running = new WeakMap<HTMLElement, () => void>();
+
+/** Dispose islands mounted inside root (e.g. before its markup is replaced). */
+export function disposeIslands(root: ParentNode): void {
+  for (const element of root.querySelectorAll<HTMLElement>("[data-brevity-island]")) running.get(element)?.();
+}
+
 /** Starts once per element; returns a disposer for client-side navigation. */
 export function startIslands(root: ParentNode = document): () => void {
   const disposers: (() => void)[] = [];
@@ -25,8 +32,10 @@ export function startIslands(root: ParentNode = document): () => void {
       cancel();
       controller.abort();
       cleanup?.();
+      running.delete(element);
       delete element.dataset.brevityStarted;
     };
+    running.set(element, dispose);
     disposers.push(dispose);
     const mount = async () => {
       if (started || controller.signal.aborted) return;
