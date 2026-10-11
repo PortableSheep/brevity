@@ -17,6 +17,7 @@ export default defineConfig({
         { text: "Debug Mode", link: "/guide/debugging" },
         { text: "Optional Web Layer", link: "/guide/web" },
         { text: "Evaluating Brevity", link: "/guide/evaluating" },
+        { text: "Roadmap", link: "/guide/roadmap" },
       ],
       "/api/": [{ text: "Core APIs", link: "/api/core" }],
     },
