@@ -112,7 +112,16 @@ mount/cleanup function.
 
 With Vite, map your island names to built entry URLs (from your own build
 manifest or fixed library entry as here), and explicitly serve every emitted
-chunk/CSS asset. Vite's manifest is not the islands URL map: convert selected
+chunk/CSS asset.
+
+::: warning Multiple island entries
+Library mode (above) keeps each entry's exports. If you instead build several
+islands as app entries via `build.rollupOptions.input`, set
+`build.rollupOptions.preserveEntrySignatures: "strict"`. Otherwise Rollup may
+tree-shake the entry's `default` export and the loader finds no island.
+:::
+
+Vite's manifest is not the islands URL map: convert selected
 entries to `islandManifest({ name: "/assets/entry-hash.js" })` and map its
 referenced assets too. Brevity neither compiles nor rewrites Vite output.
 
