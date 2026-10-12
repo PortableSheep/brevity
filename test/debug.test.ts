@@ -62,11 +62,11 @@ test("debug service renders error page", () => {
 
 test("disabled debug rendering never reads error or request details", () => {
   const error = new Error("private error");
-  Object.defineProperty(error, "message", {
-    get() { throw new Error("message must not be read"); },
-  });
   Object.defineProperty(error, "stack", {
     get() { throw new Error("stack must not be read"); },
+  });
+  Object.defineProperty(error, "message", {
+    get() { throw new Error("message must not be read"); },
   });
   const requestInfo = {
     toJSON() { throw new Error("request must not be serialized"); },

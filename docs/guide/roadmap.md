@@ -22,22 +22,30 @@ A feature moves into a Brevity package only after a second app repeats the same 
 - Core HTTP hardening (bounded parsing, strict content types, `Request.form`, `onError`, async-local scope) removed the prototype's raw-body adapter. It needed no further core changes through persistence, real auth, and E2E.
 - Standard TS5 decorators with explicit constructor injection worked without reflection or metadata.
 - Drizzle/libSQL and the Supabase SDK were integrated as-is with no Brevity adapter. The difficulties came from the tools themselves (SQLite locking, PKCE browser binding, `skipLibCheck` for Drizzle typings), not from routing.
-- HTML-first pages plus one opt-in island kept guest pages JS-free. Host builder JS is about 20.7 KB gzip.
+- HTML-first pages remain usable without JS. The latest RSVP directive port loads
+  2,809 bytes gzip on guest pages (down from 4,347); host JS is 22,282 bytes gzip.
+  Confirmation needs no JS. File views/islands did not produce a net total-LOC win.
 
 ## Next, ranked
 
 ### Now (small, high confidence)
 
 1. **Documentation clarifications, no new API.**
-   - Show testing with `app.listen(0)`; the rewrite's custom test adapter was its own duplication, not a missing API.
-   - Document HEAD semantics explicitly, and decide whether to offer an opt-in HEAD-to-GET alias.
-   - Show the `InputError` → `HttpError` mapping pattern, which both apps needed.
-2. **File views and opt-in native islands.** User-approved optional `@brevity/views` (Eta 3.5.0, layouts/partials, escaping) and `@brevity/islands` (deferred native mounts and enhanced forms) keep those concerns outside core. The checked notebook demonstrates file views and Svelte mounting; native browser fixtures cover hydration/form transport. The RSVP port remains the application proof, not an assumed productivity win.
+   - Checked recipes now cover `app.listen(0)`, explicit HEAD, and domain-error
+     mapping. There is no automatic HEAD-to-GET alias.
+2. **File views and opt-in native islands: shipped and ported.** Optional
+   `@brevity/views` and `@brevity/islands` keep these concerns outside core.
+   The RSVP port proved the standalone form directive and nested island restart;
+   Svelte's adapter is separate so server installations do not pull its runtime.
+   Measurements include increased payload/LOC where applicable.
 3. **Starter templates.** One HTML-only starter and one with an optional island, each with working build, test, and E2E commands. Measure time-to-first-route with someone unfamiliar with Brevity.
 
 ### Next (needs a second app to prove it)
 
-4. **Validate enhanced-form transport in the RSVP port.** The optional islands helper offers progressive `fetch` submit, pending state, retained 422 errors, 409 conflicts, focus, and response hooks. Native forms stay the wire protocol. Keep product semantics in applications and publish the port's measured outcome.
+4. **Enhanced-form transport: proved locally in the RSVP port.** Pending state,
+   retained 422/409 errors, focus, network failures, no-JS and nested Svelte restart
+   are exercised. Keep product semantics in applications; repeat deployment-level
+   tests against the selected host.
 5. **Integration recipes, not engines.** Checked recipes for:
    - Supabase server-side PKCE, with cookies, refresh, logout, and local Mailpit E2E.
    - Drizzle transaction and shutdown ownership.
@@ -45,8 +53,15 @@ A feature moves into a Brevity package only after a second app repeats the same 
 
 ### Later (production credibility)
 
-6. **Benchmarks against Fastify, Express, and Nest.** Use reproducible scripts, publish the numbers, and include the losses.
-7. **Operational guidance.** Graceful shutdown, health checks, structured logging, rate-limiting hooks, and multi-instance session-store guidance, documented against real deployments.
+6. **Benchmarks against Fastify, Express, and Nest.** A repeatable synthetic JSON
+   harness now measures latency/throughput/startup/RSS. Dedicated-host load and
+   long-running application workloads remain unproven.
+7. **Operational guidance.** The checked health/shutdown recipe includes real
+   SIGTERM draining and deadline failure. Durable sessions, restore/rollback,
+   logging and rate limits must still be exercised in a real deployment.
+
+See [Production readiness](./production-readiness) for explicit gates, package
+consumer checks, Node compatibility, Pages setup, and remaining external proof.
 
 ## Explicitly out of scope
 

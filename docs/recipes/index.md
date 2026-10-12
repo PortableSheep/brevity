@@ -15,10 +15,11 @@ contract and native form instead of inventing adapters.
 | [Svelte island](./svelte.md) | svelte 5.57.2; Vite 6.4.4; Svelte Vite plugin 5.1.1 | Compiler build, state escaping, allowlisted asset, browser mount |
 | [Playwright](./playwright.md) | @playwright/test 1.56.0 | Chromium; native forms with JS on/off, 422 retention |
 | [HTTP testing](./testing.md), [decorators](./decorators.md), [domain errors](./errors.md), [HEAD](./head.md) | Local @brevity/core / @brevity/web 0.1.0; TypeScript 5.9 | Strict compilation and real HTTP |
+| [Health and shutdown](./operations.md) | Node HTTP server; local @brevity/core 0.1.0 | Health probes, active-request draining, real SIGTERM, deadline failure |
 
 These are compatibility snapshots, not recommendations to freeze dependencies
 forever. Review provider releases and advisories when upgrading.
-The documentation suite runs on Node.js 22.
+CI is configured for Node.js 20, 22, and 24; Chromium runs on Node.js 22.
 
 **Supabase email delivery, successful hosted authentication, and live JWT refresh
 are not established by stubbed tests.** Its recipe includes the provider setup

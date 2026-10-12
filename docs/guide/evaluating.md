@@ -181,3 +181,40 @@ frontend compilation. Escaping is not URL validation or authorization. Read the
 [web guide](./web.md) and [core API](../api/core.md) for the precise contracts.
 Neither a local prototype nor a passing test suite establishes production
 readiness.
+
+## Synthetic HTTP benchmark
+
+`examples/benchmarks` now contains a locked, repeatable comparison against
+Express 5.3.0, Fastify 5.12.5, and Nest 12.1.2 (Express adapter). Benchmark
+dependencies are isolated from framework packages. The fixtures use public
+APIs and verify every response; failed requests abort the report.
+
+The committed `measurements.json` records three rotated-order runs per framework
+and method: 16 concurrent keep-alive clients, 500 ms warmup, then 2 seconds of
+measurement. Each scenario starts a fresh server process. This local snapshot
+used Node 22.21.1 on an Apple M1 Max/macOS ARM64 machine, not a dedicated,
+controlled performance host.
+
+| Framework | Median GET requests/s | Median POST requests/s | Median GET p95 (ms) | Median process-to-ready (ms) | Maximum sampled RSS (MiB) |
+|---|---:|---:|---:|---:|---:|
+| Brevity | 41,800 | 38,857 | 0.637 | 50.2 | 91.5 |
+| Express | 16,542 | 14,311 | 1.745 | 71.1 | 126.6 |
+| Fastify | 40,937 | 38,793 | 0.672 | 96.8 | 79.8 |
+| Nest | 14,955 | 13,005 | 1.927 | 237.0 | 176.0 |
+
+Startup medians and RSS maxima combine both methods and all repeats. Startup
+includes process creation/imports/listening, not cold filesystem caches.
+RSS is the child server's sampled peak, not application or system memory.
+The JSON includes individual runs, p50/p95/p99, event-loop p99, machine/runtime,
+versions, and compiled Brevity file hashes.
+
+This supports a narrow conclusion: Brevity has competitive small-route overhead
+in this local fixture. It does **not** establish better production capacity.
+Fastify used less sampled memory; Brevity's POST runs ranged from 34,091 to
+40,508 requests/s, including a run below Fastify. The co-located closed-loop
+client can bottleneck, and the routes omit persistence, authentication, schemas,
+templates, and overload. Nest's normal POST status is 201; others use 200.
+
+See `examples/benchmarks/README.md` for repeat instructions and limitations.
+Dedicated-host repeats, equivalent application workloads, slow-upstream testing,
+and a soak remain necessary before advertising production performance.

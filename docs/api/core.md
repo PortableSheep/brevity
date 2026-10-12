@@ -196,8 +196,10 @@ Rules are a pipe-separated string or string array per field.
 
 Supported rules: `required`, `email`, `int`, `slug`, `min:x`, `max:x`.
 Min/max compare **string length**, not numeric bounds; int checks syntax without
-coercion. Non-required rules allow nullish values. Unknown rule names currently
-pass; use explicit application validation for stricter schemas. `validated()`
+coercion. Non-required rules allow nullish values. Unknown names and malformed
+rule parameters throw `TypeError` (application configuration errors, not invalid
+user input). Min/max require a nonnegative safe integer; other rules accept no
+parameters. Do not construct rule strings from request input. `validated()`
 returns selected original values, even when validation failed; it is not a typed
 or sanitized object. Check the result before use.
 

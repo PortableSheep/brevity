@@ -19,7 +19,17 @@ export function validateRules(
     data[field] = value;
     const list = Array.isArray(rawRules) ? rawRules : String(rawRules).split("|");
     for (const rule of list) {
-      const [name, param] = String(rule).split(":");
+      const parts = String(rule).split(":");
+      const [name, param] = parts;
+      if (!["required", "email", "int", "slug", "min", "max"].includes(name)) {
+        throw new TypeError(`Unknown validation rule "${name}" for "${field}".`);
+      }
+      const bounded = name === "min" || name === "max";
+      if (parts.length > 2 || (bounded
+        ? param === undefined || !/^\d+$/.test(param) || !Number.isSafeInteger(Number(param))
+        : param !== undefined)) {
+        throw new TypeError(`Invalid validation rule "${rule}" for "${field}".`);
+      }
       if (!passes(name, value, param)) {
         errors[field] = errors[field] ?? [];
         errors[field].push(message(field, name, param));

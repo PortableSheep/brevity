@@ -4,6 +4,7 @@ export default defineConfig({
   title: "Brevity Node",
   description: "Small core. Serious possibilities. A light TypeScript micro-framework.",
   appearance: "dark",
+  base: process.env.PAGES_BASE_PATH ? `${process.env.PAGES_BASE_PATH.replace(/\/$/, "")}/` : "/",
   themeConfig: {
     nav: [
       { text: "Learn", link: "/guide/tutorial" },
@@ -23,6 +24,7 @@ export default defineConfig({
         { text: "Native Islands", link: "/guide/islands" },
         { text: "Evaluating Brevity", link: "/guide/evaluating" },
         { text: "Roadmap", link: "/guide/roadmap" },
+        { text: "Production Readiness", link: "/guide/production-readiness" },
       ],
       "/recipes/": [
         { text: "Recipe Index & Tested Versions", link: "/recipes/" },
@@ -35,6 +37,7 @@ export default defineConfig({
         { text: "Decorators or Plain Routes", link: "/recipes/decorators" },
         { text: "Domain Errors", link: "/recipes/errors" },
         { text: "Explicit HEAD Routes", link: "/recipes/head" },
+        { text: "Health & Shutdown", link: "/recipes/operations" },
       ],
       "/api/": [
         { text: "Core", link: "/api/core" },

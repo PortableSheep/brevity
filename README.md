@@ -36,7 +36,8 @@ The framework is split into publishable packages:
 | **@brevity/core** | Router, DI container, request/response |
 | **@brevity/web** | Optional escaped fragments, accessible forms, explicit static assets |
 | **@brevity/views** | Optional file views with Eta 3.5.0, layouts, partials and caching |
-| **@brevity/islands** | Optional lazy native components, enhanced forms and Svelte adapter |
+| **@brevity/islands** | Optional lazy native components and enhanced forms |
+| **@brevity/islands-svelte** | Separate optional Svelte 5 mount adapter |
 | **@brevity/plugin-cache** | Memory & no-op caching adapters |
 | **@brevity/plugin-debug** | Dev-mode error pages & logs |
 | **@brevity/plugin-viewer** | Template rendering |
@@ -51,6 +52,7 @@ npm run dev          # Run example app
 npm run build        # Build all packages + examples
 npm test             # Run tests
 npm run typecheck    # Type checking only
+npm run test:release # Clean tarball installation and HTTP/import checks
 npm run docs:dev     # VitePress dev server
 npm run docs:build   # Build static docs
 ```
@@ -68,6 +70,9 @@ npm run docs:build   # Build static docs
 - **[API Reference](docs/api/core.md)** — Complete API docs
 - **[Web API Reference](docs/api/web.md)** — Escaped fragments, forms, assets, and JSON state
 - **[Debugging](docs/guide/debugging.md)** — Dev tooling
+- **[Production Readiness](docs/guide/production-readiness.md)** — Evidence gates and GitHub Pages setup
+- **[Operations](docs/recipes/operations.md)** — Checked health and shutdown recipe
+- **[HTTP Benchmarks](examples/benchmarks/README.md)** — Reproducible Brevity/Express/Fastify/Nest fixtures and limitations
 
 Tutorial/recipe listings import executable files from `docs/samples/`.
 `npm test` and `npm run typecheck` include `npm run docs:check` (TypeScript,

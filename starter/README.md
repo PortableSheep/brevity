@@ -1,132 +1,58 @@
-# Brevity Starter Template
+# Brevity starter
 
-A minimal, production-ready starter template for building web apps with Brevity.
+A small file-template starter, not a production-readiness guarantee. The
+framework's `npm run test:release` copies this starter into a temporary consumer,
+installs packed packages, typechecks, builds, and checks both dev and compiled
+HTTP startup.
 
-## Quick Start
+## Quick start
 
-```bash
-# Install dependencies
+Install from the configured npm registry once the Brevity packages are published,
+or use local package tarballs during framework development.
+
+```sh
 npm install
-
-# Run in development mode
 npm run dev
-
-# Build for production
-npm build
-npm start
 ```
 
-Then visit **http://127.0.0.1:3000**
+Visit `http://127.0.0.1:3000`. For compiled startup:
 
-## Project Structure
-
-```
-src/
-  └── index.ts          # Entry point, routes, and app setup
-views/
-  └── index.html        # HTML templates
-package.json           # Dependencies and scripts
-tsconfig.json          # TypeScript configuration
-```
-
-## Adding Routes
-
-Routes are defined in `src/index.ts`. Add a new route:
-
-```typescript
-app.router.get("/about", (_req, res) => {
-  res.send("<h1>About</h1><p>Learn more about us.</p>");
-});
-
-app.router.post("/submit", (req, res, container) => {
-  const validator = container?.get("validator");
-  const validation = validator?.validate(req.body ?? {}, {
-    email: "required|email",
-  });
-
-  if (validation?.fails()) {
-    return res.status(422).json({ errors: validation.errors() });
-  }
-
-  res.json({ success: true });
-});
-```
-
-## Using the Viewer (Templates)
-
-Use the **Viewer** plugin to render HTML templates with variables:
-
-```typescript
-app.router.get("/users", (_req, res, container) => {
-  const viewer = container?.get("viewer");
-  const html = viewer?.render("users.html", {
-    users: [
-      { id: 1, name: "Alice" },
-      { id: 2, name: "Bob" },
-    ],
-  });
-  res.send(html ?? "No users");
-});
-```
-
-In `views/users.html`:
-
-```html
-<h1>Users</h1>
-<ul>
-  {{ users.forEach(user => { }}
-    <li>{{ user.name }} (ID: {{ user.id }})</li>
-  {{ }) }}
-</ul>
-```
-
-## Using Cache
-
-Access the cache through the container:
-
-```typescript
-app.router.get("/data", (_req, res, container) => {
-  const cache = container?.get("cache");
-  
-  let data = cache?.get("my-data");
-  if (!data) {
-    data = fetchExpensiveData();
-    cache?.set("my-data", data, 3600); // Cache for 1 hour
-  }
-  
-  res.json({ data });
-});
-```
-
-## Validation
-
-Validate request data before processing:
-
-```typescript
-const validator = container?.get("validator");
-const validation = validator?.validate(req.body, {
-  email: "required|email",
-  password: "required|min:8",
-  age: "required|integer|min:18",
-});
-
-if (validation?.fails()) {
-  return res.status(422).json({
-    errors: validation.errors(),
-  });
-}
-```
-
-## Environment
-
-Set `NODE_ENV=production` to disable debug mode:
-
-```bash
+```sh
+npm run lint
+npm run build
 NODE_ENV=production npm start
 ```
 
-## Next Steps
+`PORT` changes the port. The default binds loopback, not the public internet.
+`SIGINT` and `SIGTERM` stop accepting requests and close idle connections.
+See the framework's operations recipe for bounded draining and resource cleanup.
 
-- Read the [Brevity documentation](../docs/)
-- Check out the [full example app](../examples/)
-- Explore the [API reference](../docs/api/)
+## Files and templates
+
+Edit `src/index.ts` for routes and `views/index.html` for markup. Deploy the
+`views/` directory alongside `dist/`; TypeScript does not copy it. The template
+path works from both `src/` and `dist/`.
+
+This starter uses the existing `Viewer` interpolation utility: `{{ title }}`
+escapes a value; triple braces accept trusted raw markup. It does **not**
+execute JavaScript loops in templates. For layouts, partials, and Eta logic,
+use the checked `@brevity/views` notebook tutorial in the framework docs.
+
+## Validation and optional plugins
+
+Resolve container services with explicit types (`Validator` from `@brevity/core`,
+`CacheManager` from `@brevity/plugin-cache`) rather than unchecked optional calls.
+The cache uses `put`, not `set`, and is process-local, not durable storage.
+
+Validator supports `required`, `email`, `int`, `slug`, `min:x`, and `max:x`.
+Min/max check string length, **not numeric age or value bounds**. Unknown names
+and malformed parameters throw configuration errors. Check `fails()` before
+using `validated()`, which returns original values rather than sanitized data.
+
+Debug registration does not create `/debug` or install an error hook. Production
+disables diagnostics; custom log endpoints still need explicit gating.
+
+Before going live, choose persistence, authentication, authorization, rate limits,
+TLS/proxy policy, logging, backups, and the deployment host. These are application
+responsibilities. The framework repository's checked recipes show integrations
+without adding an ORM or auth engine to core.
