@@ -53,16 +53,17 @@ an explicit `DebugConfig`; verbose is optional.
 
 | Method | Contract |
 |---|---|
-| `setEnabled(boolean)` | Toggle logging |
+| `setEnabled(boolean)` | Toggle logging and diagnostic rendering; retained history is unchanged |
 | `log(level, message, data?)` | Level info/warn/error/debug; no-op when disabled |
 | `info`, `warn`, `error` `(message, data?)` | Level helpers |
 | `debug(message, data?)` | Requires verbose and enabled |
 | `getLogs()` | Shallow array copy of at most 100 entries |
 | `clear()` | Clear history |
-| `renderErrorPage(error, requestInfo?)` | HTML string with escaped diagnostics |
-| `renderErrorResponse(res, error, requestInfo?)` | Send diagnostic HTML with 500 |
+| `renderErrorPage(error, requestInfo?)` | Escaped diagnostic HTML when enabled; generic error HTML when disabled |
+| `renderErrorResponse(res, error, requestInfo?)` | Send the enabled/disabled error HTML with 500 |
 
-**Rendering is not gated by enabled.** Gate all diagnostic routes/error hooks
-in application code; disabling logging alone does not prevent diagnostic
-disclosure. Never expose stacks, credentials, or request payloads publicly.
+**Rendering is gated by enabled.** Disabled rendering does not read error or
+request details or expose log history. Gate custom diagnostic routes in
+application code: `getLogs()` still returns retained history when disabled.
+Never expose stacks, credentials, or request payloads publicly.
 The service is opt-in tooling, not production observability or a security filter.

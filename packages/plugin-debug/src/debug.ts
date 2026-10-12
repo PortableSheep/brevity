@@ -57,6 +57,10 @@ export class DebugService {
   clear(): void { this.logs = []; }
 
   renderErrorPage(error: Error, requestInfo?: Record<string, unknown>): string {
+    if (!this.config.enabled) {
+      return "<!doctype html><title>Internal Server Error</title><h1>Internal Server Error</h1>";
+    }
+
     const logs = this.getLogs().map(renderLogEntry).join("");
     const stackSection = error.stack
       ? `<pre class="stack">${escapeHtml(error.stack)}</pre>`
