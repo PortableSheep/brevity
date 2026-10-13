@@ -5,11 +5,15 @@ import type { Response } from "@brevity/core";
 import { createFormState, escapeHtml, HtmlFragment, trustedHtml } from "@brevity/web";
 
 export type ViewData = Readonly<Record<string, unknown>>;
+
 export type CompiledView = (data: ViewData) => string | Promise<string>;
+
 export interface ViewEngine {
   compile(source: string, filename: string): CompiledView | Promise<CompiledView>;
 }
+
 export type ViewOptions = { status?: number; layout?: string | false };
+
 export type ViewsOptions = {
   root: string;
   extension?: string;
@@ -57,6 +61,7 @@ export function createViews(options: ViewsOptions) {
     }
     return resolve(root, name.endsWith(extension) ? name : name + extension);
   }
+
   async function load(file: string): Promise<CompiledView> {
     const [actualRoot, actualFile] = await Promise.all([realpath(root), realpath(file)]);
     const path = relative(actualRoot, actualFile);
@@ -65,6 +70,7 @@ export function createViews(options: ViewsOptions) {
     }
     return engine.compile(await readFile(actualFile, "utf8"), actualFile);
   }
+
   function get(file: string): Promise<CompiledView> {
     if (!cache) return load(file);
     let result = compiled.get(file);
@@ -78,6 +84,7 @@ export function createViews(options: ViewsOptions) {
     }
     return result;
   }
+
   async function template(
     name: string,
     data: ViewData,
@@ -93,6 +100,7 @@ export function createViews(options: ViewsOptions) {
     if (typeof output !== "string") throw new TypeError("View engine must render a string");
     return trustedHtml(output);
   }
+
   async function renderToString(
     name: string,
     data: ViewData = {},
@@ -102,6 +110,7 @@ export function createViews(options: ViewsOptions) {
     const layout = settings.layout === false ? undefined : (settings.layout ?? options.layout);
     return layout ? template(layout, { ...data, body }) : body;
   }
+
   return {
     renderToString,
     async render(

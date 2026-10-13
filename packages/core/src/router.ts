@@ -9,14 +9,18 @@ export type RouteHandler = (
   res: Response,
   container: Container | null,
 ) => unknown | Promise<unknown>;
+
 export type MiddlewareHandler = (
   req: Request,
   res: Response,
   next: (req: Request, res: Response) => Promise<unknown>,
   container: Container | null,
 ) => unknown | Promise<unknown>;
+
 type ComposedHandler = (req: Request, res: Response) => Promise<unknown>;
+
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
+
 export type RouterOptions = {
   maxBodyBytes?: number;
   parseBody?: boolean;
@@ -68,21 +72,27 @@ export class Router {
   get(path: string, handler: RouteHandler): void {
     this.route("GET", path, handler);
   }
+
   post(path: string, handler: RouteHandler): void {
     this.route("POST", path, handler);
   }
+
   put(path: string, handler: RouteHandler): void {
     this.route("PUT", path, handler);
   }
+
   patch(path: string, handler: RouteHandler): void {
     this.route("PATCH", path, handler);
   }
+
   delete(path: string, handler: RouteHandler): void {
     this.route("DELETE", path, handler);
   }
+
   head(path: string, handler: RouteHandler): void {
     this.route("HEAD", path, handler);
   }
+
   options(path: string, handler: RouteHandler): void {
     this.route("OPTIONS", path, handler);
   }

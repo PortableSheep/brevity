@@ -1,4 +1,5 @@
 export type IslandContext = { signal: AbortSignal };
+
 export type Island<Props = unknown> = (
   element: HTMLElement,
   props: Props,

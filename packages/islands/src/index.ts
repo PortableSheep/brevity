@@ -1,8 +1,11 @@
 import { html, serializeJson, type HtmlFragment } from "@brevity/web";
 
 export type Hydration = "load" | "visible" | "idle" | "interaction";
+
 export type IslandOptions = { hydrate?: Hydration; fallback?: HtmlFragment };
+
 export type IslandManifest = Readonly<Record<string, string>>;
+
 export type IslandConfig = { manifest: string; loader: string; nonce?: string };
 
 function assetUrl(url: string): string {

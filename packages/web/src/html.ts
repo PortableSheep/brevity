@@ -14,8 +14,11 @@ export class HtmlFragment {
 
 export type HtmlValue =
   string | number | bigint | boolean | null | undefined | HtmlFragment | readonly HtmlValue[];
+
 export type Template<Data> = (data: Data) => HtmlFragment;
+
 export type Layout<Data> = (body: HtmlFragment, data: Data) => HtmlFragment;
+
 export type PageOptions<Data> = { layout?: Layout<Data>; status?: number };
 
 export function escapeHtml(value: string): string {
