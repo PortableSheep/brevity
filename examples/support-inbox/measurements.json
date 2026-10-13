@@ -166,17 +166,12 @@
   },
   "dependencies": {
     "brevity": {
-      "direct": [
-        "@brevity/core@0.1.0",
-        "@brevity/web@0.1.0"
-      ],
+      "direct": ["@brevity/core@0.1.0", "@brevity/web@0.1.0"],
       "transitive": [],
       "uniqueProductionPackages": 2
     },
     "express": {
-      "direct": [
-        "express@5.1.0"
-      ],
+      "direct": ["express@5.1.0"],
       "transitive": [
         "accepts@2.0.0",
         "body-parser@2.3.0",

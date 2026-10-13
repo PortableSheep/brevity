@@ -48,11 +48,21 @@ export class MemoryCacheAdapter implements CacheAdapter {
 }
 
 export class NullCacheAdapter implements CacheAdapter {
-  get<T = unknown>(_key: string, defaultValue: T | null = null): T | null { return defaultValue; }
-  put<T = unknown>(_key: string, _value: T, _ttl = 0): boolean { return true; }
-  has(_key: string): boolean { return false; }
-  forget(_key: string): boolean { return true; }
-  clear(): boolean { return true; }
+  get<T = unknown>(_key: string, defaultValue: T | null = null): T | null {
+    return defaultValue;
+  }
+  put<T = unknown>(_key: string, _value: T, _ttl = 0): boolean {
+    return true;
+  }
+  has(_key: string): boolean {
+    return false;
+  }
+  forget(_key: string): boolean {
+    return true;
+  }
+  clear(): boolean {
+    return true;
+  }
 }
 
 export class CacheManager {
@@ -69,9 +79,15 @@ export class CacheManager {
     return this.adapter.put(key, value, ttl || this.defaultTtl);
   }
 
-  has(key: string): boolean { return this.adapter.has(key); }
-  forget(key: string): boolean { return this.adapter.forget(key); }
-  clear(): boolean { return this.adapter.clear(); }
+  has(key: string): boolean {
+    return this.adapter.has(key);
+  }
+  forget(key: string): boolean {
+    return this.adapter.forget(key);
+  }
+  clear(): boolean {
+    return this.adapter.clear();
+  }
 
   remember<T = unknown>(key: string, resolver: () => T, ttl = 0): T {
     if (this.has(key)) return this.get<T>(key) as T;

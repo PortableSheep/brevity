@@ -21,6 +21,7 @@ npm run dev
 ```
 
 Visit **http://127.0.0.1:3000**, then:
+
 - Edit `src/index.ts` to add routes
 - Edit `views/index.html` to customize the UI
 - Run `npm run build && npm start` for production
@@ -31,17 +32,17 @@ Visit **http://127.0.0.1:3000**, then:
 
 The framework is split into publishable packages:
 
-| Package | Purpose |
-|---------|---------|
-| **@brevity/core** | Router, DI container, request/response |
-| **@brevity/web** | Optional escaped fragments, accessible forms, explicit static assets |
-| **@brevity/views** | Optional file views with Eta 3.5.0, layouts, partials and caching |
-| **@brevity/islands** | Optional lazy native components and enhanced forms |
-| **@brevity/islands-svelte** | Separate optional Svelte 5 mount adapter |
-| **@brevity/plugin-cache** | Memory & no-op caching adapters |
-| **@brevity/plugin-debug** | Dev-mode error pages & logs |
-| **@brevity/plugin-viewer** | Template rendering |
-| **@brevity/plugin-validation** | Request validation |
+| Package                        | Purpose                                                              |
+| ------------------------------ | -------------------------------------------------------------------- |
+| **@brevity/core**              | Router, DI container, request/response                               |
+| **@brevity/web**               | Optional escaped fragments, accessible forms, explicit static assets |
+| **@brevity/views**             | Optional file views with Eta 3.5.0, layouts, partials and caching    |
+| **@brevity/islands**           | Optional lazy native components and enhanced forms                   |
+| **@brevity/islands-svelte**    | Separate optional Svelte 5 mount adapter                             |
+| **@brevity/plugin-cache**      | Memory & no-op caching adapters                                      |
+| **@brevity/plugin-debug**      | Dev-mode error pages & logs                                          |
+| **@brevity/plugin-viewer**     | Template rendering                                                   |
+| **@brevity/plugin-validation** | Request validation                                                   |
 
 Use what you need; leave the rest out.
 
@@ -120,10 +121,7 @@ import { ViewerPlugin } from "@brevity/plugin-viewer";
 import { ValidationPlugin } from "@brevity/plugin-validation";
 
 const app = createApp({
-  plugins: [
-    new ViewerPlugin({ baseDir: "./views" }),
-    new ValidationPlugin(),
-  ],
+  plugins: [new ViewerPlugin({ baseDir: "./views" }), new ValidationPlugin()],
 });
 
 // Simple GET

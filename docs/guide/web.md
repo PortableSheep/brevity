@@ -37,15 +37,32 @@ import { createApp } from "@brevity/core";
 import { html, renderPage, createFormState, type FormState, type HtmlFragment } from "@brevity/web";
 
 const app = createApp();
-const layout = (body: HtmlFragment) => html`<!doctype html><html lang="en">
-<head><meta charset="utf-8"><title>Contact</title></head><body><main>${body}</main></body></html>`;
+const layout = (body: HtmlFragment) =>
+  html`<!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <title>Contact</title>
+      </head>
+      <body>
+        <main>${body}</main>
+      </body>
+    </html>`;
 const page = (form: FormState) => {
   const name = form.field("name");
-  return html`<h1>Contact</h1>${form.errorSummary()}<form method="post" action="/contact">
-<label for="${name.id}">Name</label>
-<input id="${name.id}" name="${name.name}" value="${name.value}"
-  aria-invalid="${name.invalid}" aria-describedby="${name.describedBy}">
-${form.fieldErrors("name")}<button type="submit">Submit</button></form>`;
+  return html`<h1>Contact</h1>
+    ${form.errorSummary()}
+    <form method="post" action="/contact">
+      <label for="${name.id}">Name</label>
+      <input
+        id="${name.id}"
+        name="${name.name}"
+        value="${name.value}"
+        aria-invalid="${name.invalid}"
+        aria-describedby="${name.describedBy}"
+      />
+      ${form.fieldErrors("name")}<button type="submit">Submit</button>
+    </form>`;
 };
 app.router.get("/contact", (_req, res) => {
   renderPage(res, page, createFormState(), { layout });
@@ -54,9 +71,15 @@ app.router.post("/contact", (req, res) => {
   const input = req.get("name");
   const name = typeof input === "string" ? input : "";
   if (!name.trim()) {
-    renderPage(res, page, createFormState({
-      values: { name }, errors: { name: ["Enter your name."] },
-    }), { layout, status: 422 });
+    renderPage(
+      res,
+      page,
+      createFormState({
+        values: { name },
+        errors: { name: ["Enter your name."] },
+      }),
+      { layout, status: 422 },
+    );
     return;
   }
   // A real app verifies CSRF/authorization and saves data before redirecting.
@@ -82,12 +105,18 @@ fields, never passwords.
 import { resolve } from "node:path";
 import { staticAssets, jsonScript } from "@brevity/web";
 
-app.use(staticAssets({
-  "/assets/questions.js": { file: resolve("public/questions.js"), cacheControl: "public, max-age=60" },
-}));
-const island = (data: unknown) => html`<div id="questions"></div>
-${jsonScript("questions-state", data)}
-<script type="module" src="/assets/questions.js"></script>`;
+app.use(
+  staticAssets({
+    "/assets/questions.js": {
+      file: resolve("public/questions.js"),
+      cacheControl: "public, max-age=60",
+    },
+  }),
+);
+const island = (data: unknown) =>
+  html`<div id="questions"></div>
+    ${jsonScript("questions-state", data)}
+    <script type="module" src="/assets/questions.js"></script>`;
 ```
 
 `staticAssets` uses an exact canonical ASCII URL allowlist, never a request-derived

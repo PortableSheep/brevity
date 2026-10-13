@@ -7,15 +7,15 @@ Decorators have a separate entry point; [web helpers](./web.md) and
 
 ## Export inventory
 
-| Runtime export | Purpose |
-|---|---|
-| `createApp` | App, router, container, plugin wiring, HTTP listener |
-| `Router` | Explicit routes and middleware |
-| `Request`, `Response` | Node HTTP wrappers |
-| `HttpError` | Explicit 4xx/5xx transport error |
-| `Container`, `ServiceProvider`, `Plugin` | Explicit dependency/provider wiring |
-| `Validator` | Small rule-based validation helper |
-| `Viewer` | Existing file interpolation utility |
+| Runtime export                           | Purpose                                              |
+| ---------------------------------------- | ---------------------------------------------------- |
+| `createApp`                              | App, router, container, plugin wiring, HTTP listener |
+| `Router`                                 | Explicit routes and middleware                       |
+| `Request`, `Response`                    | Node HTTP wrappers                                   |
+| `HttpError`                              | Explicit 4xx/5xx transport error                     |
+| `Container`, `ServiceProvider`, `Plugin` | Explicit dependency/provider wiring                  |
+| `Validator`                              | Small rule-based validation helper                   |
+| `Viewer`                                 | Existing file interpolation utility                  |
 
 Exported types: `App`, `CreateAppOptions`, `RouterOptions`, `HttpMethod`,
 `RouteHandler`, `MiddlewareHandler`, and `PluginLike`.
@@ -28,12 +28,12 @@ use inference or the public class method types rather than undocumented subpaths
 Returns an `App` with `router`, `container`, `plugins`, `use`, `usePlugin`,
 `usePlugins`, and `listen`.
 
-| Option (`CreateAppOptions`) | Default | Contract |
-|---|---|---|
-| `maxBodyBytes` | 1,048,576 | Non-negative safe integer, byte limit for automatic parsing |
-| `parseBody` | enabled unless `false` | Disable only when your integration owns/bounds the raw stream |
-| `onError(error, req, res)` | default handler | Sync/async response hook; `req` can be null |
-| `plugins` | none | `PluginLike[]`, registered during app creation |
+| Option (`CreateAppOptions`) | Default                | Contract                                                      |
+| --------------------------- | ---------------------- | ------------------------------------------------------------- |
+| `maxBodyBytes`              | 1,048,576              | Non-negative safe integer, byte limit for automatic parsing   |
+| `parseBody`                 | enabled unless `false` | Disable only when your integration owns/bounds the raw stream |
+| `onError(error, req, res)`  | default handler        | Sync/async response hook; `req` can be null                   |
+| `plugins`                   | none                   | `PluginLike[]`, registered during app creation                |
 
 `app.use(middleware)` appends middleware.
 `app.usePlugin(instanceOrConstructor)` returns the resolved `Plugin`;
@@ -56,15 +56,15 @@ explicit host and their own network/proxy configuration.
 `new Router(options?: RouterOptions)` can be used separately from an app.
 `setContainer(container)` connects explicit dependency wiring.
 
-| Method | Effect |
-|---|---|
-| `get`, `post`, `put`, `patch`, `delete`, `head`, `options` `(path, handler)` | Register one method/path |
-| `route(method: HttpMethod, path, handler)` | Generic equivalent |
-| `middleware(fn)` | Append middleware |
-| `clearMiddleware()` | Remove all middleware |
-| `setNotFound(handler)` | Replace default 404 JSON |
-| `dispatch(nodeReq, nodeRes)` | Dispatch Node HTTP objects, returns `Promise<void>` |
-| `handleError(error, req, res)` | Apply hook/default handling |
+| Method                                                                       | Effect                                              |
+| ---------------------------------------------------------------------------- | --------------------------------------------------- |
+| `get`, `post`, `put`, `patch`, `delete`, `head`, `options` `(path, handler)` | Register one method/path                            |
+| `route(method: HttpMethod, path, handler)`                                   | Generic equivalent                                  |
+| `middleware(fn)`                                                             | Append middleware                                   |
+| `clearMiddleware()`                                                          | Remove all middleware                               |
+| `setNotFound(handler)`                                                       | Replace default 404 JSON                            |
+| `dispatch(nodeReq, nodeRes)`                                                 | Dispatch Node HTTP objects, returns `Promise<void>` |
+| `handleError(error, req, res)`                                               | Apply hook/default handling                         |
 
 `HttpMethod` is `"GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS"`.
 Handlers receive `(req, res, container)`; `container` is nullable for a standalone
@@ -79,12 +79,12 @@ Provider boot and automatic parsing occur **before** middleware.
 
 ### Paths
 
-| Placeholder | Matches | Result |
-|---|---|---|
-| `:id` | Nonempty segment without `/` | String |
-| `{i:id}` | Digits | String, not a converted number |
-| `{s:slug}` | ASCII letters/digits | String |
-| `{*:path}` | Nonempty wildcard, can include `/` | String |
+| Placeholder | Matches                            | Result                         |
+| ----------- | ---------------------------------- | ------------------------------ |
+| `:id`       | Nonempty segment without `/`       | String                         |
+| `{i:id}`    | Digits                             | String, not a converted number |
+| `{s:slug}`  | ASCII letters/digits               | String                         |
+| `{*:path}`  | Nonempty wildcard, can include `/` | String                         |
 
 Literal text is regex-escaped. Captured params are URL-decoded once;
 invalid encoding is a controlled 400. Query parameters do not affect matching.
@@ -95,13 +95,13 @@ invalid encoding is a controlled 400. Query parameters do not affect matching.
 Public properties: `raw`, `method`, `headers`, `url`, `path`, `query`, `params`,
 `body`, and `form`.
 
-| Member | Contract |
-|---|---|
-| `get<T = unknown>(key, defaultValue: T \| null = null)` | Body own property first, then query, then default |
-| `has(key)` | Value is neither null nor empty string; not a type/required validator |
-| `param<T = string>(key, defaultValue: T \| null = null)` | Route param or default |
-| `parseBody(maxBodyBytes = 1048576)` | Bounded, cached `Promise<Record<string, unknown>>` |
-| `validate(rules)` | Same rule engine as `Validator` |
+| Member                                                   | Contract                                                              |
+| -------------------------------------------------------- | --------------------------------------------------------------------- |
+| `get<T = unknown>(key, defaultValue: T \| null = null)`  | Body own property first, then query, then default                     |
+| `has(key)`                                               | Value is neither null nor empty string; not a type/required validator |
+| `param<T = string>(key, defaultValue: T \| null = null)` | Route param or default                                                |
+| `parseBody(maxBodyBytes = 1048576)`                      | Bounded, cached `Promise<Record<string, unknown>>`                    |
+| `validate(rules)`                                        | Same rule engine as `Validator`                                       |
 
 Generic parameters assert a type; they do not parse/validate/coerce values.
 `body` starts as null and becomes a record after parsing. `form` is null unless
@@ -129,13 +129,13 @@ in. With `parseBody: false`, enforce your own limits before reading the stream.
 `new Response(raw: ServerResponse)` exposes `raw` for Node capabilities such as
 multiple Set-Cookie headers.
 
-| Member | Contract |
-|---|---|
-| `status(code)` | Chainable, sets wrapper's default response code |
-| `header(name, value: string)` | Chainable Node header setter |
-| `json(payload, code = currentStatus)` | JSON content type, stringify, end |
+| Member                                | Contract                                                     |
+| ------------------------------------- | ------------------------------------------------------------ |
+| `status(code)`                        | Chainable, sets wrapper's default response code              |
+| `header(name, value: string)`         | Chainable Node header setter                                 |
+| `json(payload, code = currentStatus)` | JSON content type, stringify, end                            |
 | `send(content, code = currentStatus)` | String conversion; HTML content type unless already set; end |
-| `redirect(url, code = 302)` | Location header and empty response |
+| `redirect(url, code = 302)`           | Location header and empty response                           |
 
 Core `send()` does **not** escape HTML. Use the optional web helpers for
 user-controlled text. Redirect destinations, status choices, cookie policy,
@@ -163,18 +163,18 @@ Avoid leaking private error details in hooks.
 
 `new Container()` stores explicit factories/instances keyed by string or symbol.
 
-| Member | Contract |
-|---|---|
-| `bind<T>(key, factory)` | Transient factory `(container) => T` |
-| `singleton<T>(key, factory)` | Cached after first `get` |
-| `instance<T>(key, value)` | Explicit value |
-| `has(key)` | Scope, factory, or instance exists |
-| `get<T>(key)` | Scoped override, explicit/cached instance, then factory; throws if missing |
-| `make<T>(key)` | Always call registered factory; ignores cached instances/scoped overrides |
-| `runScoped(instances, callback)` | Async-local readonly map overrides for the callback chain |
-| `registerProvider(ctorOrInstance)` | Call register; dedupe by constructor name; returns provider |
-| `registerProviders(list)` | Register each provider |
-| `bootProviders()` | Boot once; providers added after boot are booted when registered |
+| Member                             | Contract                                                                   |
+| ---------------------------------- | -------------------------------------------------------------------------- |
+| `bind<T>(key, factory)`            | Transient factory `(container) => T`                                       |
+| `singleton<T>(key, factory)`       | Cached after first `get`                                                   |
+| `instance<T>(key, value)`          | Explicit value                                                             |
+| `has(key)`                         | Scope, factory, or instance exists                                         |
+| `get<T>(key)`                      | Scoped override, explicit/cached instance, then factory; throws if missing |
+| `make<T>(key)`                     | Always call registered factory; ignores cached instances/scoped overrides  |
+| `runScoped(instances, callback)`   | Async-local readonly map overrides for the callback chain                  |
+| `registerProvider(ctorOrInstance)` | Call register; dedupe by constructor name; returns provider                |
+| `registerProviders(list)`          | Register each provider                                                     |
+| `bootProviders()`                  | Boot once; providers added after boot are booted when registered           |
 
 Dispatch supplies async-local `"request"` and `"response"` bindings.
 They do not mutate the global container and do not create an entire per-request

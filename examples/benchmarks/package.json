@@ -2,8 +2,12 @@
   "name": "brevity-http-benchmarks",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
-  "scripts": { "bench": "node measure.mjs" },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "bench": "node measure.mjs"
+  },
   "dependencies": {
     "@brevity/core": "file:../../packages/core",
     "@nestjs/common": "12.1.2",

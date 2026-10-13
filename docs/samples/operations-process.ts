@@ -18,13 +18,13 @@ service.server.on("listening", () => {
   if (!address || typeof address === "string") throw new Error("Expected TCP listener");
   console.log(`Listening: http://127.0.0.1:${address.port}`);
 });
-service.server.on("error", error => {
+service.server.on("error", (error) => {
   console.error(error);
   process.exitCode = 1;
 });
 for (const signal of ["SIGTERM", "SIGINT"] as const) {
   process.once(signal, () => {
-    void service.stop().catch(error => {
+    void service.stop().catch((error) => {
       console.error(error);
       process.exitCode = 1;
     });

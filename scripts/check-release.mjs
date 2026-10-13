@@ -24,33 +24,53 @@ try {
     if (!entry.isDirectory()) continue;
     const directory = join(root, "packages", entry.name);
     const manifest = JSON.parse(await readFile(join(directory, "package.json"), "utf8"));
-    const [packed] = JSON.parse(run("npm", [
-      "pack", directory, "--ignore-scripts", "--json", "--pack-destination", temporary,
-    ], root));
+    const [packed] = JSON.parse(
+      run(
+        "npm",
+        ["pack", directory, "--ignore-scripts", "--json", "--pack-destination", temporary],
+        root,
+      ),
+    );
     packages.push({ manifest, archive: join(temporary, packed.filename) });
   }
 
-  const serverPackages = packages.filter(({ manifest }) => manifest.name !== "@brevity/islands-svelte");
+  const serverPackages = packages.filter(
+    ({ manifest }) => manifest.name !== "@brevity/islands-svelte",
+  );
   for (const { manifest } of packages.filter(({ manifest }) =>
-    ["@brevity/core", "@brevity/web"].includes(manifest.name))) {
+    ["@brevity/core", "@brevity/web"].includes(manifest.name),
+  )) {
     for (const category of ["dependencies", "optionalDependencies", "peerDependencies"]) {
-      const external = Object.keys(manifest[category] ?? {}).filter(name =>
-        !(manifest.name === "@brevity/web" && name === "@brevity/core"));
-      assert.equal(external.length, 0,
-        `${manifest.name} must retain zero external runtime dependencies`);
+      const external = Object.keys(manifest[category] ?? {}).filter(
+        (name) => !(manifest.name === "@brevity/web" && name === "@brevity/core"),
+      );
+      assert.equal(
+        external.length,
+        0,
+        `${manifest.name} must retain zero external runtime dependencies`,
+      );
     }
   }
-  await writeFile(join(temporary, "package.json"), JSON.stringify({
-    private: true, type: "module",
-    dependencies: Object.fromEntries(serverPackages.map(({ manifest, archive }) =>
-      [manifest.name, `file:${archive}`])),
-  }));
+  await writeFile(
+    join(temporary, "package.json"),
+    JSON.stringify({
+      private: true,
+      type: "module",
+      dependencies: Object.fromEntries(
+        serverPackages.map(({ manifest, archive }) => [manifest.name, `file:${archive}`]),
+      ),
+    }),
+  );
   run("npm", ["install", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"]);
   const lock = JSON.parse(await readFile(join(temporary, "package-lock.json"), "utf8"));
-  assert(!Object.keys(lock.packages).some(name => name.endsWith("/svelte")),
-    "Server-only production installation must not include Svelte");
+  assert(
+    !Object.keys(lock.packages).some((name) => name.endsWith("/svelte")),
+    "Server-only production installation must not include Svelte",
+  );
 
-  await writeFile(join(temporary, "smoke.mjs"), `
+  await writeFile(
+    join(temporary, "smoke.mjs"),
+    `
 import assert from "node:assert/strict";
 import { once } from "node:events";
 import { writeFile } from "node:fs/promises";
@@ -97,7 +117,8 @@ try {
   server.closeAllConnections();
   await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
 }
-`);
+`,
+  );
   run(process.execPath, ["smoke.mjs"]);
   for (const entry of serverPackages) {
     for (const [subpath, target] of Object.entries(entry.manifest.exports)) {
@@ -109,32 +130,49 @@ try {
   const adapter = packages.find(({ manifest }) => manifest.name === "@brevity/islands-svelte");
   assert(adapter);
   const { devDependencies } = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
-  run("npm", ["install", "--save-dev", "--ignore-scripts", "--no-audit", "--no-fund",
-    adapter.archive, `svelte@${devDependencies.svelte}`]);
-  run(process.execPath, ["--input-type=module", "-e",
-    'import { svelteIsland } from "@brevity/islands-svelte"; if (typeof svelteIsland !== "function") throw new Error("Missing adapter");']);
+  run("npm", [
+    "install",
+    "--save-dev",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    adapter.archive,
+    `svelte@${devDependencies.svelte}`,
+  ]);
+  run(process.execPath, [
+    "--input-type=module",
+    "-e",
+    'import { svelteIsland } from "@brevity/islands-svelte"; if (typeof svelteIsland !== "function") throw new Error("Missing adapter");',
+  ]);
   const starter = join(temporary, "starter");
   await cp(join(root, "starter"), starter, { recursive: true });
   const starterManifest = JSON.parse(await readFile(join(starter, "package.json"), "utf8"));
-  starterManifest.dependencies = Object.fromEntries(Object.keys(starterManifest.dependencies).map(name => {
-    const packed = packages.find(({ manifest }) => manifest.name === name);
-    assert(packed, `Starter depends on unpacked package ${name}`);
-    return [name, `file:${packed.archive}`];
-  }));
+  starterManifest.dependencies = Object.fromEntries(
+    Object.keys(starterManifest.dependencies).map((name) => {
+      const packed = packages.find(({ manifest }) => manifest.name === name);
+      assert(packed, `Starter depends on unpacked package ${name}`);
+      return [name, `file:${packed.archive}`];
+    }),
+  );
   await writeFile(join(starter, "package.json"), JSON.stringify(starterManifest));
   run("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund"], starter);
   run("npm", ["run", "lint"], starter);
   run("npm", ["run", "build"], starter);
   for (const args of [["--import", "tsx", "src/index.ts"], ["dist/index.js"]]) {
     const child = spawn(process.execPath, args, {
-      cwd: starter, env: { ...process.env, PORT: "0", NODE_ENV: "production" },
+      cwd: starter,
+      env: { ...process.env, PORT: "0", NODE_ENV: "production" },
       stdio: ["ignore", "pipe", "pipe"],
     });
     const exited = once(child, "exit");
     let output = "";
     let errors = "";
-    child.stdout.setEncoding("utf8").on("data", chunk => { output += chunk; });
-    child.stderr.setEncoding("utf8").on("data", chunk => { errors += chunk; });
+    child.stdout.setEncoding("utf8").on("data", (chunk) => {
+      output += chunk;
+    });
+    child.stderr.setEncoding("utf8").on("data", (chunk) => {
+      errors += chunk;
+    });
     try {
       for (let attempt = 0; attempt < 500 && !output.includes("App running:"); attempt++) {
         if (child.exitCode !== null) throw new Error(`Starter failed: ${errors}`);
@@ -155,8 +193,11 @@ try {
       assert.equal(code, 0, errors);
     }
   }
-  console.log(`Packed consumer passed: ${packages.length} packages; server production graph ${
-    Object.keys(lock.packages).length - 1} entries, no Svelte. Optional adapter and starter dev/compiled HTTP passed.`);
+  console.log(
+    `Packed consumer passed: ${packages.length} packages; server production graph ${
+      Object.keys(lock.packages).length - 1
+    } entries, no Svelte. Optional adapter and starter dev/compiled HTTP passed.`,
+  );
 } finally {
   await rm(temporary, { recursive: true, force: true });
 }

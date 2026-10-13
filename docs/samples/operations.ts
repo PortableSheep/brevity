@@ -13,8 +13,7 @@ export function startService(options: ServiceOptions) {
   let shutdown: Promise<void> | undefined;
   const app = createApp();
   app.router.get("/health/live", (_req, res) => res.json({ live: true }));
-  app.router.get("/health/ready", (_req, res) =>
-    res.json({ ready }, ready ? 200 : 503));
+  app.router.get("/health/ready", (_req, res) => res.json({ ready }, ready ? 200 : 503));
   app.router.get("/work", async (_req, res) => res.send(await options.work()));
   const server = app.listen(options.port ?? 3000, options.host ?? "127.0.0.1");
   server.requestTimeout = 30_000;
@@ -39,7 +38,7 @@ export function startService(options: ServiceOptions) {
       deadline.unref();
       try {
         await new Promise<void>((resolve, reject) => {
-          server.close(error => error ? reject(error) : resolve());
+          server.close((error) => (error ? reject(error) : resolve()));
           server.closeIdleConnections();
         });
         await options.closeResources();

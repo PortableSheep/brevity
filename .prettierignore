@@ -1,0 +1,15 @@
+node_modules/
+dist/
+*.db*
+notebook.db*
+package-lock.json
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+docs/samples/island/dist/
+docs/samples/native/dist/
+docs/samples/prisma/*.db
+playwright-report/
+test-results/
+examples/benchmarks/package-lock.json
+examples/benchmarks/measurements.json
+*.html

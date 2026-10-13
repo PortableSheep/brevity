@@ -9,16 +9,19 @@ server.on("listening", () => {
   if (!address || typeof address === "string") throw new Error("Expected TCP listener");
   console.log(`Notebook: http://127.0.0.1:${address.port}`);
 });
-server.on("error", error => {
+server.on("error", (error) => {
   console.error(error);
   store.close();
   process.exitCode = 1;
 });
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.once(signal, () => {
-    server.close(error => {
+    server.close((error) => {
       store.close();
-      if (error) { console.error(error); process.exitCode = 1; }
+      if (error) {
+        console.error(error);
+        process.exitCode = 1;
+      }
     });
     server.closeIdleConnections();
   });

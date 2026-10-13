@@ -7,11 +7,11 @@ export function registerUserRoutes(app: App): void {
   // List users — cached for 30s
   app.router.get("/users", (_req, res, container) => {
     const users =
-      container?.get<CacheManager>("cache")?.remember(
-        "users:all",
-        () => container?.get<UserService>("users").all() ?? [],
-        30,
-      ) ?? container?.get<UserService>("users").all() ?? [];
+      container
+        ?.get<CacheManager>("cache")
+        ?.remember("users:all", () => container?.get<UserService>("users").all() ?? [], 30) ??
+      container?.get<UserService>("users").all() ??
+      [];
     res.json({ data: users, meta: { count: users.length } });
   });
 
@@ -45,7 +45,11 @@ export function registerUserRoutes(app: App): void {
       return res.status(422).json({ error: "Validation failed", details: validation?.errors() });
     }
 
-    const input = validation.validated() as { email: string; name: string; role?: "admin" | "user" };
+    const input = validation.validated() as {
+      email: string;
+      name: string;
+      role?: "admin" | "user";
+    };
     const existing = container?.get<UserService>("users").findByEmail(input.email);
     if (existing) return res.status(409).json({ error: "Email already taken" });
 
@@ -68,7 +72,11 @@ export function registerUserRoutes(app: App): void {
       return res.status(422).json({ error: "Validation failed", details: validation?.errors() });
     }
 
-    const input = validation.validated() as Partial<{ email: string; name: string; role: "admin" | "user" }>;
+    const input = validation.validated() as Partial<{
+      email: string;
+      name: string;
+      role: "admin" | "user";
+    }>;
     const user = container?.get<UserService>("users").update(id, input);
     if (!user) return res.status(404).json({ error: "User not found" });
 

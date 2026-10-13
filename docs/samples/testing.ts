@@ -8,7 +8,7 @@ export async function serve(t: TestContext, app: App): Promise<string> {
   t.after(async () => {
     server.closeAllConnections();
     await new Promise<void>((resolve, reject) => {
-      server.close(error => error ? reject(error) : resolve());
+      server.close((error) => (error ? reject(error) : resolve()));
     });
   });
   await once(server, "listening");

@@ -7,15 +7,15 @@ contract and native form instead of inventing adapters.
 
 ## Tested versions and what “tested” means
 
-| Recipe | Pinned version | Automated evidence |
-|---|---|---|
-| [Drizzle + SQLite](./drizzle.md) | drizzle-orm 0.45.4; @libsql/client 0.15.15 | Strict compilation; inserts, transaction, SQLite reopen, HTTP form |
-| [Prisma](./prisma.md) | prisma / @prisma/client 6.12.0 | Client generation; real SQLite insert/read and notebook HTTP |
-| [Supabase PKCE](./supabase.md) | @supabase/ssr 0.7.0; @supabase/supabase-js 2.57.4; cookie 1.0.2 | Real SDK with stubbed Auth HTTP; PKCE/cookies, wrong browser, CSRF, expiry and 429 |
-| [Svelte island](./svelte.md) | svelte 5.57.2; Vite 6.4.4; Svelte Vite plugin 5.1.1 | Compiler build, state escaping, allowlisted asset, browser mount |
-| [Playwright](./playwright.md) | @playwright/test 1.56.0 | Chromium; native forms with JS on/off, 422 retention |
-| [HTTP testing](./testing.md), [decorators](./decorators.md), [domain errors](./errors.md), [HEAD](./head.md) | Local @brevity/core / @brevity/web 0.1.0; TypeScript 5.9 | Strict compilation and real HTTP |
-| [Health and shutdown](./operations.md) | Node HTTP server; local @brevity/core 0.1.0 | Health probes, active-request draining, real SIGTERM, deadline failure |
+| Recipe                                                                                                       | Pinned version                                                  | Automated evidence                                                                 |
+| ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [Drizzle + SQLite](./drizzle.md)                                                                             | drizzle-orm 0.45.4; @libsql/client 0.15.15                      | Strict compilation; inserts, transaction, SQLite reopen, HTTP form                 |
+| [Prisma](./prisma.md)                                                                                        | prisma / @prisma/client 6.12.0                                  | Client generation; real SQLite insert/read and notebook HTTP                       |
+| [Supabase PKCE](./supabase.md)                                                                               | @supabase/ssr 0.7.0; @supabase/supabase-js 2.57.4; cookie 1.0.2 | Real SDK with stubbed Auth HTTP; PKCE/cookies, wrong browser, CSRF, expiry and 429 |
+| [Svelte island](./svelte.md)                                                                                 | svelte 5.57.2; Vite 6.4.4; Svelte Vite plugin 5.1.1             | Compiler build, state escaping, allowlisted asset, browser mount                   |
+| [Playwright](./playwright.md)                                                                                | @playwright/test 1.56.0                                         | Chromium; native forms with JS on/off, 422 retention                               |
+| [HTTP testing](./testing.md), [decorators](./decorators.md), [domain errors](./errors.md), [HEAD](./head.md) | Local @brevity/core / @brevity/web 0.1.0; TypeScript 5.9        | Strict compilation and real HTTP                                                   |
+| [Health and shutdown](./operations.md)                                                                       | Node HTTP server; local @brevity/core 0.1.0                     | Health probes, active-request draining, real SIGTERM, deadline failure             |
 
 These are compatibility snapshots, not recommendations to freeze dependencies
 forever. Review provider releases and advisories when upgrading.

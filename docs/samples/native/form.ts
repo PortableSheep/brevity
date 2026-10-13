@@ -7,5 +7,8 @@ export default defineIsland((element, _props, context) => {
   if (!target || !form) throw new Error("Missing native form");
   const cleanup = enhanceForm(form, { target, signal: context.signal });
   element.dataset.ready = "true";
-  return () => { cleanup(); delete element.dataset.ready; };
+  return () => {
+    cleanup();
+    delete element.dataset.ready;
+  };
 });

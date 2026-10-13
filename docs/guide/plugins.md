@@ -85,9 +85,7 @@ You can also add plugins later:
 
 ```ts
 app.usePlugin(new CachePlugin());
-app.usePlugins([
-  new DebugPlugin({ verbose: true }),
-]);
+app.usePlugins([new DebugPlugin({ verbose: true })]);
 ```
 
 If the container has already booted, late-registered plugins boot immediately.

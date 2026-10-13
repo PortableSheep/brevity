@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 
 const root = new URL("../", import.meta.url);
-const json = path => JSON.parse(readFileSync(new URL(path, root), "utf8"));
+const json = (path) => JSON.parse(readFileSync(new URL(path, root), "utf8"));
 const lock = json("package-lock.json");
 const loader = readFileSync(new URL("packages/islands/dist/loader.js", root));
 const packages = {};
@@ -22,12 +22,30 @@ for (const name of ["core", "web", "views", "islands", "islands-svelte"]) {
   packages[pkg.name] = {
     directRuntimeDependencies: Object.keys(pkg.dependencies ?? {}).length,
     externalRuntimeGraph: [...graph].sort(),
-    requiredPeers: Object.keys(pkg.peerDependencies ?? {}).filter(peer => !pkg.peerDependenciesMeta?.[peer]?.optional),
-    optionalPeers: Object.keys(pkg.peerDependenciesMeta ?? {}).filter(peer => pkg.peerDependenciesMeta[peer].optional),
+    requiredPeers: Object.keys(pkg.peerDependencies ?? {}).filter(
+      (peer) => !pkg.peerDependenciesMeta?.[peer]?.optional,
+    ),
+    optionalPeers: Object.keys(pkg.peerDependenciesMeta ?? {}).filter(
+      (peer) => pkg.peerDependenciesMeta[peer].optional,
+    ),
   };
 }
-console.log(JSON.stringify({
-  loader: { minifiedBytes: loader.length, gzipBytes: gzipSync(loader).length, includes: "loader only; excludes components, forms helper, adapters, page props" },
-  tooling: { esbuild: json("node_modules/esbuild/package.json").version, node: process.version, gzip: "node:zlib default options" },
-  packages,
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      loader: {
+        minifiedBytes: loader.length,
+        gzipBytes: gzipSync(loader).length,
+        includes: "loader only; excludes components, forms helper, adapters, page props",
+      },
+      tooling: {
+        esbuild: json("node_modules/esbuild/package.json").version,
+        node: process.version,
+        gzip: "node:zlib default options",
+      },
+      packages,
+    },
+    null,
+    2,
+  ),
+);

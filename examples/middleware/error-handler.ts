@@ -7,7 +7,11 @@ export function registerErrorHandler(app: App): void {
       await next(req, res);
     } catch (err) {
       const debug = app.container.get<DebugService>("debug");
-      debug?.error("Unhandled error", { path: req.path, method: req.method, message: (err as Error).message });
+      debug?.error("Unhandled error", {
+        path: req.path,
+        method: req.method,
+        message: (err as Error).message,
+      });
 
       if (debug && process.env.NODE_ENV !== "production") {
         debug.renderErrorResponse(res, err as Error, { path: req.path, method: req.method });

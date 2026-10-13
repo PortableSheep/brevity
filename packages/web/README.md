@@ -20,10 +20,20 @@ import { html, renderPage, type HtmlFragment } from "@brevity/web";
 
 const app = createApp();
 const greeting = (name: string) => html`<p>Hello ${name}</p>`;
-const page = (data: { name: string }) => html`<h1>Welcome</h1>${greeting(data.name)}`;
-const layout = (body: HtmlFragment, data: { name: string }) => html`<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>${data.name}</title></head>
-<body><main>${body}</main></body></html>`;
+const page = (data: { name: string }) =>
+  html`<h1>Welcome</h1>
+    ${greeting(data.name)}`;
+const layout = (body: HtmlFragment, data: { name: string }) =>
+  html`<!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <title>${data.name}</title>
+      </head>
+      <body>
+        <main>${body}</main>
+      </body>
+    </html>`;
 
 app.router.get("/", (req, res) => {
   renderPage(res, page, { name: req.query.name ?? "friend" }, { layout });
@@ -66,15 +76,22 @@ import { createFormState, html, renderPage, type FormState } from "@brevity/web"
 
 const formPage = (form: FormState) => {
   const name = form.field("name", { describedBy: "name-help" });
-  return html`<h1>Contact</h1>${form.errorSummary()}
-<form method="post" action="/contact">
-  <label for="${name.id}">Name</label>
-  <p id="name-help">Your display name.</p>
-  <input id="${name.id}" name="${name.name}" value="${name.value}"
-    aria-invalid="${name.invalid}" aria-describedby="${name.describedBy}" autocomplete="name">
-  ${form.fieldErrors("name")}
-  <button type="submit">Submit</button>
-</form>`;
+  return html`<h1>Contact</h1>
+    ${form.errorSummary()}
+    <form method="post" action="/contact">
+      <label for="${name.id}">Name</label>
+      <p id="name-help">Your display name.</p>
+      <input
+        id="${name.id}"
+        name="${name.name}"
+        value="${name.value}"
+        aria-invalid="${name.invalid}"
+        aria-describedby="${name.describedBy}"
+        autocomplete="name"
+      />
+      ${form.fieldErrors("name")}
+      <button type="submit">Submit</button>
+    </form>`;
 };
 
 app.router.get("/contact", (_req, res) => {
@@ -84,9 +101,16 @@ app.router.post("/contact", (req, res) => {
   const input = req.get("name");
   const name = typeof input === "string" ? input : "";
   if (!name.trim()) {
-    renderPage(res, formPage, createFormState({
-      values: { name }, errors: { name: ["Enter your name."] }, labels: { name: "Name" },
-    }), { status: 422 });
+    renderPage(
+      res,
+      formPage,
+      createFormState({
+        values: { name },
+        errors: { name: ["Enter your name."] },
+        labels: { name: "Name" },
+      }),
+      { status: 422 },
+    );
     return;
   }
   // Verify CSRF/authorization and save domain data here in a real application.
@@ -114,10 +138,12 @@ Only retain explicitly allowed fields; never echo passwords or sensitive fields.
 import { resolve } from "node:path";
 import { staticAssets } from "@brevity/web";
 
-app.use(staticAssets({
-  "/assets/app.css": { file: resolve("public/app.css"), cacheControl: "public, max-age=60" },
-  "/assets/app.js": { file: resolve("public/app.js"), cacheControl: "public, max-age=60" },
-}));
+app.use(
+  staticAssets({
+    "/assets/app.css": { file: resolve("public/app.css"), cacheControl: "public, max-age=60" },
+    "/assets/app.js": { file: resolve("public/app.js"), cacheControl: "public, max-age=60" },
+  }),
+);
 ```
 
 The keys are an exact URL allowlist, not a directory mount. URL keys must be
@@ -148,9 +174,10 @@ undefined at the top level) throws; usual `JSON.stringify` property semantics ap
 ```ts
 import { html, jsonScript } from "@brevity/web";
 
-const island = (initial: unknown) => html`<div id="questions"></div>
-${jsonScript("questions-state", initial)}
-<script type="module" src="/assets/questions.js"></script>`;
+const island = (initial: unknown) =>
+  html`<div id="questions"></div>
+    ${jsonScript("questions-state", initial)}
+    <script type="module" src="/assets/questions.js"></script>`;
 ```
 
 Compile and mount React/Svelte/etc. in the application, serve its emitted assets

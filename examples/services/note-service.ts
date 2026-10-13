@@ -9,9 +9,30 @@ export type Note = {
 
 export class NoteService {
   #notes: Note[] = [
-    { id: 1, userId: 1, title: "Framework goals", body: "Keep it slim, educational, and composable.", createdAt: new Date("2024-01-05"), updatedAt: new Date("2024-01-05") },
-    { id: 2, userId: 2, title: "Plugin ideas", body: "Auth, rate-limiting, CORS, websockets?", createdAt: new Date("2024-02-20"), updatedAt: new Date("2024-03-01") },
-    { id: 3, userId: 1, title: "Release checklist", body: "Build, test, pack, publish, tag.", createdAt: new Date("2024-04-01"), updatedAt: new Date("2024-04-01") },
+    {
+      id: 1,
+      userId: 1,
+      title: "Framework goals",
+      body: "Keep it slim, educational, and composable.",
+      createdAt: new Date("2024-01-05"),
+      updatedAt: new Date("2024-01-05"),
+    },
+    {
+      id: 2,
+      userId: 2,
+      title: "Plugin ideas",
+      body: "Auth, rate-limiting, CORS, websockets?",
+      createdAt: new Date("2024-02-20"),
+      updatedAt: new Date("2024-03-01"),
+    },
+    {
+      id: 3,
+      userId: 1,
+      title: "Release checklist",
+      body: "Build, test, pack, publish, tag.",
+      createdAt: new Date("2024-04-01"),
+      updatedAt: new Date("2024-04-01"),
+    },
   ];
 
   #nextId = 4;

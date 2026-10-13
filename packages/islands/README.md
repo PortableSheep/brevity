@@ -8,7 +8,8 @@ import { createIslands, islandManifest } from "@brevity/islands";
 const island = createIslands({ manifest: "/assets/islands.json", loader: "/assets/loader.js" });
 // Inside a file view's helpers: island("counter", { count: 0 }, { hydrate: "visible", fallback })
 app.router.get("/assets/islands.json", (_req, res) =>
-  res.json(islandManifest({ counter: "/assets/counter.js" })));
+  res.json(islandManifest({ counter: "/assets/counter.js" })),
+);
 ```
 
 Serve `@brevity/islands/loader.js` and your bundled modules with web's explicit

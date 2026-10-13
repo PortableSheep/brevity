@@ -7,6 +7,8 @@ export function svelteIsland<Props extends Record<string, unknown>>(component: C
     const container = document.createElement("div");
     const instance = mount(component, { target: container, props });
     target.replaceChildren(container);
-    return () => { void unmount(instance); };
+    return () => {
+      void unmount(instance);
+    };
   });
 }

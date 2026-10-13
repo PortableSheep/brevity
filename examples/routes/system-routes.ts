@@ -5,7 +5,11 @@ import { renderDebugLogEntries } from "../support/debug-view.js";
 
 export function registerSystemRoutes(app: App): void {
   app.router.get("/health", (_req, res) => {
-    res.json({ ok: true, uptime: Math.round(process.uptime()), version: process.env.npm_package_version ?? "0.1.0" });
+    res.json({
+      ok: true,
+      uptime: Math.round(process.uptime()),
+      version: process.env.npm_package_version ?? "0.1.0",
+    });
   });
 
   app.router.get("/stats", (_req, res, container) => {

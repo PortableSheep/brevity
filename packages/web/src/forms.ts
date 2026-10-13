@@ -25,10 +25,14 @@ export type FormState = {
 export function createFormState(options: FormOptions = {}): FormState {
   const prefix = options.idPrefix ?? "form";
   if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(prefix)) {
-    throw new TypeError("Form idPrefix must start with a letter and contain only letters, numbers, _ or -");
+    throw new TypeError(
+      "Form idPrefix must start with a letter and contain only letters, numbers, _ or -",
+    );
   }
   const values = new Map(Object.entries(options.values ?? {}));
-  const errors = new Map(Object.entries(options.errors ?? {}).map(([name, messages]) => [name, [...messages]]));
+  const errors = new Map(
+    Object.entries(options.errors ?? {}).map(([name, messages]) => [name, [...messages]]),
+  );
   const labels = new Map(Object.entries(options.labels ?? {}));
   const id = (name: string) => `${prefix}-${Buffer.from(name, "utf16le").toString("hex")}`;
   const messages = (name: string) => errors.get(name) ?? [];
@@ -43,20 +47,33 @@ export function createFormState(options: FormOptions = {}): FormState {
         name,
         value: value(name),
         invalid,
-        describedBy: [fieldOptions.describedBy, invalid ? `${id(name)}-errors` : ""].filter(Boolean).join(" "),
+        describedBy: [fieldOptions.describedBy, invalid ? `${id(name)}-errors` : ""]
+          .filter(Boolean)
+          .join(" "),
       };
     },
     fieldErrors(name) {
       const list = messages(name);
       return list.length
-        ? html`<ul id="${id(name)}-errors">${list.map((message) => html`<li>${message}</li>`)}</ul>`
+        ? html`<ul id="${id(name)}-errors">
+            ${list.map((message) => html`<li>${message}</li>`)}
+          </ul>`
         : html``;
     },
     errorSummary() {
       const items = [...errors].flatMap(([name, list]) =>
-        list.map((message) => html`<li><a href="#${id(name)}">${labels.get(name) ?? name}: ${message}</a></li>`));
+        list.map(
+          (message) =>
+            html`<li><a href="#${id(name)}">${labels.get(name) ?? name}: ${message}</a></li>`,
+        ),
+      );
       return items.length
-        ? html`<div role="alert" tabindex="-1" aria-labelledby="${prefix}-error-heading"><h2 id="${prefix}-error-heading">Please correct the following errors</h2><ul>${items}</ul></div>`
+        ? html`<div role="alert" tabindex="-1" aria-labelledby="${prefix}-error-heading">
+            <h2 id="${prefix}-error-heading">Please correct the following errors</h2>
+            <ul>
+              ${items}
+            </ul>
+          </div>`
         : html``;
     },
   };

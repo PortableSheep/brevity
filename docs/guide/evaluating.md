@@ -32,15 +32,15 @@ Report physical and nonblank lines with a reproducible file inventory:
 Also report source bytes: compressed or long template/CSS lines can make a
 line-only comparison misleading.
 
-| Category | Include |
-|---|---|
-| Shared business code | Input rules, repository, domain types, persistence policy |
-| Framework-specific server code | Routes, middleware, transport errors, response handling |
-| Rendering | Templates, layout callbacks, field/error markup |
-| Browser code | Native scripts, component source, mount/save/error handling |
-| Styling | Hand-authored CSS, including shared styles |
-| Configuration | Manifests, compiler/build configuration, start/build scripts |
-| Verification | Contract tests and measurement scripts, reported separately |
+| Category                       | Include                                                      |
+| ------------------------------ | ------------------------------------------------------------ |
+| Shared business code           | Input rules, repository, domain types, persistence policy    |
+| Framework-specific server code | Routes, middleware, transport errors, response handling      |
+| Rendering                      | Templates, layout callbacks, field/error markup              |
+| Browser code                   | Native scripts, component source, mount/save/error handling  |
+| Styling                        | Hand-authored CSS, including shared styles                   |
+| Configuration                  | Manifests, compiler/build configuration, start/build scripts |
+| Verification                   | Contract tests and measurement scripts, reported separately  |
 
 If a file mixes categories, label it mixed rather than silently assigning all of
 it to domain code. Count shared files once per runnable implementation when
@@ -85,15 +85,15 @@ observations, not an equivalent-framework comparison or an onboarding study.
 Physical lines use line splitting; nonblank lines exclude blank lines but include
 comments. Categories are at file level and include mixed responsibilities.
 
-| File group | Physical lines | Nonblank lines | Source bytes |
-|---|---:|---:|---:|
-| Server domain/schema/repository | 290 | 277 | 15,871 |
-| HTTP glue and mixed controllers | 216 | 212 | 12,423 |
-| Templates and CSS | 178 | 172 | 29,475 |
-| Native browser code, Svelte component, and mount | 347 | 343 | 17,263 |
-| Configuration | 85 | 84 | 2,214 |
-| **Application and configuration** | **1,116** | **1,088** | **77,246** |
-| Tests, separately | 737 | 705 | 41,714 |
+| File group                                       | Physical lines | Nonblank lines | Source bytes |
+| ------------------------------------------------ | -------------: | -------------: | -----------: |
+| Server domain/schema/repository                  |            290 |            277 |       15,871 |
+| HTTP glue and mixed controllers                  |            216 |            212 |       12,423 |
+| Templates and CSS                                |            178 |            172 |       29,475 |
+| Native browser code, Svelte component, and mount |            347 |            343 |       17,263 |
+| Configuration                                    |             85 |             84 |        2,214 |
+| **Application and configuration**                |      **1,116** |      **1,088** |   **77,246** |
+| Tests, separately                                |            737 |            705 |       41,714 |
 
 Lockfiles, compiled output, installed dependencies, vendored package archives, and
 session screenshots/browser scripts were excluded from authored totals. The
@@ -121,12 +121,12 @@ Both create and validate support requests, retain invalid input, persist to a
 local JSON store, show details, search/filter/paginate the inbox, and update
 request status. Both use ordinary forms and the same optional character counter.
 
-| Comparable authored source | Brevity | Express |
-|---|---:|---:|
-| HTTP adapter and templates, nonblank lines | 117 | 150 |
-| Runnable app, nonblank lines | 309 | 342 |
-| Runnable app, source bytes | 17,271 | 19,593 |
-| Including common build configuration, nonblank lines | 359 | 392 |
+| Comparable authored source                           | Brevity | Express |
+| ---------------------------------------------------- | ------: | ------: |
+| HTTP adapter and templates, nonblank lines           |     117 |     150 |
+| Runnable app, nonblank lines                         |     309 |     342 |
+| Runnable app, source bytes                           |  17,271 |  19,593 |
+| Including common build configuration, nonblank lines |     359 |     392 |
 
 Each app total includes the shared validation, repository, runtime configuration,
 CSS, and browser code once. The measured difference is 33 nonblank lines and
@@ -196,11 +196,11 @@ used Node 22.21.1 on an Apple M1 Max/macOS ARM64 machine, not a dedicated,
 controlled performance host.
 
 | Framework | Median GET requests/s | Median POST requests/s | Median GET p95 (ms) | Median process-to-ready (ms) | Maximum sampled RSS (MiB) |
-|---|---:|---:|---:|---:|---:|
-| Brevity | 41,800 | 38,857 | 0.637 | 50.2 | 91.5 |
-| Express | 16,542 | 14,311 | 1.745 | 71.1 | 126.6 |
-| Fastify | 40,937 | 38,793 | 0.672 | 96.8 | 79.8 |
-| Nest | 14,955 | 13,005 | 1.927 | 237.0 | 176.0 |
+| --------- | --------------------: | ---------------------: | ------------------: | ---------------------------: | ------------------------: |
+| Brevity   |                41,800 |                 38,857 |               0.637 |                         50.2 |                      91.5 |
+| Express   |                16,542 |                 14,311 |               1.745 |                         71.1 |                     126.6 |
+| Fastify   |                40,937 |                 38,793 |               0.672 |                         96.8 |                      79.8 |
+| Nest      |                14,955 |                 13,005 |               1.927 |                        237.0 |                     176.0 |
 
 Startup medians and RSS maxima combine both methods and all repeats. Startup
 includes process creation/imports/listening, not cold filesystem caches.

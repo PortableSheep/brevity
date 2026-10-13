@@ -35,14 +35,17 @@ server.on("listening", () => {
   if (!address || typeof address === "string") throw new Error("Expected TCP listener");
   console.log(`App running: http://127.0.0.1:${address.port}`);
 });
-server.on("error", error => {
+server.on("error", (error) => {
   console.error(error);
   process.exitCode = 1;
 });
 for (const signal of ["SIGTERM", "SIGINT"] as const) {
   process.once(signal, () => {
-    server.close(error => {
-      if (error) { console.error(error); process.exitCode = 1; }
+    server.close((error) => {
+      if (error) {
+        console.error(error);
+        process.exitCode = 1;
+      }
     });
     server.closeIdleConnections();
   });

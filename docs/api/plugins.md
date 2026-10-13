@@ -51,16 +51,16 @@ Type exports: `DebugConfig`, `DebugPluginOptions`.
 `new DebugService(config = { enabled: false })` requires enabled when supplying
 an explicit `DebugConfig`; verbose is optional.
 
-| Method | Contract |
-|---|---|
-| `setEnabled(boolean)` | Toggle logging and diagnostic rendering; retained history is unchanged |
-| `log(level, message, data?)` | Level info/warn/error/debug; no-op when disabled |
-| `info`, `warn`, `error` `(message, data?)` | Level helpers |
-| `debug(message, data?)` | Requires verbose and enabled |
-| `getLogs()` | Shallow array copy of at most 100 entries |
-| `clear()` | Clear history |
-| `renderErrorPage(error, requestInfo?)` | Escaped diagnostic HTML when enabled; generic error HTML when disabled |
-| `renderErrorResponse(res, error, requestInfo?)` | Send the enabled/disabled error HTML with 500 |
+| Method                                          | Contract                                                               |
+| ----------------------------------------------- | ---------------------------------------------------------------------- |
+| `setEnabled(boolean)`                           | Toggle logging and diagnostic rendering; retained history is unchanged |
+| `log(level, message, data?)`                    | Level info/warn/error/debug; no-op when disabled                       |
+| `info`, `warn`, `error` `(message, data?)`      | Level helpers                                                          |
+| `debug(message, data?)`                         | Requires verbose and enabled                                           |
+| `getLogs()`                                     | Shallow array copy of at most 100 entries                              |
+| `clear()`                                       | Clear history                                                          |
+| `renderErrorPage(error, requestInfo?)`          | Escaped diagnostic HTML when enabled; generic error HTML when disabled |
+| `renderErrorResponse(res, error, requestInfo?)` | Send the enabled/disabled error HTML with 500                          |
 
 **Rendering is gated by enabled.** Disabled rendering does not read error or
 request details or expose log history. Gate custom diagnostic routes in

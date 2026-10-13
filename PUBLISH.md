@@ -148,15 +148,18 @@ tar -tzf brevity-core-0.2.0.tgz | head -20
 ## Troubleshooting
 
 **Error: Package name must be scoped when published to npm**
+
 - Use `@your-username/package-name` format
 - Verify with `npm ls -a --depth=0` in each package
 
 **Error: You do not have permission to publish this package**
+
 - Check you're logged in: `npm whoami`
 - Verify the package name isn't already taken
 - Check your npm account has 2FA disabled (or use `npm token`)
 
 **Error: 401 Unauthorized**
+
 - Run `npm login` again
 - Check `.npmrc` doesn't have conflicting config
 - Try `npm logout && npm login`

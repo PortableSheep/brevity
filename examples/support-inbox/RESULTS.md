@@ -23,20 +23,20 @@ changed source or dependencies should produce changed output.
 
 ## Application-owned code
 
-| Category | Physical lines | Nonblank lines | UTF-8 bytes |
-|---|---:|---:|---:|
-| Brevity HTTP + templates | 120 | 117 | 7,706 |
-| Express HTTP + templates | 153 | 150 | 10,028 |
-| Shared validation + JSON repository | 147 | 137 | 6,479 |
-| Shared CSS + native browser JS | 31 | 31 | 1,800 |
-| Shared runtime configuration/token check | 25 | 24 | 1,286 |
-| **Brevity runnable total** | **323** | **309** | **17,271** |
-| **Express runnable total** | **356** | **342** | **19,593** |
-| Common build/package configuration, separate | 50 | 50 | 1,204 |
-| Brevity runnable + common build configuration | 373 | 359 | 18,475 |
-| Express runnable + common build configuration | 406 | 392 | 20,797 |
-| Shared acceptance/domain/browser tests, separate | 302 | 291 | 17,463 |
-| Measurement + compiled-process smoke tooling, separate | 232 | 229 | 12,287 |
+| Category                                               | Physical lines | Nonblank lines | UTF-8 bytes |
+| ------------------------------------------------------ | -------------: | -------------: | ----------: |
+| Brevity HTTP + templates                               |            120 |            117 |       7,706 |
+| Express HTTP + templates                               |            153 |            150 |      10,028 |
+| Shared validation + JSON repository                    |            147 |            137 |       6,479 |
+| Shared CSS + native browser JS                         |             31 |             31 |       1,800 |
+| Shared runtime configuration/token check               |             25 |             24 |       1,286 |
+| **Brevity runnable total**                             |        **323** |        **309** |  **17,271** |
+| **Express runnable total**                             |        **356** |        **342** |  **19,593** |
+| Common build/package configuration, separate           |             50 |             50 |       1,204 |
+| Brevity runnable + common build configuration          |            373 |            359 |      18,475 |
+| Express runnable + common build configuration          |            406 |            392 |      20,797 |
+| Shared acceptance/domain/browser tests, separate       |            302 |            291 |      17,463 |
+| Measurement + compiled-process smoke tooling, separate |            232 |            229 |      12,287 |
 
 Each runnable total includes its own route/template modules and the three shared
 runtime categories **once**. Neither shared business logic nor shared assets are
@@ -63,10 +63,10 @@ measurement either.
 
 ## Framework/library code and dependencies
 
-| Installed production graph | Direct dependencies | Additional unique name/version pairs | Total unique pairs |
-|---|---|---:|---:|
-| Brevity | `@brevity/core@0.1.0`, `@brevity/web@0.1.0` from this checkout | 0 | 2 |
-| Express | `express@5.1.0` | 41 | 42 |
+| Installed production graph | Direct dependencies                                            | Additional unique name/version pairs | Total unique pairs |
+| -------------------------- | -------------------------------------------------------------- | -----------------------------------: | -----------------: |
+| Brevity                    | `@brevity/core@0.1.0`, `@brevity/web@0.1.0` from this checkout |                                    0 |                  2 |
+| Express                    | `express@5.1.0`                                                |                                   41 |                 42 |
 
 `@brevity/web`'s core peer is counted once, not as a third package. Two versions
 of one package name count as two pairs. Exact transitive versions, including
@@ -77,12 +77,12 @@ plugins or template-engine packages. Development-only direct pins are
 `typescript@5.9.2`, `tsx@4.20.3`, `@types/node@22.17.0`, and
 `@types/express@5.0.3`; the lock captures their resolved tool dependencies.
 
-| Library code, not application code | Physical lines | Nonblank lines | Bytes |
-|---|---:|---:|---:|
-| Installed core/web shipped JS | 768 | 768 | 28,703 |
-| Installed Express + production graph shipped JS | 24,111 | 20,405 | 751,807 |
-| Core TypeScript source, separate | 693 | 614 | 24,053 |
-| Web TypeScript source, separate | 217 | 195 | 8,391 |
+| Library code, not application code              | Physical lines | Nonblank lines |   Bytes |
+| ----------------------------------------------- | -------------: | -------------: | ------: |
+| Installed core/web shipped JS                   |            768 |            768 |  28,703 |
+| Installed Express + production graph shipped JS |         24,111 |         20,405 | 751,807 |
+| Core TypeScript source, separate                |            693 |            614 |  24,053 |
+| Web TypeScript source, separate                 |            217 |            195 |   8,391 |
 
 Installed library totals recursively count shipped `.js`/`.cjs`/`.mjs` files
 once per production name/version pair, excluding nested `node_modules` before
@@ -99,18 +99,18 @@ than pretending that framework work vanished.
 No frontend build/minification or runtime dependency is required. These source
 assets are the production assets served by both compiled apps:
 
-| Shared asset | Raw bytes | Gzip level 9 bytes |
-|---|---:|---:|
-| CSS | 1,478 | 686 |
-| Native counter JS | 322 | 227 |
-| **Both assets** | **1,800** | **913** |
+| Shared asset      | Raw bytes | Gzip level 9 bytes |
+| ----------------- | --------: | -----------------: |
+| CSS               |     1,478 |                686 |
+| Native counter JS |       322 |                227 |
+| **Both assets**   | **1,800** |            **913** |
 
-| Actual served HTML / initial page | Brevity raw / gzip bytes | Express raw / gzip bytes |
-|---|---:|---:|
-| Empty create form | 1,729 / 739 | 1,591 / 699 |
-| Inbox with one fixed fictional request | 1,084 / 578 | 1,084 / 578 |
-| Detail for that request | 1,218 / 681 | 1,182 / 662 |
-| First form + both assets | 3,529 / 1,652 | 3,391 / 1,612 |
+| Actual served HTML / initial page      | Brevity raw / gzip bytes | Express raw / gzip bytes |
+| -------------------------------------- | -----------------------: | -----------------------: |
+| Empty create form                      |              1,729 / 739 |              1,591 / 699 |
+| Inbox with one fixed fictional request |              1,084 / 578 |              1,084 / 578 |
+| Detail for that request                |              1,218 / 681 |              1,182 / 662 |
+| First form + both assets               |            3,529 / 1,652 |            3,391 / 1,612 |
 
 Each gzip value is computed independently with Node zlib level 9 and summed
 where appropriate. **Neither server enables HTTP compression**; the script and

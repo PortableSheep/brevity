@@ -7,14 +7,16 @@ declare global {
   }
 }
 
-test("load, visible, idle, and interaction import only when scheduled, failures keep fallback", async ({ page }) => {
+test("load, visible, idle, and interaction import only when scheduled, failures keep fallback", async ({
+  page,
+}) => {
   await page.addInitScript(() => {
     // Control idle scheduling instead of relying on browser idle timing.
     const callbacks: (() => void)[] = [];
     Object.assign(window, {
       requestIdleCallback: (callback: () => void) => callbacks.push(callback),
       cancelIdleCallback: () => {},
-      flushIdle: () => callbacks.forEach(callback => callback()),
+      flushIdle: () => callbacks.forEach((callback) => callback()),
     });
   });
   await page.goto("/native");
@@ -31,21 +33,29 @@ test("load, visible, idle, and interaction import only when scheduled, failures 
   await expect(page.getByRole("button", { name: "broken fallback" })).toBeVisible();
 });
 
-test("strict CSP and hostile props preserve fallback and cannot inject markup", async ({ page }) => {
+test("strict CSP and hostile props preserve fallback and cannot inject markup", async ({
+  page,
+}) => {
   const violations: string[] = [];
   await page.exposeFunction("cspViolation", (directive: string) => violations.push(directive));
-  await page.addInitScript(() => document.addEventListener("securitypolicyviolation", event => {
-    void window.cspViolation(event.violatedDirective);
-  }));
+  await page.addInitScript(() =>
+    document.addEventListener("securitypolicyviolation", (event) => {
+      void window.cspViolation(event.violatedDirective);
+    }),
+  );
   await page.goto("/native/hostile");
-  await expect(page.locator("output")).toHaveText('</script><img src=x onerror="window.pwned=true">');
+  await expect(page.locator("output")).toHaveText(
+    '</script><img src=x onerror="window.pwned=true">',
+  );
   await expect(page.getByText("Safe fallback")).toBeVisible();
   await expect(page.locator("img")).toHaveCount(0);
   expect(await page.evaluate(() => "pwned" in window)).toBe(false);
   expect(violations).toEqual([]);
 });
 
-test("enhanced form retains 422 and 409 input, focuses errors, restores pending controls and binds replacement", async ({ page }) => {
+test("enhanced form retains 422 and 409 input, focuses errors, restores pending controls and binds replacement", async ({
+  page,
+}) => {
   await page.goto("/native/form");
   await expect(page.locator("[data-ready]")).toHaveCount(1);
   const form = page.locator("#enhanced-form form");
@@ -69,7 +79,9 @@ test("enhanced form retains 422 and 409 input, focuses errors, restores pending 
   expect(new URL(page.url()).pathname).toBe("/native/form");
 });
 
-test("controls named action, method, target, or enctype do not shadow the form's submission attributes", async ({ page }) => {
+test("controls named action, method, target, or enctype do not shadow the form's submission attributes", async ({
+  page,
+}) => {
   await page.goto("/native/form");
   await expect(page.locator("[data-ready]")).toHaveCount(1);
   await page.evaluate(() => {
@@ -88,7 +100,7 @@ test("controls named action, method, target, or enctype do not shadow the form's
     form.append(button);
   });
   await page.getByLabel("Note", { exact: true }).fill("valid note");
-  const request = page.waitForRequest(req => req.method() === "POST");
+  const request = page.waitForRequest((req) => req.method() === "POST");
   await page.getByRole("button", { name: "Publish", exact: true }).click();
   const sent = await request;
   expect(sent.resourceType()).toBe("fetch");
@@ -97,13 +109,19 @@ test("controls named action, method, target, or enctype do not shadow the form's
   await expect(page.getByText("Saved", { exact: true })).toBeVisible();
 });
 
-test("fetch errors are reported without losing input or disabling native controls", async ({ page }) => {
+test("fetch errors are reported without losing input or disabling native controls", async ({
+  page,
+}) => {
   await page.goto("/native/form");
   await expect(page.locator("[data-ready]")).toHaveCount(1);
-  await page.evaluate(() => document.addEventListener("brevity:form-error", () => {
-    document.documentElement.dataset.formError = "true";
-  }));
-  await page.route("**/native/form", route => route.request().method() === "POST" ? route.abort() : route.continue());
+  await page.evaluate(() =>
+    document.addEventListener("brevity:form-error", () => {
+      document.documentElement.dataset.formError = "true";
+    }),
+  );
+  await page.route("**/native/form", (route) =>
+    route.request().method() === "POST" ? route.abort() : route.continue(),
+  );
   await page.getByLabel("Note", { exact: true }).fill("retain me");
   await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("data-form-error", "true");
@@ -126,12 +144,20 @@ test("native islands and POST validation work without JavaScript", async ({ brow
     await page.getByLabel("Note", { exact: true }).fill("native note");
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.getByText("Saved", { exact: true })).toBeVisible();
-  } finally { await context.close(); }
+  } finally {
+    await context.close();
+  }
 });
 
-test("unsupported observers/timers fall back, start deduplicates and disposal aborts listeners", async ({ page }) => {
+test("unsupported observers/timers fall back, start deduplicates and disposal aborts listeners", async ({
+  page,
+}) => {
   await page.addInitScript(() => {
-    Object.assign(window, { IntersectionObserver: undefined, requestIdleCallback: undefined, cancelIdleCallback: undefined });
+    Object.assign(window, {
+      IntersectionObserver: undefined,
+      requestIdleCallback: undefined,
+      cancelIdleCallback: undefined,
+    });
   });
   await page.goto("/native");
   await expect(page.locator("#visible [data-hydrated]")).toHaveCount(1);
@@ -162,19 +188,27 @@ test("unsupported observers/timers fall back, start deduplicates and disposal ab
     dispose();
     dispose();
     element.querySelector("button")?.click();
-    return { outputs, after: element.querySelectorAll("output").length, started: element.dataset.brevityStarted };
+    return {
+      outputs,
+      after: element.querySelectorAll("output").length,
+      started: element.dataset.brevityStarted,
+    };
   });
   expect(result).toEqual({ outputs: 1, after: 0, started: undefined });
 });
 
 test("mount failures emit errors but do not block other islands", async ({ page }) => {
-  await page.route("**/native/counter.js", route => route.fulfill({
-    contentType: "text/javascript",
-    body: 'export default (el, props) => { if (props.text === "load") throw new Error("mount error"); el.dataset.hydrated = "true"; };',
-  }));
-  await page.addInitScript(() => document.addEventListener("brevity:island-error", () => {
-    document.documentElement.dataset.islandError = "true";
-  }));
+  await page.route("**/native/counter.js", (route) =>
+    route.fulfill({
+      contentType: "text/javascript",
+      body: 'export default (el, props) => { if (props.text === "load") throw new Error("mount error"); el.dataset.hydrated = "true"; };',
+    }),
+  );
+  await page.addInitScript(() =>
+    document.addEventListener("brevity:island-error", () => {
+      document.documentElement.dataset.islandError = "true";
+    }),
+  );
   await page.goto("/native");
   await expect(page.locator("html")).toHaveAttribute("data-island-error", "true");
   await expect(page.locator("#load button")).toHaveText("load fallback");
@@ -195,7 +229,9 @@ test("malformed props report errors and keep fallback", async ({ page }) => {
     element.dataset.hydrate = "load";
     element.textContent = "still usable";
     document.body.append(element);
-    const error = new Promise<void>(resolve => element.addEventListener("brevity:island-error", () => resolve(), { once: true }));
+    const error = new Promise<void>((resolve) =>
+      element.addEventListener("brevity:island-error", () => resolve(), { once: true }),
+    );
     const dispose = startIslands(document.body);
     await error;
     dispose();
@@ -213,13 +249,17 @@ test("enhanced redirect uses native navigation", async ({ page }) => {
   await expect(page.locator("[data-ready]")).toHaveCount(1);
 });
 
-test("data-brevity-enhance upgrades a form without a manifest and restarts nested islands after replacement", async ({ page }) => {
+test("data-brevity-enhance upgrades a form without a manifest and restarts nested islands after replacement", async ({
+  page,
+}) => {
   const scripts: string[] = [];
-  page.on("request", req => { if (req.resourceType() === "script") scripts.push(new URL(req.url()).pathname); });
+  page.on("request", (req) => {
+    if (req.resourceType() === "script") scripts.push(new URL(req.url()).pathname);
+  });
   await page.goto("/native/enhanced");
   await expect(page.locator("#enhanced-note [data-hydrated] output")).toHaveText("nested");
   await page.getByLabel("Note", { exact: true }).fill("  ");
-  const blank = page.waitForRequest(req => req.method() === "POST");
+  const blank = page.waitForRequest((req) => req.method() === "POST");
   await page.getByRole("button", { name: "Save", exact: true }).click();
   expect((await blank).resourceType()).toBe("fetch");
   await expect(page.getByRole("alert")).toBeFocused();
@@ -233,7 +273,9 @@ test("data-brevity-enhance upgrades a form without a manifest and restarts neste
   expect(scripts).toContain("/native/enhance.js");
 });
 
-test("enhanced directive page still submits natively with JavaScript disabled", async ({ browser }) => {
+test("enhanced directive page still submits natively with JavaScript disabled", async ({
+  browser,
+}) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto("/native/enhanced");

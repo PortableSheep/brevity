@@ -42,7 +42,10 @@ export function createExampleApp(): App {
   app.router.get("/{*:path}", (req, res, container) => {
     const viewer = container?.get("viewer") as { render(t: string, d: object): string } | undefined;
     const html = viewer?.render("404.html", { path: req.path });
-    res.status(404).header("content-type", "text/html; charset=utf-8").send(html ?? "404 Not Found");
+    res
+      .status(404)
+      .header("content-type", "text/html; charset=utf-8")
+      .send(html ?? "404 Not Found");
   });
 
   return app;

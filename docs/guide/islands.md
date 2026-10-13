@@ -26,12 +26,12 @@ emit a bubbling `brevity:island-error`; another island still mounts. Native
 components should preserve fallback until ready, and avoid partial mutations
 before throwing. Islands are not SSR or automatic framework hydration.
 
-| Strategy | Mount begins |
-|---|---|
-| `load` (default) | When the external module runs |
-| `visible` | When IntersectionObserver sees the wrapper; immediate if unsupported |
-| `idle` | requestIdleCallback, or a 200 ms timer if unsupported |
-| `interaction` | First pointerdown, focusin, or keydown inside the wrapper |
+| Strategy         | Mount begins                                                         |
+| ---------------- | -------------------------------------------------------------------- |
+| `load` (default) | When the external module runs                                        |
+| `visible`        | When IntersectionObserver sees the wrapper; immediate if unsupported |
+| `idle`           | requestIdleCallback, or a 200 ms timer if unsupported                |
+| `interaction`    | First pointerdown, focusin, or keydown inside the wrapper            |
 
 Interaction scheduling **does not cancel or replay the triggering event**.
 A first click on a native link/form still works before enhancement finishes.
@@ -187,13 +187,13 @@ props/page HTML. The standalone form directive `enhance.js` (which bundles
 bytes**. Gzip here is measured compression, not a server setting.
 There is no throughput, startup-time, or productivity claim.
 
-| Package | Direct runtime dependencies | External runtime graph (excluding peers) |
-|---|---:|---|
-| core | 0 | none |
-| web | 0 | none (required core peer) |
-| views | 1 | Eta 3.5.0 only (required core/web peers) |
-| islands | 0 | none (required web peer) |
-| islands-svelte | 0 | none (required islands + Svelte 5 peers) |
+| Package        | Direct runtime dependencies | External runtime graph (excluding peers) |
+| -------------- | --------------------------: | ---------------------------------------- |
+| core           |                           0 | none                                     |
+| web            |                           0 | none (required core peer)                |
+| views          |                           1 | Eta 3.5.0 only (required core/web peers) |
+| islands        |                           0 | none (required web peer)                 |
+| islands-svelte |                           0 | none (required islands + Svelte 5 peers) |
 
 With required Brevity peers included, views needs four production package
 entries including itself (views, Eta, web, core); native islands needs three

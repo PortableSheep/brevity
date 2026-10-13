@@ -80,19 +80,19 @@ page in each view module. There is no schema/form generator that hides that work
 loopback HTTP server. It does not compare controller snippets or require
 byte-identical HTML.
 
-| Surface | Contract |
-|---|---|
-| `GET/HEAD /requests/new` | Required labeled name/email/subject/details controls; HTML, nosniff, CSP, no-store; native POST form and token |
-| `POST /requests` | Required string fields, non-whitespace content, simple email shape, limits 80/254/120/2000 UTF-16 code units; invalid shape/length gives retained, escaped, accessible 422 errors; exact maximum lengths accepted |
-| Successful creation | 303 to `/requests/:id`; persisted detail page escapes user text; generated UUID, creation time, initial `open` status |
-| `GET/HEAD /inbox` | Case-insensitive substring search across all four fields, exact open/closed filter, five results per page, newest insertion first; native GET form and previous/next links |
-| Query handling | Search at most 120 characters; invalid status/page gives 400; positive out-of-range pages clamp to the last page |
-| `GET/HEAD /requests/:id` | Inspect fields and status; native status form; nonexistent ID gives 404 |
-| `POST /requests/:id/status` | Same token requirement; only `open`/`closed`, invalid status gives accessible 422 with current selection, successful update gives 303 to detail |
-| Bodies/tokens | URL-encoded and JSON object inputs; absent/incorrect tokens 403; invalid JSON, non-object JSON, invalid form escapes or UTF-8 400; unsupported nonempty body types/encodings 415; declared and chunked bodies above 16 KiB 413 |
-| Assets | Exact `/assets/app.css` and `/assets/app.js` allowlist; GET/HEAD, MIME/length/nosniff/no-cache, no HTTP compression; other methods 405 with `Allow: GET, HEAD`; encoded/dot-segment asset aliases do not expose files |
-| Missing routes/methods | 404, with case-sensitive and strict trailing-slash page paths; HEAD supported for the GET pages, not an additional application action |
-| Persistence/failure | Restart retains records/status; concurrent writes on one repository serialize without lost updates; failed replacement gives logged 500, no redirect/phantom record, and a later write can retry |
+| Surface                     | Contract                                                                                                                                                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GET/HEAD /requests/new`    | Required labeled name/email/subject/details controls; HTML, nosniff, CSP, no-store; native POST form and token                                                                                                                 |
+| `POST /requests`            | Required string fields, non-whitespace content, simple email shape, limits 80/254/120/2000 UTF-16 code units; invalid shape/length gives retained, escaped, accessible 422 errors; exact maximum lengths accepted              |
+| Successful creation         | 303 to `/requests/:id`; persisted detail page escapes user text; generated UUID, creation time, initial `open` status                                                                                                          |
+| `GET/HEAD /inbox`           | Case-insensitive substring search across all four fields, exact open/closed filter, five results per page, newest insertion first; native GET form and previous/next links                                                     |
+| Query handling              | Search at most 120 characters; invalid status/page gives 400; positive out-of-range pages clamp to the last page                                                                                                               |
+| `GET/HEAD /requests/:id`    | Inspect fields and status; native status form; nonexistent ID gives 404                                                                                                                                                        |
+| `POST /requests/:id/status` | Same token requirement; only `open`/`closed`, invalid status gives accessible 422 with current selection, successful update gives 303 to detail                                                                                |
+| Bodies/tokens               | URL-encoded and JSON object inputs; absent/incorrect tokens 403; invalid JSON, non-object JSON, invalid form escapes or UTF-8 400; unsupported nonempty body types/encodings 415; declared and chunked bodies above 16 KiB 413 |
+| Assets                      | Exact `/assets/app.css` and `/assets/app.js` allowlist; GET/HEAD, MIME/length/nosniff/no-cache, no HTTP compression; other methods 405 with `Allow: GET, HEAD`; encoded/dot-segment asset aliases do not expose files          |
+| Missing routes/methods      | 404, with case-sensitive and strict trailing-slash page paths; HEAD supported for the GET pages, not an additional application action                                                                                          |
+| Persistence/failure         | Restart retains records/status; concurrent writes on one repository serialize without lost updates; failed replacement gives logged 500, no redirect/phantom record, and a later write can retry                               |
 
 Only the declared business fields are retained. Extra input fields are ignored;
 duplicate URL-encoded fields and query keys use the last value. Whitespace is

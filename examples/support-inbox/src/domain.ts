@@ -3,11 +3,14 @@ import { mkdir, open, readFile, rename, unlink } from "node:fs/promises";
 import { dirname, isAbsolute } from "node:path";
 
 export const fields = ["name", "email", "subject", "details"] as const;
-export type Field = typeof fields[number];
+export type Field = (typeof fields)[number];
 export type Values = Record<Field, string>;
 export type Errors = Partial<Record<Field | "status", string[]>>;
 export const labels: Record<Field, string> = {
-  name: "Name", email: "Email", subject: "Subject", details: "Details",
+  name: "Name",
+  email: "Email",
+  subject: "Subject",
+  details: "Details",
 };
 export const limits: Record<Field, number> = { name: 80, email: 254, subject: 120, details: 2000 };
 export type Ticket = Values & { id: string; status: "open" | "closed"; createdAt: string };
@@ -18,8 +21,10 @@ export function validate(input: Record<string, unknown>): { values: Values; erro
   for (const field of fields) {
     const value = input[field];
     values[field] = typeof value === "string" ? value : "";
-    if (typeof value !== "string" || !value.trim()) errors[field] = [`Enter ${labels[field].toLowerCase()}.`];
-    else if (value.length > limits[field]) errors[field] = [`Use at most ${limits[field]} characters.`];
+    if (typeof value !== "string" || !value.trim())
+      errors[field] = [`Enter ${labels[field].toLowerCase()}.`];
+    else if (value.length > limits[field])
+      errors[field] = [`Use at most ${limits[field]} characters.`];
   }
   if (!errors.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
     errors.email = ["Enter a valid email address."];
@@ -32,24 +37,49 @@ export function isStatus(value: unknown): value is Ticket["status"] {
 }
 
 export class InputError extends Error {
-  constructor(public readonly status: number, message: string) { super(message); }
+  constructor(
+    public readonly status: number,
+    message: string,
+  ) {
+    super(message);
+  }
 }
 
 export function list(tickets: readonly Ticket[], query: Record<string, unknown>) {
   const q = query.q ?? "";
   const status = query.status ?? "";
   const page = query.page ?? "1";
-  if (typeof q !== "string" || q.length > 120 || typeof status !== "string"
-    || (status !== "" && !isStatus(status)) || typeof page !== "string"
-    || !/^[1-9]\d*$/.test(page) || !Number.isSafeInteger(Number(page))) {
+  if (
+    typeof q !== "string" ||
+    q.length > 120 ||
+    typeof status !== "string" ||
+    (status !== "" && !isStatus(status)) ||
+    typeof page !== "string" ||
+    !/^[1-9]\d*$/.test(page) ||
+    !Number.isSafeInteger(Number(page))
+  ) {
     throw new InputError(400, "Invalid inbox filters");
   }
-  const matches = tickets.filter(ticket => (!status || ticket.status === status)
-    && `${ticket.name} ${ticket.email} ${ticket.subject} ${ticket.details}`.toLowerCase().includes(q.toLowerCase()))
-    .slice().reverse();
+  const matches = tickets
+    .filter(
+      (ticket) =>
+        (!status || ticket.status === status) &&
+        `${ticket.name} ${ticket.email} ${ticket.subject} ${ticket.details}`
+          .toLowerCase()
+          .includes(q.toLowerCase()),
+    )
+    .slice()
+    .reverse();
   const pages = Math.max(1, Math.ceil(matches.length / 5));
   const current = Math.min(Number(page), pages);
-  return { q, status, page: current, pages, total: matches.length, tickets: matches.slice((current - 1) * 5, current * 5) };
+  return {
+    q,
+    status,
+    page: current,
+    pages,
+    total: matches.length,
+    tickets: matches.slice((current - 1) * 5, current * 5),
+  };
 }
 export type Inbox = ReturnType<typeof list>;
 
@@ -59,14 +89,25 @@ function storedTickets(value: unknown): Ticket[] {
   const tickets: Ticket[] = [];
   const ids = new Set<string>();
   for (const ticket of records) {
-    if (!isRecord(ticket) || Object.keys(ticket).sort().join(",")
-      !== "createdAt,details,email,id,name,status,subject" || Object.keys(validate(ticket).errors).length
-      || !isStatus(ticket.status) || typeof ticket.id !== "string"
-      || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(ticket.id)
-      || ids.has(ticket.id) || typeof ticket.createdAt !== "string"
-      || !Number.isFinite(Date.parse(ticket.createdAt))) throw new Error("Invalid stored request");
+    if (
+      !isRecord(ticket) ||
+      Object.keys(ticket).sort().join(",") !== "createdAt,details,email,id,name,status,subject" ||
+      Object.keys(validate(ticket).errors).length ||
+      !isStatus(ticket.status) ||
+      typeof ticket.id !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(ticket.id) ||
+      ids.has(ticket.id) ||
+      typeof ticket.createdAt !== "string" ||
+      !Number.isFinite(Date.parse(ticket.createdAt))
+    )
+      throw new Error("Invalid stored request");
     ids.add(ticket.id);
-    tickets.push({ ...validate(ticket).values, id: ticket.id, status: ticket.status, createdAt: ticket.createdAt });
+    tickets.push({
+      ...validate(ticket).values,
+      id: ticket.id,
+      status: ticket.status,
+      createdAt: ticket.createdAt,
+    });
   }
   return tickets;
 }
@@ -77,7 +118,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 export class Repository {
   private queue: Promise<unknown> = Promise.resolve();
-  private constructor(private readonly file: string, private tickets: Ticket[]) {}
+  private constructor(
+    private readonly file: string,
+    private tickets: Ticket[],
+  ) {}
 
   static async open(file: string): Promise<Repository> {
     if (!isAbsolute(file)) throw new Error("Repository path must be absolute");
@@ -94,16 +138,23 @@ export class Repository {
     return new Repository(file, tickets);
   }
 
-  all(): Ticket[] { return this.tickets.map(ticket => ({ ...ticket })); }
+  all(): Ticket[] {
+    return this.tickets.map((ticket) => ({ ...ticket }));
+  }
   find(id: string): Ticket {
-    const ticket = this.tickets.find(ticket => ticket.id === id);
+    const ticket = this.tickets.find((ticket) => ticket.id === id);
     if (!ticket) throw new InputError(404, "Request not found");
     return { ...ticket };
   }
   create(values: Values): Promise<Ticket> {
     return this.mutate(() => {
       if (Object.keys(validate(values).errors).length) throw new InputError(422, "Invalid request");
-      const ticket: Ticket = { ...values, id: randomUUID(), status: "open", createdAt: new Date().toISOString() };
+      const ticket: Ticket = {
+        ...values,
+        id: randomUUID(),
+        status: "open",
+        createdAt: new Date().toISOString(),
+      };
       return { tickets: [...this.tickets, ticket], result: { ...ticket } };
     });
   }
@@ -111,7 +162,10 @@ export class Repository {
     return this.mutate(() => {
       if (!isStatus(status)) throw new InputError(422, "Invalid status");
       const ticket = { ...this.find(id), status };
-      return { tickets: this.tickets.map(item => item.id === id ? ticket : item), result: { ...ticket } };
+      return {
+        tickets: this.tickets.map((item) => (item.id === id ? ticket : item)),
+        result: { ...ticket },
+      };
     });
   }
   private mutate(change: () => { tickets: Ticket[]; result: Ticket }): Promise<Ticket> {
@@ -138,8 +192,9 @@ export class Repository {
       }
       await rename(temporary, this.file);
     } finally {
-      try { await unlink(temporary); }
-      catch (error) {
+      try {
+        await unlink(temporary);
+      } catch (error) {
         if (!(error instanceof Error && "code" in error && error.code === "ENOENT")) throw error;
       }
     }

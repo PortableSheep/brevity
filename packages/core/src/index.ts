@@ -50,9 +50,10 @@ export function createApp(options: CreateAppOptions = {}): App {
     },
     listen(port = 3000, host = "127.0.0.1") {
       const server = createServer((req, res) => {
-        void router.dispatch(req, res)
-          .catch(error => router.handleError(error, null, new Response(res)))
-          .catch(error => {
+        void router
+          .dispatch(req, res)
+          .catch((error) => router.handleError(error, null, new Response(res)))
+          .catch((error) => {
             console.error("[brevity] response failed", error);
             res.destroy();
           });

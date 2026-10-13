@@ -20,7 +20,9 @@ export function toHttpId(value: string | null): number {
 }
 
 export class GreetingService {
-  message(id: number) { return `Hello, reader ${id}`; }
+  message(id: number) {
+    return `Hello, reader ${id}`;
+  }
 }
 
 export function plainApp(service: GreetingService) {

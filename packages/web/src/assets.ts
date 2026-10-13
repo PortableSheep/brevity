@@ -31,18 +31,27 @@ const mimeTypes: Readonly<Record<string, string>> = {
 };
 
 export function staticAssets(assets: Readonly<Record<string, StaticAsset>>): MiddlewareHandler {
-  const entries = new Map(Object.entries(assets).map(([url, asset]) => {
-    if (!url.startsWith("/") || url.startsWith("//") || !/^[\x21-\x7e]+$/.test(url) || /[?#%\\\s]/.test(url)
-      || new URL(url, "http://localhost").pathname !== url) {
-      throw new TypeError(`Static asset URL must be a canonical, unencoded absolute path: ${url}`);
-    }
-    const contentType = asset.contentType ?? mimeTypes[extname(asset.file).toLowerCase()];
-    if (!contentType) throw new TypeError(`Specify contentType for static asset: ${url}`);
-    const cacheControl = asset.cacheControl ?? "no-cache";
-    validateHeaderValue("content-type", contentType);
-    validateHeaderValue("cache-control", cacheControl);
-    return [url, { file: asset.file, contentType, cacheControl }] as const;
-  }));
+  const entries = new Map(
+    Object.entries(assets).map(([url, asset]) => {
+      if (
+        !url.startsWith("/") ||
+        url.startsWith("//") ||
+        !/^[\x21-\x7e]+$/.test(url) ||
+        /[?#%\\\s]/.test(url) ||
+        new URL(url, "http://localhost").pathname !== url
+      ) {
+        throw new TypeError(
+          `Static asset URL must be a canonical, unencoded absolute path: ${url}`,
+        );
+      }
+      const contentType = asset.contentType ?? mimeTypes[extname(asset.file).toLowerCase()];
+      if (!contentType) throw new TypeError(`Specify contentType for static asset: ${url}`);
+      const cacheControl = asset.cacheControl ?? "no-cache";
+      validateHeaderValue("content-type", contentType);
+      validateHeaderValue("cache-control", cacheControl);
+      return [url, { file: asset.file, contentType, cacheControl }] as const;
+    }),
+  );
 
   return async (req, res, next) => {
     const asset = entries.get(req.path);

@@ -12,7 +12,10 @@ export class Request {
   public body: Record<string, unknown> | null = null;
   public form: URLSearchParams | null = null;
 
-  constructor(public readonly raw: IncomingMessage, routeParams: Record<string, string> = {}) {
+  constructor(
+    public readonly raw: IncomingMessage,
+    routeParams: Record<string, string> = {},
+  ) {
     this.method = raw.method ?? "GET";
     this.headers = raw.headers ?? {};
     this.url = raw.url ?? "/";
@@ -79,7 +82,10 @@ export class Request {
     } catch {
       throw new HttpError(400, "Invalid UTF-8 Body");
     }
-    const ct = String(this.headers["content-type"] ?? "").split(";")[0].trim().toLowerCase();
+    const ct = String(this.headers["content-type"] ?? "")
+      .split(";")[0]
+      .trim()
+      .toLowerCase();
     if (ct === "application/json" || /^application\/[\w.+-]+\+json$/.test(ct)) {
       let value: unknown;
       try {

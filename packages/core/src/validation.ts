@@ -25,9 +25,12 @@ export function validateRules(
         throw new TypeError(`Unknown validation rule "${name}" for "${field}".`);
       }
       const bounded = name === "min" || name === "max";
-      if (parts.length > 2 || (bounded
-        ? param === undefined || !/^\d+$/.test(param) || !Number.isSafeInteger(Number(param))
-        : param !== undefined)) {
+      if (
+        parts.length > 2 ||
+        (bounded
+          ? param === undefined || !/^\d+$/.test(param) || !Number.isSafeInteger(Number(param))
+          : param !== undefined)
+      ) {
         throw new TypeError(`Invalid validation rule "${rule}" for "${field}".`);
       }
       if (!passes(name, value, param)) {

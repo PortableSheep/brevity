@@ -8,9 +8,27 @@ export type User = {
 
 export class UserService {
   #users: User[] = [
-    { id: 1, email: "alice@brevity.test", name: "Alice Admin", role: "admin", createdAt: new Date("2024-01-01") },
-    { id: 2, email: "bob@brevity.test", name: "Bob Builder", role: "user", createdAt: new Date("2024-02-15") },
-    { id: 3, email: "carol@brevity.test", name: "Carol Dev", role: "user", createdAt: new Date("2024-03-20") },
+    {
+      id: 1,
+      email: "alice@brevity.test",
+      name: "Alice Admin",
+      role: "admin",
+      createdAt: new Date("2024-01-01"),
+    },
+    {
+      id: 2,
+      email: "bob@brevity.test",
+      name: "Bob Builder",
+      role: "user",
+      createdAt: new Date("2024-02-15"),
+    },
+    {
+      id: 3,
+      email: "carol@brevity.test",
+      name: "Carol Dev",
+      role: "user",
+      createdAt: new Date("2024-03-20"),
+    },
   ];
 
   #nextId = 4;
@@ -39,7 +57,10 @@ export class UserService {
     return user;
   }
 
-  update(id: number, input: Partial<{ email: string; name: string; role: "admin" | "user" }>): User | undefined {
+  update(
+    id: number,
+    input: Partial<{ email: string; name: string; role: "admin" | "user" }>,
+  ): User | undefined {
     const index = this.#users.findIndex((u) => u.id === id);
     if (index === -1) return undefined;
     this.#users[index] = { ...this.#users[index], ...input };

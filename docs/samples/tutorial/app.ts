@@ -15,7 +15,11 @@ export function createNotebook(store: NoteStore, enhance?: (form: FormState) => 
   });
   app.router.get("/", async (_req, res) => {
     const form = emptyForm();
-    await views.render(res, "notes", { notes: await store.list(), form, enhancement: enhance?.(form) });
+    await views.render(res, "notes", {
+      notes: await store.list(),
+      form,
+      enhancement: enhance?.(form),
+    });
   });
   app.router.head("/", (_req, res) => res.send(""));
   app.router.post("/notes", async (req, res) => {
@@ -25,12 +29,20 @@ export function createNotebook(store: NoteStore, enhance?: (form: FormState) => 
     const text = req.form.get("text") ?? "";
     if (!text.trim() || text.length > 200) {
       const form = createFormState({
-        values: { text }, labels: { text: "Note" },
+        values: { text },
+        labels: { text: "Note" },
         errors: { text: ["Write between 1 and 200 characters."] },
       });
-      await views.render(res, "notes", {
-        notes: await store.list(), form, enhancement: enhance?.(form),
-      }, { status: 422 });
+      await views.render(
+        res,
+        "notes",
+        {
+          notes: await store.list(),
+          form,
+          enhancement: enhance?.(form),
+        },
+        { status: 422 },
+      );
       return;
     }
     await store.add(text.trim());

@@ -9,14 +9,18 @@ test("Svelte counter enhances the native form", async ({ page }) => {
   await expect(page.locator("main > ul")).toContainText("Hello island");
 });
 
-test("native submission and retained errors work with JavaScript disabled", async ({ browser, baseURL }) => {
+test("native submission and retained errors work with JavaScript disabled", async ({
+  browser,
+  baseURL,
+}) => {
   const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   try {
     const page = await context.newPage();
     await page.goto("/");
     await page.getByLabel("Note", { exact: true }).fill("   ");
-    const invalid = page.waitForResponse(response =>
-      response.url().endsWith("/notes") && response.request().method() === "POST");
+    const invalid = page.waitForResponse(
+      (response) => response.url().endsWith("/notes") && response.request().method() === "POST",
+    );
     await page.getByRole("button", { name: "Save note" }).click();
     expect((await invalid).status()).toBe(422);
     await expect(page.getByRole("alert")).toContainText("Write between 1 and 200 characters");
@@ -24,5 +28,7 @@ test("native submission and retained errors work with JavaScript disabled", asyn
     await page.getByLabel("Note", { exact: true }).fill("No JavaScript needed");
     await page.getByRole("button", { name: "Save note" }).click();
     await expect(page.locator("main > ul")).toContainText("No JavaScript needed");
-  } finally { await context.close(); }
+  } finally {
+    await context.close();
+  }
 });

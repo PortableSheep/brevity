@@ -4,7 +4,11 @@ import { Request } from "./request.js";
 import { Response } from "./response.js";
 import { HttpError } from "./http-error.js";
 
-export type RouteHandler = (req: Request, res: Response, container: Container | null) => unknown | Promise<unknown>;
+export type RouteHandler = (
+  req: Request,
+  res: Response,
+  container: Container | null,
+) => unknown | Promise<unknown>;
 export type MiddlewareHandler = (
   req: Request,
   res: Response,
@@ -61,19 +65,35 @@ export class Router {
     this.#routes.push(makeRoute(method, path, handler));
   }
 
-  get(path: string, handler: RouteHandler): void { this.route("GET", path, handler); }
-  post(path: string, handler: RouteHandler): void { this.route("POST", path, handler); }
-  put(path: string, handler: RouteHandler): void { this.route("PUT", path, handler); }
-  patch(path: string, handler: RouteHandler): void { this.route("PATCH", path, handler); }
-  delete(path: string, handler: RouteHandler): void { this.route("DELETE", path, handler); }
-  head(path: string, handler: RouteHandler): void { this.route("HEAD", path, handler); }
-  options(path: string, handler: RouteHandler): void { this.route("OPTIONS", path, handler); }
+  get(path: string, handler: RouteHandler): void {
+    this.route("GET", path, handler);
+  }
+  post(path: string, handler: RouteHandler): void {
+    this.route("POST", path, handler);
+  }
+  put(path: string, handler: RouteHandler): void {
+    this.route("PUT", path, handler);
+  }
+  patch(path: string, handler: RouteHandler): void {
+    this.route("PATCH", path, handler);
+  }
+  delete(path: string, handler: RouteHandler): void {
+    this.route("DELETE", path, handler);
+  }
+  head(path: string, handler: RouteHandler): void {
+    this.route("HEAD", path, handler);
+  }
+  options(path: string, handler: RouteHandler): void {
+    this.route("OPTIONS", path, handler);
+  }
 
   async dispatch(nodeReq: IncomingMessage, nodeRes: ServerResponse): Promise<void> {
     let request: Request | null = null;
     const response = new Response(nodeRes);
     try {
-      await this.#dispatch(nodeReq, response, req => { request = req; });
+      await this.#dispatch(nodeReq, response, (req) => {
+        request = req;
+      });
     } catch (error) {
       nodeReq.resume();
       await this.handleError(error, request, response);
@@ -101,7 +121,8 @@ export class Router {
         }
       }
     }
-    const message = error instanceof HttpError && status < 500 ? error.message : "Internal Server Error";
+    const message =
+      error instanceof HttpError && status < 500 ? error.message : "Internal Server Error";
     res.status(status).json({ error: message });
   }
 
@@ -127,7 +148,9 @@ export class Router {
       matched = route;
       params = {};
       try {
-        route.keys.forEach((k, i) => { params[k] = decodeURIComponent(m[i + 1] ?? ""); });
+        route.keys.forEach((k, i) => {
+          params[k] = decodeURIComponent(m[i + 1] ?? "");
+        });
       } catch {
         throw new HttpError(400, "Invalid Route Encoding");
       }
@@ -143,7 +166,8 @@ export class Router {
     };
 
     const chain: ComposedHandler = this.#middleware.reduceRight<ComposedHandler>(
-      (next, mw) => async (r: Request, s: Response) => Promise.resolve(mw(r, s, next, this.#container)),
+      (next, mw) => async (r: Request, s: Response) =>
+        Promise.resolve(mw(r, s, next, this.#container)),
       endpoint,
     );
 
@@ -155,7 +179,13 @@ export class Router {
       await chain(req, res);
     };
     if (this.#container) {
-      await this.#container.runScoped(new Map<string, unknown>([["request", req], ["response", res]]), run);
+      await this.#container.runScoped(
+        new Map<string, unknown>([
+          ["request", req],
+          ["response", res],
+        ]),
+        run,
+      );
     } else {
       await run();
     }
@@ -176,8 +206,14 @@ function compilePath(path: string): { regex: RegExp; keys: string[] } {
   for (const match of path.matchAll(token)) {
     source += escape(path.slice(offset, match.index));
     keys.push(match[2] ?? match[3]);
-    source += match[1] === "i" ? "([0-9]+)" : match[1] === "s" ? "([A-Za-z0-9]+)" :
-      match[1] === "*" ? "(.+)" : "([^/]+)";
+    source +=
+      match[1] === "i"
+        ? "([0-9]+)"
+        : match[1] === "s"
+          ? "([A-Za-z0-9]+)"
+          : match[1] === "*"
+            ? "(.+)"
+            : "([^/]+)";
     offset = match.index + match[0].length;
   }
   return { regex: new RegExp(`^${source}${escape(path.slice(offset))}$`), keys };

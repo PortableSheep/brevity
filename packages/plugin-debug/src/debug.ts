@@ -48,13 +48,25 @@ export class DebugService {
     console.log(`${prefix} ${message}${suffix}`);
   }
 
-  info(message: string, data?: unknown): void { this.log("info", message, data); }
-  warn(message: string, data?: unknown): void { this.log("warn", message, data); }
-  error(message: string, data?: unknown): void { this.log("error", message, data); }
-  debug(message: string, data?: unknown): void { if (this.config.verbose) this.log("debug", message, data); }
+  info(message: string, data?: unknown): void {
+    this.log("info", message, data);
+  }
+  warn(message: string, data?: unknown): void {
+    this.log("warn", message, data);
+  }
+  error(message: string, data?: unknown): void {
+    this.log("error", message, data);
+  }
+  debug(message: string, data?: unknown): void {
+    if (this.config.verbose) this.log("debug", message, data);
+  }
 
-  getLogs(): LogEntry[] { return [...this.logs]; }
-  clear(): void { this.logs = []; }
+  getLogs(): LogEntry[] {
+    return [...this.logs];
+  }
+  clear(): void {
+    this.logs = [];
+  }
 
   renderErrorPage(error: Error, requestInfo?: Record<string, unknown>): string {
     if (!this.config.enabled) {
@@ -62,9 +74,7 @@ export class DebugService {
     }
 
     const logs = this.getLogs().map(renderLogEntry).join("");
-    const stackSection = error.stack
-      ? `<pre class="stack">${escapeHtml(error.stack)}</pre>`
-      : "";
+    const stackSection = error.stack ? `<pre class="stack">${escapeHtml(error.stack)}</pre>` : "";
     const requestSection = requestInfo
       ? `<details><summary>Request Info</summary><pre>${escapeHtml(JSON.stringify(requestInfo, null, 2))}</pre></details>`
       : "";
@@ -78,7 +88,10 @@ export class DebugService {
   }
 
   renderErrorResponse(res: Response, error: Error, requestInfo?: Record<string, unknown>): void {
-    res.status(500).header("content-type", "text/html; charset=utf-8").send(this.renderErrorPage(error, requestInfo));
+    res
+      .status(500)
+      .header("content-type", "text/html; charset=utf-8")
+      .send(this.renderErrorPage(error, requestInfo));
   }
 }
 

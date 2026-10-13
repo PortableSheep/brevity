@@ -6,13 +6,17 @@ export type EnhancedFormOptions = {
 };
 
 /** Native POST protocol; validation and conflict markup stay server-owned. */
-export function enhanceForm(initialForm: HTMLFormElement, options: EnhancedFormOptions): () => void {
+export function enhanceForm(
+  initialForm: HTMLFormElement,
+  options: EnhancedFormOptions,
+): () => void {
   let form = initialForm;
   let pending = false;
   let stopped = false;
   let request: AbortController | undefined;
   const target = options.target;
-  if (!target.id || !target.contains(form)) throw new TypeError("Enhanced form needs a containing target with an ID");
+  if (!target.id || !target.contains(form))
+    throw new TypeError("Enhanced form needs a containing target with an ID");
   const report = (error: unknown) => {
     console.error("Brevity form failed", error);
     target.dispatchEvent(new CustomEvent("brevity:form-error", { detail: error, bubbles: true }));
@@ -24,14 +28,20 @@ export function enhanceForm(initialForm: HTMLFormElement, options: EnhancedFormO
     const method = attr("method").toLowerCase() || "get";
     const enctype = attr("enctype").toLowerCase() || "application/x-www-form-urlencoded";
     const browsingTarget = attr("target");
-    if (method !== "post" || action.origin !== location.origin
-      || event.submitter?.hasAttribute("formaction") || event.submitter?.hasAttribute("formmethod")
-      || event.submitter?.hasAttribute("formenctype") || event.submitter?.hasAttribute("formtarget")
-      || browsingTarget && browsingTarget !== "_self"
-      || enctype === "text/plain") return;
+    if (
+      method !== "post" ||
+      action.origin !== location.origin ||
+      event.submitter?.hasAttribute("formaction") ||
+      event.submitter?.hasAttribute("formmethod") ||
+      event.submitter?.hasAttribute("formenctype") ||
+      event.submitter?.hasAttribute("formtarget") ||
+      (browsingTarget && browsingTarget !== "_self") ||
+      enctype === "text/plain"
+    )
+      return;
     const multipart = enctype === "multipart/form-data";
     const data = new FormData(form, event.submitter);
-    if (!multipart && [...data.values()].some(value => typeof value !== "string")) return;
+    if (!multipart && [...data.values()].some((value) => typeof value !== "string")) return;
     event.preventDefault();
     if (pending) return;
     pending = true;
@@ -39,20 +49,23 @@ export function enhanceForm(initialForm: HTMLFormElement, options: EnhancedFormO
     const busy = originalForm.getAttribute("aria-busy");
     const submitControls = [...originalForm.elements].filter(
       (control): control is HTMLButtonElement | HTMLInputElement =>
-        (control instanceof HTMLButtonElement || control instanceof HTMLInputElement)
-        && (control.type === "submit" || control.type === "image"),
+        (control instanceof HTMLButtonElement || control instanceof HTMLInputElement) &&
+        (control.type === "submit" || control.type === "image"),
     );
-    const controls = submitControls.map(control => ({ control, disabled: control.disabled }));
+    const controls = submitControls.map((control) => ({ control, disabled: control.disabled }));
     originalForm.setAttribute("aria-busy", "true");
     for (const { control } of controls) control.disabled = true;
     request = new AbortController();
     try {
-      const body = multipart ? data : new URLSearchParams(
-        [...data.entries()].map(([key, value]) => [key, String(value)]),
-      );
+      const body = multipart
+        ? data
+        : new URLSearchParams([...data.entries()].map(([key, value]) => [key, String(value)]));
       const response = await fetch(action, {
-        method: "POST", body, credentials: "same-origin",
-        headers: { Accept: "text/html" }, signal: request.signal,
+        method: "POST",
+        body,
+        credentials: "same-origin",
+        headers: { Accept: "text/html" },
+        signal: request.signal,
       });
       await options.onResponse?.(response.clone());
       if (stopped) return;
@@ -71,7 +84,8 @@ export function enhanceForm(initialForm: HTMLFormElement, options: EnhancedFormO
       const page = new DOMParser().parseFromString(await response.text(), "text/html");
       const replacement = page.getElementById(target.id);
       const nextForm = replacement?.querySelector("form");
-      if (!replacement || !nextForm) throw new Error("Enhanced form response is missing its target/form");
+      if (!replacement || !nextForm)
+        throw new Error("Enhanced form response is missing its target/form");
       if (stopped) return;
       form.removeEventListener("submit", submit);
       target.dispatchEvent(new CustomEvent("brevity:before-replace", { bubbles: true }));
@@ -81,7 +95,12 @@ export function enhanceForm(initialForm: HTMLFormElement, options: EnhancedFormO
       form.addEventListener("submit", submit);
       const focus = target.querySelector<HTMLElement>('[role="alert"], [aria-invalid="true"]');
       focus?.focus();
-      target.dispatchEvent(new CustomEvent("brevity:form-response", { detail: { status: response.status }, bubbles: true }));
+      target.dispatchEvent(
+        new CustomEvent("brevity:form-response", {
+          detail: { status: response.status },
+          bubbles: true,
+        }),
+      );
     } catch (error) {
       if (!request?.signal.aborted) report(error);
     } finally {

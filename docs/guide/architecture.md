@@ -20,14 +20,14 @@ raw-stream integrations must opt out and enforce their own bounds.
 
 ## Ownership
 
-| Layer | Owns |
-|---|---|
-| `@brevity/core` | Router, bounded parsing, responses, errors, explicit DI/providers |
-| `@brevity/core/decorators` | Optional standard TS5 route annotations, explicit controller construction |
-| `@brevity/web` | Escaped callback fragments, form feedback, safe JSON state, exact asset maps |
-| Optional plugins | Cache, viewer registration, validation registration, development diagnostics |
-| Application | Schema, domain validation, persistence, auth/CSRF, resource ownership, deployment |
-| Specialist tools | ORM/query building, identity provider, browser compiler, E2E runner |
+| Layer                      | Owns                                                                              |
+| -------------------------- | --------------------------------------------------------------------------------- |
+| `@brevity/core`            | Router, bounded parsing, responses, errors, explicit DI/providers                 |
+| `@brevity/core/decorators` | Optional standard TS5 route annotations, explicit controller construction         |
+| `@brevity/web`             | Escaped callback fragments, form feedback, safe JSON state, exact asset maps      |
+| Optional plugins           | Cache, viewer registration, validation registration, development diagnostics      |
+| Application                | Schema, domain validation, persistence, auth/CSRF, resource ownership, deployment |
+| Specialist tools           | ORM/query building, identity provider, browser compiler, E2E runner               |
 
 The container uses async-local request/response overrides, not global mutation.
 Services keep their registered singleton/transient lifetime; a singleton is

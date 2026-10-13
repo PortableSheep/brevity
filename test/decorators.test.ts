@@ -3,7 +3,16 @@ import assert from "node:assert/strict";
 import { once } from "node:events";
 import { createApp, type App, type Container, type Request, type Response } from "@brevity/core";
 import {
-  Controller, Get, Post, Put, Patch, Delete, Head, Options, Route, registerControllers,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Patch,
+  Delete,
+  Head,
+  Options,
+  Route,
+  registerControllers,
 } from "@brevity/core/decorators";
 import { createControllerApp } from "../examples/controllers.js";
 
@@ -12,7 +21,7 @@ async function serve(t: TestContext, app: App): Promise<string> {
   t.after(async () => {
     server.closeAllConnections();
     await new Promise<void>((resolve, reject) => {
-      server.close(error => error ? reject(error) : resolve());
+      server.close((error) => (error ? reject(error) : resolve()));
     });
   });
   await once(server, "listening");
@@ -27,7 +36,7 @@ test("optional decorator entry point does not change the core exports", async ()
   assert.equal("registerControllers" in core, false);
 });
 
-test("controller example uses constructor injection and typed route params", async t => {
+test("controller example uses constructor injection and typed route params", async (t) => {
   const url = await serve(t, createControllerApp());
   const response = await fetch(`${url}/users/42`);
   assert.equal(response.status, 200);
@@ -35,7 +44,7 @@ test("controller example uses constructor injection and typed route params", asy
   assert.equal((await fetch(`${url}/users/not-a-number`)).status, 404);
 });
 
-test("decorated HTTP verbs use existing middleware, body parsing, and container", async t => {
+test("decorated HTTP verbs use existing middleware, body parsing, and container", async (t) => {
   const app = createApp();
   app.container.instance("label", "injected");
   app.use(async (req, res, next) => {
@@ -63,7 +72,9 @@ test("decorated HTTP verbs use existing middleware, body parsing, and container"
     const hasBody = method !== "GET" && method !== "HEAD";
     const response = await fetch(`${url}/verbs`, {
       method,
-      ...(hasBody ? { headers: { "content-type": "application/json" }, body: '{"name":"test"}' } : {}),
+      ...(hasBody
+        ? { headers: { "content-type": "application/json" }, body: '{"name":"test"}' }
+        : {}),
     });
     assert.equal(response.status, 200, method);
     assert.equal(response.headers.get("x-middleware"), "yes");
@@ -71,24 +82,32 @@ test("decorated HTTP verbs use existing middleware, body parsing, and container"
       assert.equal(await response.text(), "");
     } else {
       assert.deepEqual(await response.json(), {
-        method, body: hasBody ? { name: "test" } : null, label: "injected",
+        method,
+        body: hasBody ? { name: "test" } : null,
+        label: "injected",
       });
     }
   }
 });
 
-test("root routes, symbol methods, and callback routes coexist in registration order", async t => {
+test("root routes, symbol methods, and callback routes coexist in registration order", async (t) => {
   const key = Symbol("endpoint");
   @Controller("/")
   class RootController {
     @Get()
-    root(_req: Request, res: Response): void { res.send("root"); }
+    root(_req: Request, res: Response): void {
+      res.send("root");
+    }
 
     @Route("GET", "/symbol")
-    [key](_req: Request, res: Response): void { res.send("symbol"); }
+    [key](_req: Request, res: Response): void {
+      res.send("symbol");
+    }
 
     @Get("/first")
-    first(_req: Request, res: Response): void { res.send("decorated"); }
+    first(_req: Request, res: Response): void {
+      res.send("decorated");
+    }
   }
   const app = createApp();
   app.router.get("/first", (_req, res) => res.send("callback"));
@@ -99,27 +118,37 @@ test("root routes, symbol methods, and callback routes coexist in registration o
   assert.equal(await (await fetch(`${url}/first`)).text(), "callback");
 });
 
-test("inherited routes bind this to the registered instance and overrides shadow them", async t => {
+test("inherited routes bind this to the registered instance and overrides shadow them", async (t) => {
   class Base {
     label = "base";
 
     @Get("/inherited")
-    inherited(_req: Request, res: Response): void { res.send(this.label); }
+    inherited(_req: Request, res: Response): void {
+      res.send(this.label);
+    }
 
     @Get("/old")
-    replaced(_req: Request, res: Response): void { res.send("old"); }
+    replaced(_req: Request, res: Response): void {
+      res.send("old");
+    }
 
     @Get("/hidden")
-    hidden(_req: Request, res: Response): void { res.send("base"); }
+    hidden(_req: Request, res: Response): void {
+      res.send("base");
+    }
   }
   @Controller("/child")
   class Child extends Base {
     override label = "child";
 
     @Get("/new")
-    override replaced(_req: Request, res: Response): void { res.send(this.label); }
+    override replaced(_req: Request, res: Response): void {
+      res.send(this.label);
+    }
 
-    override hidden(_req: Request, res: Response): void { res.send("undecorated"); }
+    override hidden(_req: Request, res: Response): void {
+      res.send("undecorated");
+    }
   }
   const app = createApp();
   registerControllers(app.router, new Child());
@@ -130,12 +159,14 @@ test("inherited routes bind this to the registered instance and overrides shadow
   assert.equal((await fetch(`${url}/child/hidden`)).status, 404);
 });
 
-test("controller instances and apps do not share mutable state", async t => {
+test("controller instances and apps do not share mutable state", async (t) => {
   @Controller("/count")
   class Counter {
     count = 0;
     @Get()
-    handle(_req: Request, res: Response): void { res.json(++this.count); }
+    handle(_req: Request, res: Response): void {
+      res.json(++this.count);
+    }
   }
   const first = createApp();
   const second = createApp();
@@ -148,11 +179,13 @@ test("controller instances and apps do not share mutable state", async t => {
   assert.equal(await (await fetch(`${url2}/count`)).json(), 1);
 });
 
-test("async controller errors use the existing router error response", async t => {
+test("async controller errors use the existing router error response", async (t) => {
   @Controller()
   class Broken {
     @Get("/broken")
-    async handle(): Promise<void> { throw new Error("controller failure"); }
+    async handle(): Promise<void> {
+      throw new Error("controller failure");
+    }
   }
   const app = createApp();
   registerControllers(app.router, new Broken());
@@ -184,11 +217,13 @@ test("invalid decorator usage fails explicitly", () => {
   assert.throws(() => registerControllers(createApp().router, {}), /must have @Controller/);
 });
 
-test("invalid controller in a batch does not register earlier controllers", async t => {
+test("invalid controller in a batch does not register earlier controllers", async (t) => {
   @Controller()
   class Valid {
     @Get("/valid")
-    handle(_req: Request, res: Response): void { res.send("valid"); }
+    handle(_req: Request, res: Response): void {
+      res.send("valid");
+    }
   }
   const app = createApp();
   assert.throws(() => registerControllers(app.router, new Valid(), {}), /must have @Controller/);

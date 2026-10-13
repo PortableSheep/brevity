@@ -30,7 +30,7 @@ export function etaEngine(): ViewEngine {
   return {
     compile(source) {
       const compiled = eta.compile(source, { async: true });
-      return async data => compiled.call(eta, data);
+      return async (data) => compiled.call(eta, data);
     },
   };
 }
@@ -45,8 +45,14 @@ export function createViews(options: ViewsOptions) {
   const helpers = { createFormState, ...options.helpers };
 
   function filename(name: string): string {
-    if (!name || name.includes("\\") || name.includes("%") || name.includes("\0")
-      || isAbsolute(name) || name.split("/").some(part => !part || part === "." || part === "..")) {
+    if (
+      !name ||
+      name.includes("\\") ||
+      name.includes("%") ||
+      name.includes("\0") ||
+      isAbsolute(name) ||
+      name.split("/").some((part) => !part || part === "." || part === "..")
+    ) {
       throw new TypeError(`Invalid view name: ${name}`);
     }
     return resolve(root, name.endsWith(extension) ? name : name + extension);
@@ -66,13 +72,20 @@ export function createViews(options: ViewsOptions) {
       result = load(file);
       compiled.set(file, result);
       const pending = result;
-      void result.catch(() => { if (compiled.get(file) === pending) compiled.delete(file); });
+      void result.catch(() => {
+        if (compiled.get(file) === pending) compiled.delete(file);
+      });
     }
     return result;
   }
-  async function template(name: string, data: ViewData, ancestors: readonly string[] = []): Promise<HtmlFragment> {
+  async function template(
+    name: string,
+    data: ViewData,
+    ancestors: readonly string[] = [],
+  ): Promise<HtmlFragment> {
     const file = filename(name);
-    if (ancestors.includes(file) || ancestors.length >= 64) throw new Error("Recursive view partial");
+    if (ancestors.includes(file) || ancestors.length >= 64)
+      throw new Error("Recursive view partial");
     const render = await get(file);
     const partial = (child: string, locals: ViewData = {}) =>
       template(child, { ...data, ...locals }, [...ancestors, file]);
@@ -80,19 +93,30 @@ export function createViews(options: ViewsOptions) {
     if (typeof output !== "string") throw new TypeError("View engine must render a string");
     return trustedHtml(output);
   }
-  async function renderToString(name: string, data: ViewData = {}, settings: ViewOptions = {}): Promise<HtmlFragment> {
+  async function renderToString(
+    name: string,
+    data: ViewData = {},
+    settings: ViewOptions = {},
+  ): Promise<HtmlFragment> {
     const body = await template(name, data);
-    const layout = settings.layout === false ? undefined : settings.layout ?? options.layout;
+    const layout = settings.layout === false ? undefined : (settings.layout ?? options.layout);
     return layout ? template(layout, { ...data, body }) : body;
   }
   return {
     renderToString,
-    async render(res: Response, name: string, data: ViewData = {}, settings: ViewOptions = {}): Promise<void> {
+    async render(
+      res: Response,
+      name: string,
+      data: ViewData = {},
+      settings: ViewOptions = {},
+    ): Promise<void> {
       const page = await renderToString(name, data, settings);
       res.header("content-type", "text/html; charset=utf-8");
       res.header("x-content-type-options", "nosniff");
       res.send(page.toString(), settings.status ?? 200);
     },
-    clearCache() { compiled.clear(); },
+    clearCache() {
+      compiled.clear();
+    },
   };
 }

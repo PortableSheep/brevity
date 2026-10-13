@@ -6,6 +6,15 @@ export default defineIsland<{ text: string }>((element, props, context) => {
   output.textContent = props.text;
   element.append(output);
   const button = element.querySelector("button");
-  button?.addEventListener("click", () => { output.textContent = "clicked"; }, { signal: context.signal });
-  return () => { output.remove(); delete element.dataset.hydrated; };
+  button?.addEventListener(
+    "click",
+    () => {
+      output.textContent = "clicked";
+    },
+    { signal: context.signal },
+  );
+  return () => {
+    output.remove();
+    delete element.dataset.hydrated;
+  };
 });

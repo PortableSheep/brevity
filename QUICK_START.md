@@ -38,6 +38,7 @@ npm run dev
 ```
 
 Then edit:
+
 - `src/index.ts` — Add routes and handlers
 - `views/index.html` — Customize the home page
 

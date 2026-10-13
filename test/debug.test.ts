@@ -25,7 +25,7 @@ test("debug service respects verbose flag", () => {
   const debug = new DebugService({ enabled: true, verbose: false });
   debug.debug("verbose message");
   assert.equal(debug.getLogs().length, 0);
-  
+
   const verbose = new DebugService({ enabled: true, verbose: true });
   verbose.debug("verbose message");
   assert.equal(verbose.getLogs().length, 1);
@@ -63,13 +63,19 @@ test("debug service renders error page", () => {
 test("disabled debug rendering never reads error or request details", () => {
   const error = new Error("private error");
   Object.defineProperty(error, "stack", {
-    get() { throw new Error("stack must not be read"); },
+    get() {
+      throw new Error("stack must not be read");
+    },
   });
   Object.defineProperty(error, "message", {
-    get() { throw new Error("message must not be read"); },
+    get() {
+      throw new Error("message must not be read");
+    },
   });
   const requestInfo = {
-    toJSON() { throw new Error("request must not be serialized"); },
+    toJSON() {
+      throw new Error("request must not be serialized");
+    },
   };
   for (const debug of [new DebugService(), new DebugService({ enabled: false })]) {
     assert.equal(
@@ -95,7 +101,7 @@ test("disabling debug rendering hides retained logs and can be re-enabled", () =
   }
 });
 
-test("debug error responses respect enabled at request time", async t => {
+test("debug error responses respect enabled at request time", async (t) => {
   const debug = new DebugService({ enabled: true });
   debug.info("private log");
   const app = createApp();
@@ -106,7 +112,7 @@ test("debug error responses respect enabled at request time", async t => {
   t.after(async () => {
     server.closeAllConnections();
     await new Promise<void>((resolve, reject) => {
-      server.close(error => error ? reject(error) : resolve());
+      server.close((error) => (error ? reject(error) : resolve()));
     });
   });
   await once(server, "listening");

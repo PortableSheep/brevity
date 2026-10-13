@@ -35,7 +35,11 @@ export class Container {
   }
 
   has(key: BindingKey): boolean {
-    return this.#scope.getStore()?.has(key) === true || this.#bindings.has(key) || this.#instances.has(key);
+    return (
+      this.#scope.getStore()?.has(key) === true ||
+      this.#bindings.has(key) ||
+      this.#instances.has(key)
+    );
   }
 
   get<T>(key: BindingKey): T {

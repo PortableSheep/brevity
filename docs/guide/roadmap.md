@@ -9,11 +9,11 @@ This roadmap is derived from evidence, not wishes:
 
 ## Boundaries
 
-| Layer | Owns | Never owns |
-|---|---|---|
-| `@brevity/core` | Routing, request/body correctness, errors, request-scoped DI, lifecycle, optional standard decorators | ORM, auth engine, templates, compiler, client framework |
-| Optional packages (`@brevity/web`, …) | Reusable web behavior that **two apps proved** they need | Product policy, schemas, provider choice |
-| Applications | Domain rules, persistence, identity/ownership policy, provider setup | — |
+| Layer                                 | Owns                                                                                                  | Never owns                                              |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `@brevity/core`                       | Routing, request/body correctness, errors, request-scoped DI, lifecycle, optional standard decorators | ORM, auth engine, templates, compiler, client framework |
+| Optional packages (`@brevity/web`, …) | Reusable web behavior that **two apps proved** they need                                              | Product policy, schemas, provider choice                |
+| Applications                          | Domain rules, persistence, identity/ownership policy, provider setup                                  | —                                                       |
 
 A feature moves into a Brevity package only after a second app repeats the same glue. Persistence and version-history complexity in the rewrite was product complexity; a framework cannot honestly erase it.
 

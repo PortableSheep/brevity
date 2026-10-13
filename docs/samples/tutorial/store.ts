@@ -24,13 +24,15 @@ export async function openStore(url: string) {
       return db.select().from(notes).orderBy(notes.id);
     },
     async add(text: string) {
-      return db.transaction(async tx => {
+      return db.transaction(async (tx) => {
         const [note] = await tx.insert(notes).values({ text }).returning();
         if (!note) throw new Error("Insert returned no note");
         return note;
       });
     },
-    close() { client.close(); },
+    close() {
+      client.close();
+    },
   };
 }
 

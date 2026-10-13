@@ -13,11 +13,11 @@ can recognize trusted fragments with `instanceof`. Its constructor, like
 
 ## Escaped fragments
 
-| Function | Contract |
-|---|---|
-| `html` tagged template | Escape interpolated text; compose nested fragments and arrays |
-| `escapeHtml(value: string): string` | Escape `&`, `<`, `>`, `"`, and `'` |
-| `trustedHtml(markup: string): HtmlFragment` | Mark already-trusted markup for unescaped composition |
+| Function                                    | Contract                                                      |
+| ------------------------------------------- | ------------------------------------------------------------- |
+| `html` tagged template                      | Escape interpolated text; compose nested fragments and arrays |
+| `escapeHtml(value: string): string`         | Escape `&`, `<`, `>`, `"`, and `'`                            |
+| `trustedHtml(markup: string): HtmlFragment` | Mark already-trusted markup for unescaped composition         |
 
 `HtmlValue` permits strings, numbers, bigint, booleans, null/undefined, fragments,
 and readonly nested arrays. Nullish values render empty text; unsupported objects
@@ -44,23 +44,23 @@ CSRF, or global app layout automatically.
 
 `createFormState(options?: FormOptions): FormState` snapshots:
 
-| Option | Default/meaning |
-|---|---|
-| `values` | String/undefined values by field name |
-| `errors` | Readonly message arrays by field name |
-| `labels` | Summary display labels by field name |
+| Option     | Default/meaning                                               |
+| ---------- | ------------------------------------------------------------- |
+| `values`   | String/undefined values by field name                         |
+| `errors`   | Readonly message arrays by field name                         |
+| `labels`   | Summary display labels by field name                          |
 | `idPrefix` | `"form"`; letter followed by letters/digits/underscore/hyphen |
 
 An invalid prefix throws `TypeError`. IDs combine the prefix with a deterministic
 UTF-16LE hex encoding of the field name; do not infer IDs yourself.
 Use distinct prefixes if more than one form shares a page.
 
-| Method | Result |
-|---|---|
-| `value(name)` | Retained string, default `""` |
-| `field(name, { describedBy? } = {})` | `FormField` with id, name, value, invalid, describedBy |
-| `fieldErrors(name)` | Escaped list with its ID, or empty fragment |
-| `errorSummary()` | Linked messages, alert role, heading and tabindex, or empty fragment |
+| Method                               | Result                                                               |
+| ------------------------------------ | -------------------------------------------------------------------- |
+| `value(name)`                        | Retained string, default `""`                                        |
+| `field(name, { describedBy? } = {})` | `FormField` with id, name, value, invalid, describedBy               |
+| `fieldErrors(name)`                  | Escaped list with its ID, or empty fragment                          |
+| `errorSummary()`                     | Linked messages, alert role, heading and tabindex, or empty fragment |
 
 `field().describedBy` combines your hint ID with the error list ID only when
 invalid. Apply it, the label association, and aria-invalid to your own control.

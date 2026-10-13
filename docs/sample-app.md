@@ -10,14 +10,14 @@ The sample app uses `examples/app.ts` as a thin entrypoint. The real wiring live
 
 ## Routes
 
-| Route | Purpose |
-|---|---|
-| `GET /` | Render HTML via viewer |
-| `GET /health` | Health and uptime |
-| `GET /users` | List in-memory users |
-| `GET /users/{i:id}` | Get one user by id |
-| `POST /users` | Validate + create user |
-| `GET /stats` | Read request count from cache |
+| Route               | Purpose                       |
+| ------------------- | ----------------------------- |
+| `GET /`             | Render HTML via viewer        |
+| `GET /health`       | Health and uptime             |
+| `GET /users`        | List in-memory users          |
+| `GET /users/{i:id}` | Get one user by id            |
+| `POST /users`       | Validate + create user        |
+| `GET /stats`        | Read request count from cache |
 
 ## Try it
 

@@ -9,7 +9,7 @@ function run(command, args) {
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
 function pages(dir) {
-  return readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = resolve(dir, entry.name);
     return entry.isDirectory() ? pages(path) : path.endsWith(".md") ? [path] : [];
   });
@@ -23,11 +23,14 @@ for (const path of [
 ]) {
   const source = readFileSync(path, "utf8");
   if (/^```(?:ts|typescript|js|javascript|svelte|prisma|html)\b/m.test(source)) {
-    throw new Error(`Use a checked snippet import instead of inline code in ${relative(root, path)}`);
+    throw new Error(
+      `Use a checked snippet import instead of inline code in ${relative(root, path)}`,
+    );
   }
   for (const match of source.matchAll(/^<<<\s+(\S+)/gm)) {
     const target = match[1].replace(/[#{}].*$/, "");
-    const file = target.startsWith("@/") ? resolve(root, "docs", target.slice(2))
+    const file = target.startsWith("@/")
+      ? resolve(root, "docs", target.slice(2))
       : resolve(root, "docs", target);
     if (!file.startsWith(resolve(root, "docs/samples") + "/")) {
       throw new Error(`Snippet must come from docs/samples: ${match[1]}`);

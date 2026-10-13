@@ -8,20 +8,37 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const directory = await mkdtemp(join(tmpdir(), "support-inbox-smoke-"));
 async function launch(name, file) {
-  const child = spawn(process.execPath, [`dist/${name}.js`], { cwd: root,
-    env: { ...process.env, PORT: "0", SUPPORT_DATA: file }, stdio: ["ignore", "pipe", "pipe"] });
+  const child = spawn(process.execPath, [`dist/${name}.js`], {
+    cwd: root,
+    env: { ...process.env, PORT: "0", SUPPORT_DATA: file },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
   let output = "";
   let errors = "";
-  child.stderr.on("data", bytes => { errors += bytes.toString(); });
+  child.stderr.on("data", (bytes) => {
+    errors += bytes.toString();
+  });
   try {
     const port = await new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => reject(new Error(`Server readiness timed out: ${errors}`)), 10000);
-      child.once("error", error => { clearTimeout(timeout); reject(error); });
-      child.once("exit", code => { clearTimeout(timeout); reject(new Error(`Server exited ${code}: ${errors}`)); });
-      child.stdout.on("data", bytes => {
+      const timeout = setTimeout(
+        () => reject(new Error(`Server readiness timed out: ${errors}`)),
+        10000,
+      );
+      child.once("error", (error) => {
+        clearTimeout(timeout);
+        reject(error);
+      });
+      child.once("exit", (code) => {
+        clearTimeout(timeout);
+        reject(new Error(`Server exited ${code}: ${errors}`));
+      });
+      child.stdout.on("data", (bytes) => {
         output += bytes.toString();
         const match = output.match(/port: (\d+)/);
-        if (match) { clearTimeout(timeout); resolve(Number(match[1])); }
+        if (match) {
+          clearTimeout(timeout);
+          resolve(Number(match[1]));
+        }
       });
     });
     return { child, base: `http://127.0.0.1:${port}` };
@@ -37,7 +54,10 @@ async function stop(child) {
       child.kill("SIGKILL");
       reject(new Error("Server did not stop after SIGTERM"));
     }, 5000);
-    child.once("exit", () => { clearTimeout(timeout); resolve(); });
+    child.once("exit", () => {
+      clearTimeout(timeout);
+      resolve();
+    });
     child.kill("SIGTERM");
   });
 }
@@ -51,9 +71,17 @@ try {
       const page = await response.text();
       const token = page.match(/name="_token" value="([^"]+)"/)?.[1];
       assert(token);
-      const created = await fetch(instance.base + "/requests", { method: "POST", redirect: "manual",
-        body: new URLSearchParams({ _token: token, name: "Smoke Demo", email: "demo@example.test",
-          subject: "Compiled app smoke", details: "Fictional request" }) });
+      const created = await fetch(instance.base + "/requests", {
+        method: "POST",
+        redirect: "manual",
+        body: new URLSearchParams({
+          _token: token,
+          name: "Smoke Demo",
+          email: "demo@example.test",
+          subject: "Compiled app smoke",
+          details: "Fictional request",
+        }),
+      });
       assert.equal(created.status, 303);
       const location = created.headers.get("location");
       assert(location);
@@ -66,6 +94,10 @@ try {
       instance = await launch(name, file);
       assert.match(await (await fetch(instance.base + location)).text(), /Compiled app smoke/);
       console.log(`${name}: compiled HTTP create/detail/static/process-restart smoke passed`);
-    } finally { await stop(instance.child); }
+    } finally {
+      await stop(instance.child);
+    }
   }
-} finally { await rm(directory, { recursive: true }); }
+} finally {
+  await rm(directory, { recursive: true });
+}
