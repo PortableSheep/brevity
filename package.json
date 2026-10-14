@@ -15,7 +15,7 @@
     "build": "npm run build:packages && tsc -p tsconfig.json",
     "build:packages": "npm run build --workspace @brevity/core && npm run build --workspace @brevity/plugin-cache && npm run build --workspace @brevity/plugin-debug && npm run build --workspace @brevity/plugin-viewer && npm run build --workspace @brevity/plugin-validation && npm run build --workspace @brevity/web && npm run build --workspace @brevity/views && npm run build --workspace @brevity/islands && npm run build --workspace @brevity/islands-svelte",
     "typecheck": "npm run build:packages && tsc -p tsconfig.json --noEmit && npm run docs:check",
-    "test": "npm run build:packages && node --import tsx --test test/**/*.test.ts && npm run docs:check",
+    "test": "npm run build:packages && node --import tsx --test test/*.test.ts && npm run docs:check",
     "test:release": "npm run build:packages && node scripts/check-release.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

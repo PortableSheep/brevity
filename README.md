@@ -1,5 +1,8 @@
 # Brevity Node (TypeScript)
 
+[Documentation](https://portablesheep.github.io/brevity/) ·
+[CI](https://github.com/PortableSheep/brevity/actions/workflows/docs.yml)
+
 A small TypeScript backend for APIs and server-rendered pages. Start with ordinary
 HTTP routes and forms; add browser components only where they help.
 

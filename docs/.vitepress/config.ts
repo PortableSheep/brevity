@@ -6,6 +6,10 @@ export default defineConfig({
   appearance: "dark",
   base: process.env.PAGES_BASE_PATH ? `${process.env.PAGES_BASE_PATH.replace(/\/$/, "")}/` : "/",
   themeConfig: {
+    socialLinks: [{ icon: "github", link: "https://github.com/PortableSheep/brevity" }],
+    editLink: {
+      pattern: "https://github.com/PortableSheep/brevity/edit/main/docs/:path",
+    },
     nav: [
       { text: "Learn", link: "/guide/tutorial" },
       { text: "Recipes", link: "/recipes/" },

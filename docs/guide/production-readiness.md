@@ -51,7 +51,7 @@ Repository prerequisites are intentionally not guessed:
 For a local project-site build:
 
 ```sh
-PAGES_BASE_PATH=/brevity-node npm run docs:build
+PAGES_BASE_PATH=/brevity npm run docs:build
 ```
 
 GitHub Pages serves documentation only. Node applications require a separate
