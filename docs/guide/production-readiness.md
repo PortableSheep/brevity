@@ -9,7 +9,8 @@ separates repository checks from deployment and independent-user evidence.
 | HTTP correctness         | Bounded parsing, controlled errors, scoped bindings, browser/no-JS contracts                                                                                                                                       | App-specific authorization and abuse cases                                                               |
 | Validation configuration | Unknown names and malformed parameters throw; regression coverage                                                                                                                                                  | Domain schemas remain app-owned                                                                          |
 | Debug diagnostics        | Disabled rendering produces generic errors                                                                                                                                                                         | Gate custom log endpoints and redact enabled diagnostics                                                 |
-| Compatibility            | Framework contracts and packed consumers passed locally on Node 20, 22, 24; CI matrix configured                                                                                                                   | Successful hosted CI runs; newer versions are not automatically proven                                   |
+| Compatibility            | Framework contracts and packed consumers passed locally and in GitHub Actions on Node 20, 22, 24                                                                                                                   | Newer versions and deployment platforms are not automatically proven                                     |
+| Documentation            | Hosted browser checks and live GitHub Pages documentation; homepage, tutorial, core API, and homepage JS/CSS verified over HTTPS                                                                                   | Ongoing documentation checks as APIs and examples change                                                 |
 | Packaging                | `npm run test:release` installs all nine tarballs in a clean temporary consumer, exercises HTTP/file views/plugins, checks no server-side Svelte, imports the optional adapter, and builds/runs the copied starter | Registry publication, provenance, and registry-consumer verification                                     |
 | Shutdown                 | Tested health/drain recipe, active-request SIGTERM, deadline failure                                                                                                                                               | Target-platform deployment and restart exercises                                                         |
 | Performance              | Source/dependency/payload comparisons plus [repeatable synthetic HTTP benchmarks](./evaluating#synthetic-http-benchmark)                                                                                           | Dedicated-host, application-workload, overload, and soak benchmarks                                      |
@@ -41,7 +42,13 @@ push (or manual run on that branch), it rebuilds docs with the base path supplie
 by `actions/configure-pages`, uploads the static site, and deploys to the
 `github-pages` environment. Pull requests never deploy.
 
-Repository prerequisites are intentionally not guessed:
+The [public documentation](https://portablesheep.github.io/brevity/) is live.
+The [first successful hosted run](https://github.com/PortableSheep/brevity/actions/runs/38507762699)
+passed the Node verification matrix, browser checks, benchmark smoke, and Pages
+deployment. This establishes CI and documentation deployment, not application-host
+compatibility or production operational readiness.
+
+To publish documentation from a fork:
 
 1. Push the repository and workflow to the intended GitHub repository.
 2. In Settings → Pages, choose **GitHub Actions** as the source.
@@ -55,7 +62,7 @@ PAGES_BASE_PATH=/brevity npm run docs:build
 ```
 
 GitHub Pages serves documentation only. Node applications require a separate
-host. Until an actual Pages deployment succeeds, the site is prepared, not live.
+host.
 
 ## Acceptance outside the repository
 
