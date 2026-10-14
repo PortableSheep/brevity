@@ -3,6 +3,9 @@ import assert from "node:assert/strict";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { once } from "node:events";
+import { createServer } from "node:http";
+import deploymentHandler from "./deployment.js";
 import { app as firstRoute } from "./first-route.js";
 import { createNotebook } from "./tutorial/app.js";
 import { openStore } from "./tutorial/store.js";
@@ -12,6 +15,27 @@ import { serve } from "./testing.js";
 import { decoratedApp, plainApp, GreetingService } from "./routes.js";
 import { islandApp } from "./island/server.js";
 import { authApp } from "./supabase.js";
+
+test("deployment export serves HTTP without app.listen", async (t) => {
+  const server = createServer(deploymentHandler).listen(0, "127.0.0.1");
+  t.after(async () => {
+    server.closeAllConnections();
+    await new Promise<void>((resolve, reject) => {
+      server.close((error) => (error ? reject(error) : resolve()));
+    });
+  });
+  await once(server, "listening");
+  const address = server.address();
+  assert(address && typeof address !== "string");
+  const origin = `http://127.0.0.1:${address.port}`;
+  assert.deepEqual(await (await fetch(`${origin}/health`)).json(), { ok: true });
+  const echoed = await fetch(`${origin}/echo`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: '{"value":1}',
+  });
+  assert.deepEqual(await echoed.json(), { body: { value: 1 } });
+});
 
 test("first route works over HTTP; HEAD is not automatically GET", async (t) => {
   const origin = await serve(t, firstRoute);

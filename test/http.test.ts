@@ -1,7 +1,7 @@
 import test, { type TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { once } from "node:events";
-import { request as httpRequest } from "node:http";
+import { createServer, request as httpRequest } from "node:http";
 import { createConnection } from "node:net";
 import {
   createApp,
@@ -12,8 +12,8 @@ import {
   type CreateAppOptions,
 } from "@brevity/core";
 
-async function serve(t: TestContext, app: App): Promise<string> {
-  const server = app.listen(0);
+async function serve(t: TestContext, app: App, externalServer = false): Promise<string> {
+  const server = externalServer ? createServer(app.handler).listen(0, "127.0.0.1") : app.listen(0);
   t.after(async () => {
     server.closeAllConnections();
     await new Promise<void>((resolve, reject) => {
@@ -37,6 +37,58 @@ function echo(options: CreateAppOptions = {}): App {
 async function post(url: string, body: string, contentType = "application/json") {
   return fetch(url, { method: "POST", headers: { "content-type": contentType }, body });
 }
+
+test("detached handler dispatches through a host-owned server with bounded bodies and errors", async (t) => {
+  const app = createApp({ maxBodyBytes: 16 });
+  const { handler } = app;
+  assert.equal(handler, app.handler);
+  app.use(async (req, res, next) => {
+    res.header("x-middleware", "present");
+    return next(req, res);
+  });
+  app.router.post("/echo/{i:id}", (req, res) => res.json({ id: req.param("id"), body: req.body }));
+  app.router.get("/redirect", (_req, res) => {
+    res.raw.setHeader("set-cookie", ["first=1; HttpOnly", "second=2; HttpOnly"]);
+    res.redirect("/destination");
+  });
+  app.router.get("/error", () => {
+    throw new HttpError(409, "Conflict");
+  });
+  const url = await serve(t, { ...app, handler }, true);
+  const response = await post(`${url}/echo/7`, '{"value":1}');
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("x-middleware"), "present");
+  assert.deepEqual(await response.json(), { id: "7", body: { value: 1 } });
+  assert.equal((await post(`${url}/echo/7`, "{")).status, 400);
+  assert.equal((await post(`${url}/echo/7`, '{"value":"too large"}')).status, 413);
+  assert.equal((await fetch(`${url}/missing`)).status, 404);
+  const conflict = await fetch(`${url}/error`);
+  assert.equal(conflict.status, 409);
+  assert.deepEqual(await conflict.json(), { error: "Conflict" });
+  const redirect = await fetch(`${url}/redirect`, { redirect: "manual" });
+  assert.equal(redirect.status, 302);
+  assert.equal(redirect.headers.get("location"), "/destination");
+  assert.deepEqual(redirect.headers.getSetCookie(), ["first=1; HttpOnly", "second=2; HttpOnly"]);
+});
+
+test("host-owned handler preserves request scopes across concurrent invocations", async (t) => {
+  const app = createApp();
+  app.router.get("/{i:id}", async (req, res, container) => {
+    assert(container);
+    await new Promise<void>((resolve) => setImmediate(resolve));
+    assert.equal(container.get("request"), req);
+    assert.equal(container.get("response"), res);
+    res.json({ id: req.param("id") });
+  });
+  const url = await serve(t, app, true);
+  assert.deepEqual(
+    await Promise.all(
+      Array.from({ length: 20 }, async (_, id) => (await fetch(`${url}/${id}`)).json()),
+    ),
+    Array.from({ length: 20 }, (_, id) => ({ id: String(id) })),
+  );
+  assert.equal(app.container.has("request"), false);
+});
 
 test("bounded parser accepts object JSON and forms, caches parses and exposes repeated fields", async (t) => {
   const app = echo();

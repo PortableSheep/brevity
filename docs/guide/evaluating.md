@@ -1,13 +1,10 @@
-# Evaluating Brevity
+# Comparisons and benchmarks
 
-Brevity's intended advantage is a small amount of explicit application glue:
-one HTTP backend can render pages, accept forms, provide APIs, and supply data
-to an independently compiled browser component. This is a design goal, not a
-demonstrated productivity or performance advantage.
-
-HTML-first rendering, progressive enhancement, and interactive components are
-established patterns. Brevity must earn its place through the developer experience
-of combining them, rather than claiming to have invented them.
+Brevity combines routes, server-rendered pages, native forms, and independently
+compiled browser components through a small core and optional packages. This
+reference records example workloads, source and dependency measurements, and
+synthetic HTTP benchmarks. These results describe the measured applications,
+not a general productivity or production-performance guarantee.
 
 ## Compare complete features
 

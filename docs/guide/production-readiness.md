@@ -1,8 +1,8 @@
-# Production readiness: evidence, not a badge
+# Production checklist
 
-Brevity is a candidate for explicit, HTML-first Node services. A working local
-prototype is not evidence of sustained production reliability. This checklist
-separates repository checks from deployment and independent-user evidence.
+Use this checklist when deploying a Brevity application. It distinguishes
+framework contracts checked in CI from configuration and operational behavior
+that must be verified on your selected host.
 
 | Gate                     | Current evidence                                                                                                                                                                                                   | Remaining proof                                                                                          |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
@@ -13,6 +13,7 @@ separates repository checks from deployment and independent-user evidence.
 | Documentation            | Hosted browser checks and live GitHub Pages documentation; homepage, tutorial, core API, and homepage JS/CSS verified over HTTPS                                                                                   | Ongoing documentation checks as APIs and examples change                                                 |
 | Packaging                | `npm run test:release` installs all nine tarballs in a clean temporary consumer, exercises HTTP/file views/plugins, checks no server-side Svelte, imports the optional adapter, and builds/runs the copied starter | Registry publication, provenance, and registry-consumer verification                                     |
 | Shutdown                 | Tested health/drain recipe, active-request SIGTERM, deadline failure                                                                                                                                               | Target-platform deployment and restart exercises                                                         |
+| Hosting                  | Shared Node HTTP handler for host-owned listeners, exercised over HTTP and in the packed consumer                                                                                                                  | Vercel/Lambda deployment, routing, body-stream handling, and asset packaging                             |
 | Performance              | Source/dependency/payload comparisons plus [repeatable synthetic HTTP benchmarks](./evaluating#synthetic-http-benchmark)                                                                                           | Dedicated-host, application-workload, overload, and soak benchmarks                                      |
 | Usability                | Checked notebook and integration recipes                                                                                                                                                                           | Unfamiliar developer's onboarding and deployed second app                                                |
 | Operations               | Explicit [operations recipe](/recipes/operations)                                                                                                                                                                  | Durable sessions, rate limits, backup restore, migrations, rollback, alerts                              |

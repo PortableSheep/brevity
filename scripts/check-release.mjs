@@ -73,6 +73,7 @@ try {
     `
 import assert from "node:assert/strict";
 import { once } from "node:events";
+import { createServer } from "node:http";
 import { writeFile } from "node:fs/promises";
 import { createApp, Validator } from "@brevity/core";
 import * as decorators from "@brevity/core/decorators";
@@ -105,7 +106,7 @@ const app = createApp({ plugins: [
   new ViewerPlugin({ baseDir: process.cwd() }), new ValidationPlugin(),
 ] });
 app.router.get("/", (_req, res) => views.render(res, "page", { title: "Packed app" }));
-const server = app.listen(0);
+const server = createServer(app.handler).listen(0, "127.0.0.1");
 try {
   await once(server, "listening");
   const address = server.address();

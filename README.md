@@ -76,6 +76,7 @@ npm run docs:build   # Build static docs
 - **[Debugging](docs/guide/debugging.md)** — Dev tooling
 - **[Production Readiness](docs/guide/production-readiness.md)** — Evidence gates and GitHub Pages setup
 - **[Operations](docs/recipes/operations.md)** — Checked health and shutdown recipe
+- **[Deployment](docs/guide/deployment.md)** — Node services, host-owned handlers, and serverless integration boundaries
 - **[HTTP Benchmarks](examples/benchmarks/README.md)** — Reproducible Brevity/Express/Fastify/Nest fixtures and limitations
 
 Tutorial/recipe listings import executable files from `docs/samples/`.
@@ -101,9 +102,7 @@ dependencies, never core/web runtime dependencies.
 
 - HTML-first pages and forms with targeted browser enhancements
 - APIs for independently built frontends, not just React
-- Learning how web frameworks work
-- Building microservices
-- Hobby/personal projects
+- Small services and independently deployed backends
 - Small Node services with explicit dependencies and optional web helpers
 
 ## 🤔 Not For
@@ -113,8 +112,11 @@ dependencies, never core/web runtime dependencies.
 - If you want database ORMs built-in (add them yourself, keep framework slim)
 - A drop-in Angular, Nest, or Next.js replacement
 
-Brevity's current `listen()` runs a Node HTTP server. A serverless host needs its
-own integration; Lambda/Vercel deployment is not provided out of the box.
+Run a Node service with `app.listen()`, or export `app.handler` for a host that
+accepts Node HTTP requests and responses without opening a port. Lambda requires
+an HTTP adapter; Edge/Fetch runtimes are not supported. See [Deployment](docs/guide/deployment.md)
+for platform requirements and the distinction between tested contracts and
+verified hosted deployments.
 
 ## 📖 Example
 
@@ -184,25 +186,17 @@ Leave `experimentalDecorators` and `emitDecoratorMetadata` disabled.
 See the [decorator API](docs/api/core.md#optional-controller-decorators) and
 [constructor-injection example](examples/controllers.ts).
 
-## 📊 What we are proving
+## 📊 Examples and benchmarks
 
-The goal is less application glue, not the shortest possible controller. Count a
-complete flow: templates, validation, persistence, error handling, configuration,
-and any browser code. A component's code and runtime still count even when it is
-optional or loaded on only one page.
+The [support inbox](examples/support-inbox/README.md) demonstrates forms,
+validation, persistence, and search, with an equivalent Express implementation.
+[Comparisons and benchmarks](docs/guide/evaluating.md) document reproducible
+measurements, workloads, and limitations rather than a universal framework ranking.
 
-See [Evaluating Brevity](docs/guide/evaluating.md) for the comparison contract and
-limits on what line counts or example apps can establish. No performance,
-learning-time, or production-readiness advantage has been demonstrated.
-
-The [support inbox](examples/support-inbox/README.md) is a second complete
-application with persistent data and an equivalent Express implementation.
-Its [reproducible results](examples/support-inbox/RESULTS.md) show modest
-application-glue savings, not a universal framework ranking.
-
-Brevity is still an educational, evolving framework. Authentication, deployment,
-operational readiness, and application-specific security require deliberate work;
-the examples are not production templates.
+Brevity is an early-stage framework. Review the
+[production checklist](docs/guide/production-readiness.md) before deployment.
+Authentication policy, durable storage, and operational configuration remain
+application responsibilities; examples are not turnkey production templates.
 
 ## 📝 License
 

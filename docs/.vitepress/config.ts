@@ -14,7 +14,7 @@ export default defineConfig({
       { text: "Learn", link: "/guide/tutorial" },
       { text: "Recipes", link: "/recipes/" },
       { text: "API", link: "/api/core" },
-      { text: "Evidence", link: "/guide/evaluating" },
+      { text: "Deploy", link: "/guide/deployment" },
     ],
     sidebar: {
       "/guide/": [
@@ -26,7 +26,8 @@ export default defineConfig({
         { text: "Optional Web Layer", link: "/guide/web" },
         { text: "File Views", link: "/guide/views" },
         { text: "Native Islands", link: "/guide/islands" },
-        { text: "Evaluating Brevity", link: "/guide/evaluating" },
+        { text: "Deployment", link: "/guide/deployment" },
+        { text: "Comparisons & Benchmarks", link: "/guide/evaluating" },
         { text: "Roadmap", link: "/guide/roadmap" },
         { text: "Production Readiness", link: "/guide/production-readiness" },
       ],

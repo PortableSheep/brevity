@@ -9,8 +9,8 @@ hero:
       text: Build your first app
       link: /guide/tutorial
     - theme: alt
-      text: Evaluate the tradeoffs
-      link: /guide/evaluating
+      text: Explore integrations
+      link: /recipes/
 features:
   - title: Start with a route
     details: One app, one handler, one response. Add middleware and explicit dependency wiring when your application needs them.
@@ -42,12 +42,11 @@ no-JS fallback, and optional Svelte mounting. Both packages are opt-in; core
 has no template engine, compiler, or client framework. Inline `html` remains
 useful for fragments and small cases.
 
-The [support inbox comparison](/guide/evaluating#second-application-support-inbox)
-found about **10% fewer nonblank runnable source lines** and **2 vs 42 production
-name/version pairs** against Express in one matched app. It did **not** measure
-developer productivity, startup speed, or request throughput.
-[Read the reproducible evidence and its limitations](/guide/evaluating).
+Run a Node service with `app.listen()`, or export `app.handler` when your host
+supplies Node HTTP requests and responses. The [deployment guide](/guide/deployment)
+explains hosting options and serverless integration requirements.
 
 Start with the [notebook tutorial](/guide/tutorial), choose an
 [integration recipe](/recipes/), and check the [API contracts](/api/core).
-Brevity aims to punch above its weight through composition, not an ever-growing core.
+For measured workloads and package comparisons, see
+[comparisons and benchmarks](/guide/evaluating).

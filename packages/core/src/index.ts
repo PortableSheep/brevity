@@ -1,4 +1,4 @@
-import { createServer, type Server } from "node:http";
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { Router, type RouterOptions } from "./router.js";
 import { Container } from "./container.js";
 import { ServiceProvider } from "./provider.js";
@@ -21,6 +21,7 @@ export type App = {
   use: (mw: Parameters<Router["middleware"]>[0]) => void;
   usePlugin: (plugin: PluginLike) => Plugin;
   usePlugins: (plugins: PluginLike[]) => Plugin[];
+  handler: (req: IncomingMessage, res: ServerResponse) => Promise<void>;
   listen: (port?: number, host?: string) => Server;
 };
 
@@ -48,16 +49,17 @@ export function createApp(options: CreateAppOptions = {}): App {
     usePlugins(list) {
       return list.map((plugin) => app.usePlugin(plugin));
     },
+    handler(req, res) {
+      return router
+        .dispatch(req, res)
+        .catch((error) => router.handleError(error, null, new Response(res)))
+        .catch((error) => {
+          console.error("[brevity] response failed", error);
+          res.destroy();
+        });
+    },
     listen(port = 3000, host = "127.0.0.1") {
-      const server = createServer((req, res) => {
-        void router
-          .dispatch(req, res)
-          .catch((error) => router.handleError(error, null, new Response(res)))
-          .catch((error) => {
-            console.error("[brevity] response failed", error);
-            res.destroy();
-          });
-      });
+      const server = createServer(app.handler);
       server.listen(port, host);
       return server;
     },

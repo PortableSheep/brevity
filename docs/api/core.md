@@ -26,7 +26,7 @@ use inference or the public class method types rather than undocumented subpaths
 ## `createApp(options?)`
 
 Returns an `App` with `router`, `container`, `plugins`, `use`, `usePlugin`,
-`usePlugins`, and `listen`.
+`usePlugins`, `handler`, and `listen`.
 
 | Option (`CreateAppOptions`) | Default                | Contract                                                      |
 | --------------------------- | ---------------------- | ------------------------------------------------------------- |
@@ -41,6 +41,18 @@ Returns an `App` with `router`, `container`, `plugins`, `use`, `usePlugin`,
 zero-argument; instantiate plugins yourself when they need options.
 `app.plugins` records registered plugin names; it is not a dependency manifest.
 Providers are deduplicated by constructor name, not by `Plugin.name`.
+
+### `app.handler(nodeReq, nodeRes)`
+
+A detached-safe Node HTTP handler returning `Promise<void>`. Export it for a
+host-owned HTTP server or pass it to `createServer(app.handler)` without calling
+`app.listen()`. Creating the app never opens a port. Parsing, middleware,
+request scopes, plugins, and error handling are identical to `listen()`.
+
+The host must supply the original URL and unread request stream; upstream
+pre-parsed bodies are not used. Promise resolution marks dispatch completion,
+not stream flush. The host owns connection lifecycle. This is not a Web Fetch
+handler or a Lambda event handler. See [Deployment](/guide/deployment).
 
 ### `app.listen(port = 3000, host = "127.0.0.1")`
 
