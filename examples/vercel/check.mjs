@@ -5,10 +5,19 @@ assert(origin, "Usage: node examples/vercel/check.mjs https://deployment-url");
 const base = new URL(origin);
 assert(["https:", "http:"].includes(base.protocol), "Expected an HTTP(S) URL");
 const request = (path, options) =>
-  fetch(new URL(path, base), { signal: AbortSignal.timeout(15_000), ...options });
+  fetch(new URL(path, base), {
+    redirect: "manual",
+    signal: AbortSignal.timeout(15_000),
+    ...options,
+  });
 
 const health = await request("/health");
-assert.equal(health.status, 200);
+assert.equal(
+  health.status,
+  200,
+  "Health must be directly accessible; protected deployments need an authorized verification client",
+);
+assert.match(health.headers.get("content-type"), /application\/json/);
 assert.deepEqual(await health.json(), { ok: true });
 const page = await request("/");
 assert.equal(page.status, 200);

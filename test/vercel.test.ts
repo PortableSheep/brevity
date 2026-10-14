@@ -27,7 +27,13 @@ test("Vercel output bundles the handler, views, static assets, and explicit raw-
   assert.equal(runtime.maxDuration, 10);
   const { default: handler } = await import(new URL(runtime.handler, fn).href);
   const css = await readFile(new URL("static/style.css", output));
+  let protectHealth = false;
   const server = createServer((req, res) => {
+    if (protectHealth && req.url === "/health") {
+      res.writeHead(302, { location: "/sign-in" });
+      res.end();
+      return;
+    }
     if (req.url === "/style.css") {
       res.setHeader("content-type", "text/css");
       res.end(css);
@@ -51,4 +57,13 @@ test("Vercel output bundles the handler, views, static assets, and explicit raw-
     { timeout: 30_000 },
   );
   assert.match(stdout, /HTTP contracts passed/);
+  protectHealth = true;
+  await assert.rejects(
+    execute(
+      process.execPath,
+      [fileURLToPath(new URL("check.mjs", example)), `http://127.0.0.1:${address.port}`],
+      { timeout: 30_000 },
+    ),
+    /Health must be directly accessible/,
+  );
 });
