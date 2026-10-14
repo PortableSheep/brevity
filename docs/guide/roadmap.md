@@ -27,19 +27,23 @@ rules into the framework.
   Svelte adapter.
 - Checked integration recipes for Drizzle, Prisma, Supabase, Svelte, and Playwright.
 - Node HTTP service entry point and detached host-owned request handler.
+- Runnable Vercel Node 22 deployment example, verified over HTTPS with forms,
+  cookies, raw bodies, file views, static assets, and concurrent request scopes.
 - Public documentation and Node 20/22/24 verification in GitHub Actions.
+- Support/upgrade and private vulnerability-reporting policies, with a source
+  changelog.
 
 ## Next, ranked
 
-1. **Hosted application deployment.** Verify routing, body handling, cookies,
-   assets, persistence, and authentication on a selected host. Complete Vercel
-   Node and Lambda integration recipes without adding platform SDKs to core.
+1. **Hosted application deployment.** Extend the verified Vercel Node integration
+   to real application persistence and authentication. Verify a Lambda recipe
+   without adding platform SDKs to core.
 2. **Operational exercises.** Run restart, migration/rollback, backup restore,
    session expiry, rate-limit, and alerting drills in staging. The existing
    health/shutdown recipe covers SIGTERM draining and deadline failures locally.
-3. **Release maintenance.** Publish support and upgrade policies, a changelog,
-   and a private security-reporting channel. Verify registry installation and
-   release provenance before calling a release reproducible.
+3. **Release maintenance.** Keep support/upgrade policies and the changelog
+   current. Verify registry installation and release provenance before calling
+   a release reproducible.
 4. **Application load and soak measurements.** Extend the synthetic HTTP
    benchmarks with dedicated-host workloads, slow upstreams, overload, and
    sustained operation.

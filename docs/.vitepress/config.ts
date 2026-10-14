@@ -27,6 +27,7 @@ export default defineConfig({
         { text: "File Views", link: "/guide/views" },
         { text: "Native Islands", link: "/guide/islands" },
         { text: "Deployment", link: "/guide/deployment" },
+        { text: "Support & Upgrades", link: "/guide/support" },
         { text: "Comparisons & Benchmarks", link: "/guide/evaluating" },
         { text: "Roadmap", link: "/guide/roadmap" },
         { text: "Production Readiness", link: "/guide/production-readiness" },

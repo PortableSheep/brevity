@@ -77,6 +77,8 @@ npm run docs:build   # Build static docs
 - **[Production Readiness](docs/guide/production-readiness.md)** — Evidence gates and GitHub Pages setup
 - **[Operations](docs/recipes/operations.md)** — Checked health and shutdown recipe
 - **[Deployment](docs/guide/deployment.md)** — Node services, host-owned handlers, and serverless integration boundaries
+- **[Support & Upgrades](docs/guide/support.md)** — Runtime policy, versioning, migration, and bug reporting
+- **[Changelog](CHANGELOG.md)** · **[Security Policy](SECURITY.md)**
 - **[HTTP Benchmarks](examples/benchmarks/README.md)** — Reproducible Brevity/Express/Fastify/Nest fixtures and limitations
 
 Tutorial/recipe listings import executable files from `docs/samples/`.

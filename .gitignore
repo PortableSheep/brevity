@@ -9,3 +9,4 @@ docs/samples/prisma/*.db
 notebook.db*
 playwright-report/
 test-results/
+.vercel/
