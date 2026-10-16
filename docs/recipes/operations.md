@@ -1,8 +1,8 @@
 # Health checks and graceful shutdown
 
-Brevity returns a normal Node HTTP server. Applications own initialization,
-timeouts, health policy, signal handling, and database cleanup. There is no new
-lifecycle plugin or runtime dependency.
+Start required resources before listening. On shutdown, stop accepting requests,
+let active work finish, then close the database. Brevity returns a normal Node
+HTTP server, so you can use Node's lifecycle methods.
 
 Initialize required resources before listening. This checked example provides
 separate liveness/readiness routes, rejects readiness while stopping, stops
@@ -10,35 +10,25 @@ accepting connections, drains existing HTTP work, then closes resources once.
 
 <<< @/samples/operations.ts
 
-The process fixture shows signal handling and nonzero exit on failed draining:
-
+::: details Signal handling and the process entry point
 <<< @/samples/operations-process.ts
+:::
 
-`npm test` exercises real HTTP, idempotent cleanup, a child-process SIGTERM with
-an active request, and a deadline that terminates a slow connection and reports
-failure. This proves the recipe locally, not a hosting platform's behavior.
+`npm test` checks active-request draining, repeated cleanup, SIGTERM, and
+deadline failure locally. Check your host's termination grace period too.
 
-## Deployment responsibilities
+## Before deploying
 
-- Bind `0.0.0.0` explicitly inside containers; the safe default is loopback.
-- Place TLS and request-rate limits at a trusted proxy or use established
-  application middleware. Do not trust forwarded headers from arbitrary clients.
-- Configure the platform termination grace period longer than the application's
-  drain deadline. A supervisor must impose a final process-exit deadline if
-  resource cleanup hangs. Node `closeAllConnections()` does not close upgraded
-  WebSocket connections; manage them separately if you add upgrades.
-- Readiness should reflect dependencies actually needed to serve requests. The
-  sample assumes initialization already succeeded; it is not a database probe.
-- `requestTimeout` bounds receiving a request, not handler execution. Set
-  downstream database/HTTP deadlines and cancellation in application code.
-  Forced socket closure does not cancel an async handler. Cancel or account for
-  outstanding application work before releasing resources on the forced path.
-- Use structured logs with request IDs and redact cookies, authorization
-  headers, tokens, and personal data. Debug tooling is not observability.
-- Deploy `views/` and compiled browser assets alongside server output. Set
-  `NODE_ENV=production`; views cache compiled templates. Publish a new deployment
-  instead of editing cached templates in place.
-- Keep sessions and PKCE state in a durable, shared store when restarts or
-  multiple instances must preserve them. Do not invent auth cryptography.
-- Exercise backup restoration, migrations, rollback, and expired sessions against
-  a staging database. A passing local HTTP test is not a disaster-recovery drill.
+Set the platform's termination grace period longer than your drain deadline.
+Give database/HTTP calls their own timeouts: Node's `requestTimeout` limits
+receiving a request, not executing a handler.
+
+Forced socket closure doesn't cancel async work. Cancel or account for outstanding
+work before closing resources. A supervisor should enforce a final process-exit
+deadline; upgraded WebSockets need their own cleanup.
+
+Readiness should reflect the dependencies you need to serve traffic. This sample
+assumes startup succeeded; it isn't a database health probe.
+
+For HTTPS, proxy trust, assets, durable sessions, backups, and rollout checks,
+see [deployment](/guide/deployment) and the [launch checklist](/guide/production-readiness).

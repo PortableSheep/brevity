@@ -1,9 +1,8 @@
-# Optional plugin APIs
+# Plugin API
 
-These packages are opt-in. Core exports `Plugin`/`ServiceProvider`, not their
-implementations. This inventory follows each `packages/plugin-*/src/index.ts`.
-Use `app.usePlugin(new PluginClass(options))`, then resolve its configured key
-from `app.container`.
+Add a plugin with `app.usePlugin(new PluginClass(options))`, then retrieve its
+service from `app.container`. The [plugins guide](/guide/plugins) shows setup
+and how to write your own.
 
 ## `@brevity/plugin-cache`
 

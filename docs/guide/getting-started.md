@@ -1,35 +1,56 @@
 # Getting started
 
-Brevity is a TypeScript HTTP micro-framework, not an ORM, auth engine, or frontend
-compiler. Start with a route and bring other tools as needed.
+Brevity is a small TypeScript framework for APIs and server-rendered apps.
+You write routes; it handles the HTTP plumbing.
 
-## Choose your starting point
+## Run an example
 
-- **Learn end to end:** [Build a notebook](./tutorial.md), including a native form,
-  retained errors, SQLite persistence, and real HTTP tests.
-- **Explore this repository:** run `npm ci`, `npm run dev`, then visit
-  `http://127.0.0.1:3000`. The existing example demonstrates plugins and providers.
-- **Use the starter:** see the repository's `QUICK_START.md` and `starter/`.
-  Package installation/publishing instructions live in `PUBLISH.md`.
+Use Node 22 or 24. Clone the repository and install its dependencies:
 
-Core supports Node.js 20+. The checked documentation toolchain runs on Node.js
-22 (npm 10+); use that version when following the tutorial in this repository.
-All TypeScript samples use ESM and standard TS5 decorators, with
-`experimentalDecorators` and `emitDecoratorMetadata` disabled.
+```sh
+git clone https://github.com/PortableSheep/brevity.git
+cd brevity
+npm ci
+npm run dev
+```
 
-## The shape of an app
+Open **http://127.0.0.1:3000**. This example includes routes, plugins, and views.
+Stop it with Ctrl+C before trying another example on the same port.
+
+::: info Package availability
+Brevity isn't published to npm yet. Use this checkout for now, or follow the
+[local package instructions](https://github.com/PortableSheep/brevity/blob/main/QUICK_START.md#option-2-use-the-existing-starter-template)
+for a separate app.
+:::
+
+## Your first route
+
+An app starts with `createApp()` and a handler:
 
 <<< @/samples/first-route.ts
 
-An import does not start a server. Your entry point calls `app.listen(port, host)`,
-which returns a Node HTTP `Server` and defaults to loopback. Explicitly configure
-the host if your deployment needs an external listener.
+The handler receives a request and response. Call `res.json()` or `res.send()`
+to reply; returning a value doesn't send it.
 
-Routes send their own responses. Parameters arrive as strings; generic type
-arguments on request helpers are not runtime validation. Choose your own
-persistence, access-control, and deployment policies.
+Keep startup in a separate file so tests can import the app without opening a port:
 
-## Where next?
+<<< @/samples/first-route-start.ts
 
-[Tutorial](./tutorial.md) · [Recipes](/recipes/) · [Core API](/api/core) ·
-[Web API](/api/web) · [Evidence](./evaluating.md)
+Run this smaller example from the repository root:
+
+```sh
+npm run build:packages
+node --import tsx docs/samples/first-route-start.ts
+```
+
+Visit **http://127.0.0.1:3000** to see `{"message":"Hello, Brevity"}`.
+The server binds to loopback by default.
+
+## Choose your next step
+
+- [Build a notebook](./tutorial): HTML pages, form validation, and SQLite.
+- [Add decorators](/recipes/decorators): group routes into controller classes.
+- [Connect other tools](/recipes/): databases, authentication, browser components, and tests.
+
+For your own project, use ESM and strict TypeScript. Decorators use TypeScript 5's
+standard syntax; leave `experimentalDecorators` and `emitDecoratorMetadata` off.

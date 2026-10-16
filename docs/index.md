@@ -2,51 +2,34 @@
 layout: home
 hero:
   name: Brevity
-  text: Small core. Serious possibilities.
-  tagline: A light TypeScript micro-framework for APIs, HTML-first apps, and the expert tools you already trust. Explicit routes. Native forms. No hidden machinery.
+  text: A little framework. Your kind of app.
+  tagline: Build APIs and server-rendered pages in TypeScript. Add what you need. Leave the rest out.
   actions:
     - theme: brand
-      text: Build your first app
-      link: /guide/tutorial
+      text: Get started
+      link: /guide/getting-started
     - theme: alt
-      text: Explore integrations
-      link: /recipes/
+      text: Build a notebook
+      link: /guide/tutorial
 features:
-  - title: Start with a route
-    details: One app, one handler, one response. Add middleware and explicit dependency wiring when your application needs them.
-  - title: HTML first, islands by choice
-    details: HTML files with layouts and partials in optional views. Lazy plain-TypeScript islands and native-form enhancement in optional islands. Your frontend compiler stays yours.
-  - title: Bring the specialists
-    details: Drizzle or Prisma for data. Supabase for identity. Svelte for an island. Playwright for the browser. Recipes, not replacement engines.
-  - title: Know the boundaries
-    details: Bounded body parsing, controlled errors, and async-local request bindings in core. Authorization, deployment, and business policy in your app.
+  - title: Small by default
+    details: Routes, middleware, and dependency injection. Core has no external runtime dependencies.
+  - title: Start with HTML
+    details: Use optional templates and native forms. Add a browser component where it helps, without turning the whole page into a client app.
+  - title: Use tools you know
+    details: Bring Drizzle, Prisma, Supabase, or Svelte. Brevity connects the HTTP pieces, not every layer of your stack.
 ---
 
-## Your first route
+## A route is just a function
 
 <<< @/samples/first-route.ts
 
-Call `app.listen(3000)` from your entry point. Brevity never auto-serializes a
-handler's return value: send the response explicitly.
+Call `app.listen(3000)` in your entry point to start the server. Send JSON with
+`res.json()`, redirect with `res.redirect()`, or render an HTML page.
 
-## Less framework, not less responsibility
+## Where to start
 
-`@brevity/core` and `@brevity/web` have no runtime package dependencies.
-That makes the framework surface small; it does not make your database,
-identity provider, or browser compiler disappear.
-
-Write complete pages in [HTML file views](/guide/views), with Eta 3.5.0 and
-escape-by-default interpolation. Add [native islands](/guide/islands) only where
-interaction helps: load, visible, idle, or interaction scheduling, usable
-no-JS fallback, and optional Svelte mounting. Both packages are opt-in; core
-has no template engine, compiler, or client framework. Inline `html` remains
-useful for fragments and small cases.
-
-Run a Node service with `app.listen()`, or export `app.handler` when your host
-supplies Node HTTP requests and responses. The [deployment guide](/guide/deployment)
-explains hosting options and serverless integration requirements.
-
-Start with the [notebook tutorial](/guide/tutorial), choose an
-[integration recipe](/recipes/), and check the [API contracts](/api/core).
-For measured workloads and package comparisons, see
-[comparisons and benchmarks](/guide/evaluating).
+[Run your first app](/guide/getting-started), then follow the
+[notebook tutorial](/guide/tutorial) for forms and a database.
+Already building something? Pick an [integration recipe](/recipes/) or look up
+an API in the [reference](/api/core).

@@ -1,9 +1,9 @@
 # Register HEAD explicitly
 
-**Tested:** local @brevity/core 0.1.0, Node.js 22.
-A GET route does **not** register HEAD or OPTIONS automatically.
+A GET route doesn't automatically handle HEAD or OPTIONS. Register HEAD when
+you want clients to fetch the headers without the body.
 
-<<< @/samples/routes.ts
+<<< @/samples/routes.ts#plain-routes
 
 The plain route uses `router.head`; the controller uses `@Head`.
 Both apply the same parameter validation and content type as GET while sending
@@ -16,6 +16,3 @@ The first-route test deliberately expects HEAD to return 404; the explicit
 routes expect 200 and an empty body. `staticAssets` is a separate web helper that
 does handle GET **and** HEAD for its own exact asset map. That behavior does not
 alias application routes.
-
-An opt-in HEAD-to-GET convenience is a [roadmap discussion](/guide/roadmap),
-not an existing API.

@@ -1,36 +1,33 @@
-# Optional web layer
+# HTML helpers
 
-`@brevity/web` adds server-rendered pages without changing core or the legacy viewer.
-It has no runtime dependencies or frontend compiler and uses core Request/Response
-and middleware contracts.
+`@brevity/web` provides escaped HTML fragments, form feedback, and static assets.
+Use [file views](./views) for full pages; use these helpers for smaller pieces.
+The package has no external runtime dependencies.
 
-```sh
-npm install @brevity/core @brevity/web
+## Compose HTML safely
+
+```ts
+import { html } from "@brevity/web";
+
+const greeting = (name: string) => html`<p>Hello, ${name}!</p>`;
+const page = html`<main>${greeting("<reader>")}</main>`;
 ```
 
-Use [file views](./views.md) as the primary full-page format. Inline `html`
-callback templates remain useful for small cases and escaped fragment
-composition, `createFormState` for explicit retained values and accessible errors,
-`staticAssets` for exact URL-to-file mappings, and `jsonScript` for optional
-application-compiled island data. Validation rules, CSRF, authorization, persistence,
-and frontend compilation remain application-owned.
+Text values are escaped. Nested fragments and arrays keep their markup;
+`null` and `undefined` render nothing. Use quoted attributes and validate URLs
+separately. Don't interpolate untrusted values into script or style code, or
+pass them to `trustedHtml`.
 
-The optional [native islands package](./islands.md) adds deferred browser mounts
-and enhanced-form transport without a client framework or any core change.
+## Show form errors
 
-The package's `README.md` contains API signatures, safety boundaries, and island
-data examples. The runnable repository example is `examples/web-app.ts`:
+`createFormState` keeps submitted values and connects labels, hints, and errors
+to fields. It doesn't validate input or create controls for you.
 
-```sh
-npm run build
-node --import tsx examples/web-app.ts
-```
+On invalid input, render the form with status **422** and retained values.
+After a successful save, redirect with **303**. Keep passwords out of retained
+values, and use a distinct `idPrefix` for each form on a page.
 
-Visit `/contact`, submit an empty name for a retained-value 422 page, or a valid name
-for a 303 redirect to `/thanks`. `/assets/web.css` serves only its explicitly mapped
-file; unknown API requests still get core's JSON 404.
-
-## Page and form flow
+::: details Complete contact form example
 
 ```ts
 import { createApp } from "@brevity/core";
@@ -90,44 +87,42 @@ app.router.get("/thanks", (_req, res) => {
 });
 ```
 
-Partials are ordinary callbacks returning `HtmlFragment`, composed through `html`.
-Only application-owned literal markup and explicit fragments render as markup.
-Plain interpolations are escaped, arrays compose fragments, and null/undefined
-render nothing. Use interpolations only in HTML text or quoted attribute values:
-escaping does **not** validate URL schemes or make JavaScript/CSS safe.
-`trustedHtml` is only for app-owned or independently sanitized output.
-Give each form on a page a unique `idPrefix`; explicitly retain only permitted
-fields, never passwords.
+:::
 
-## Assets and island data
+Run the repository example:
+
+```sh
+npm run build
+node --import tsx examples/web-app.ts
+```
+
+Visit **http://127.0.0.1:3000/contact** and try both an empty and a valid name.
+For a form that saves to a database, follow the [notebook tutorial](./tutorial).
+
+## Serve static assets
+
+Map public URLs to files explicitly:
 
 ```ts
 import { resolve } from "node:path";
-import { staticAssets, jsonScript } from "@brevity/web";
+import { staticAssets } from "@brevity/web";
 
 app.use(
   staticAssets({
-    "/assets/questions.js": {
-      file: resolve("public/questions.js"),
-      cacheControl: "public, max-age=60",
-    },
+    "/assets/style.css": { file: resolve("public/style.css") },
   }),
 );
-const island = (data: unknown) =>
-  html`<div id="questions"></div>
-    ${jsonScript("questions-state", data)}
-    <script type="module" src="/assets/questions.js"></script>`;
 ```
 
-`staticAssets` uses an exact canonical ASCII URL allowlist, never a request-derived
-filesystem path. GET/HEAD provide MIME, length, cache, and nosniff headers; mapped
-URLs reject other methods with 405. Unknown paths pass through. Unknown file
-extensions need `contentType`; cache defaults to `no-cache` without conditional
-requests. Missing/unreadable files raise errors through core. Files and symlinks
-are trusted configuration; do not expose secrets or user-uploaded executable files.
+Only mapped paths are served. GET and HEAD work; other methods on an asset
+return 405. Cache defaults to `no-cache`. Set immutable caching only for
+content-hashed filenames. Don't map secrets or untrusted executable uploads.
 
-`jsonScript` safely serializes non-executable JSON data and escapes script-closing
-characters. Read its `textContent` with `JSON.parse` from the external island bundle.
-`serializeJson` exposes the same JSON escaping for app integrations. Neither helper
-allows secrets in browser state or makes data safe for executable scripts.
-The application owns the frontend compiler, runtime, and mount code.
+## Pass data to the browser
+
+`jsonScript(id, data)` emits an inert JSON script block with safe escaping.
+Parse its `textContent` in an external script. `serializeJson` provides the same
+escaping for integrations. Neither is for executable code or secret data.
+
+For mounted browser components, see [islands](./islands). For signatures and
+edge cases, see the [web reference](/api/web).

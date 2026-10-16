@@ -1,13 +1,19 @@
 # Decorators or plain routes
 
-**Tested:** local @brevity/core 0.1.0, standard TypeScript 5.9 decorators,
-Node.js 22. Both forms run through the same router.
+Prefer route functions? Use them. Prefer controllers? Use standard TypeScript 5
+decorators. Both run through the same router.
 
-<<< @/samples/routes.ts
+## Route functions
 
-`plainApp()` closes over an explicitly constructed service.
-`decoratedApp()` registers an explicitly constructed controller with the same
-service. Neither uses reflection, discovery, automatic DI, or a response mapper.
+<<< @/samples/routes.ts#plain-routes
+
+## Controller methods
+
+<<< @/samples/routes.ts#controller-routes
+
+Construct the controller yourself and pass it to `registerControllers(router, instance)`.
+The [complete example](https://github.com/PortableSheep/brevity/blob/main/docs/samples/routes.ts)
+uses the same greeting service and ID validation in both versions.
 
 Import decorators from **`@brevity/core/decorators`**, not the default core
 entry point. Leave legacy `experimentalDecorators` and `emitDecoratorMetadata`

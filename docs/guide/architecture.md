@@ -1,41 +1,36 @@
-# Architecture
+# How Brevity fits together
 
-Brevity keeps the HTTP boundary explicit and lets expert tools own their layers.
+Brevity handles HTTP. Your database, authentication provider, and frontend tools
+remain yours to choose.
+
+## A request's path
 
 ```text
-Node HTTP request
-  -> method/path match
-  -> Request and Response
-  -> async-local request/response bindings
-  -> provider boot (once)
-  -> bounded body parsing (except GET/HEAD)
-  -> middleware in registration order
-  -> matched handler or not-found handler
-  -> explicit JSON/HTML response
+Match method and path
+  -> Create request and response wrappers
+  -> Set request-local container bindings
+  -> Boot providers (once)
+  -> Parse the body
+  -> Run middleware
+  -> Run the route, or return 404
 ```
 
-Setup, parsing, middleware, and handler failures go through the router's
-error hook/default handler. Middleware does not precede automatic body parsing:
-raw-stream integrations must opt out and enforce their own bounds.
+Failures go to the error handler. Responses are explicit: the handler sends JSON,
+HTML, or a redirect rather than returning a value for the framework to interpret.
 
-## Ownership
+Body parsing happens **before middleware**. Raw-stream integrations need
+`parseBody: false` and their own size limits.
 
-| Layer                      | Owns                                                                              |
-| -------------------------- | --------------------------------------------------------------------------------- |
-| `@brevity/core`            | Router, bounded parsing, responses, errors, explicit DI/providers                 |
-| `@brevity/core/decorators` | Optional standard TS5 route annotations, explicit controller construction         |
-| `@brevity/web`             | Escaped callback fragments, form feedback, safe JSON state, exact asset maps      |
-| Optional plugins           | Cache, viewer registration, validation registration, development diagnostics      |
-| Application                | Schema, domain validation, persistence, auth/CSRF, resource ownership, deployment |
-| Specialist tools           | ORM/query building, identity provider, browser compiler, E2E runner               |
+## Add only what you need
 
-The container uses async-local request/response overrides, not global mutation.
-Services keep their registered singleton/transient lifetime; a singleton is
-not automatically request-scoped. Constructor dependencies stay explicit.
+- **Core:** routes, parsing, responses, errors, and dependency injection. No external runtime dependencies.
+- **Web and views:** optional HTML helpers, forms, static assets, and Eta templates.
+- **Islands:** optional browser components and form enhancement, with a separate Svelte adapter.
+- **Your app:** data models, validation rules, auth, access control, and deployment.
 
-Core/web have no runtime package dependencies. Node's runtime and any selected
-application integrations still count. Small dependency graphs do not establish
-speed, reliability, or security.
+Dependencies are passed explicitly. The container also provides async-local
+`request` and `response` bindings, so concurrent requests don't overwrite each
+other. Singleton services still stay singletons; don't store request data on them.
 
-See the [API contracts](/api/core), [integration recipes](/recipes/),
-and [roadmap boundaries](./roadmap.md).
+See the [core reference](/api/core) for exact behavior or [recipes](/recipes/)
+for integrations.

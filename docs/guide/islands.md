@@ -1,206 +1,138 @@
-# Native islands
+# Browser islands
 
-An **island** is a small browser component mounted into a server-rendered page.
-The surrounding page and forms remain ordinary HTML. You do not need a client
-router or a second application. `@brevity/islands` is optional and has **zero
-direct runtime dependencies**; its required peer is `@brevity/web` (which peers
-on core). It has no Svelte peer: the Svelte 5 adapter is the separate
-`@brevity/islands-svelte` package, so native-only apps never resolve Svelte.
+An island adds interaction to part of an HTML page: a counter, an editor, or an
+enhanced form. The rest of the page stays ordinary HTML. No client router needed.
 
-## Server markup
+Use `@brevity/islands` for plain TypeScript components. Add
+`@brevity/islands-svelte` only if you want Svelte.
 
-Configure `createIslands({ manifest, loader, nonce? })` once. Its returned
-`island(name, props, { hydrate, fallback })` emits a wrapper and an external
-module script. Props reuse web's `serializeJson` escaping and are encoded into
-a data attribute; there is no executable inline script or JSON script block.
-Fallback must be an application-owned `HtmlFragment`, not raw untrusted text.
+## Write a component
 
-<<< @/samples/native/server.ts
-
-<<< @/samples/native/views/strategies.html
-
-The loader runs once as an ES module even if multiple islands emit its script
-tag. It fetches each manifest once per start and lazily imports named modules.
-Unknown components, bad JSON, failed imports, and mount errors are logged and
-emit a bubbling `brevity:island-error`; another island still mounts. Native
-components should preserve fallback until ready, and avoid partial mutations
-before throwing. Islands are not SSR or automatic framework hydration.
-
-| Strategy         | Mount begins                                                         |
-| ---------------- | -------------------------------------------------------------------- |
-| `load` (default) | When the external module runs                                        |
-| `visible`        | When IntersectionObserver sees the wrapper; immediate if unsupported |
-| `idle`           | requestIdleCallback, or a 200 ms timer if unsupported                |
-| `interaction`    | First pointerdown, focusin, or keydown inside the wrapper            |
-
-Interaction scheduling **does not cancel or replay the triggering event**.
-A first click on a native link/form still works before enhancement finishes.
-Use `load` when the first interaction must already be enhanced.
-
-## Plain TypeScript components
+An island module exports a mount function. It receives an element, props, and
+an abort signal; it can return cleanup:
 
 <<< @/samples/native/counter.ts
 
-`defineIsland<Props>((el, props, ctx) => cleanup?)` is an identity helper with
-strict component types. A module exports it as `default`. Async mounts may
-return a promise of cleanup. `ctx.signal` supports abortable listeners.
-Treat props as application data; validate untrusted shapes where necessary.
+Keep a usable fallback on the page until the component is ready. If JavaScript
+fails or is disabled, that content is what the reader gets.
 
-`startIslands(root?)` from `@brevity/islands/client` scans once, skips already
-started elements, and returns a disposer. For custom client navigation call
-the disposer **before** removing a page, then start on the new content.
-There is no client router, global mutation observer, or automatic rehydration.
-The standalone loader is intended for ordinary full-page navigation.
+## Render it on the server
 
-## Enhanced native forms
+Configure `createIslands({ manifest, loader })`, then call
+`island(name, props, { hydrate, fallback })` from a template. Props are safely
+serialized into an attribute, not executable inline JavaScript.
 
-<<< @/samples/native/form.ts
+<<< @/samples/native/views/strategies.html
 
-<<< @/samples/native/views/form.html
+Choose when the component mounts:
 
-`enhanceForm(form, { target, signal?, onResponse? })` intercepts same-origin POST
-forms only. The target must contain the form and have a stable ID also present
-in the server response. Fetch uses the form's native encoding, cookies, and
-submitter, with `Accept: text/html`. Keep server validation, CSRF/origin policy,
-and authorization in the application.
+| Strategy      | When it starts                             |
+| ------------- | ------------------------------------------ |
+| `load`        | As soon as the loader runs; the default    |
+| `visible`     | When it scrolls into view                  |
+| `idle`        | When the browser is idle                   |
+| `interaction` | On pointer, focus, or keyboard interaction |
 
-Pending disables submit buttons and sets `aria-busy`, restoring their original
-states on failure. **422 and 409** HTML replace the target with server-rendered
-retained values/errors and focus its alert or invalid field. The replacement
-form is rebound. Successful nonredirect HTML can update the same target; a
-redirect navigates to the same-origin final URL. `onResponse` receives a clone
-for application acknowledgement hooks. Returned scripts do not execute; keep
-the enhancement outside the replacement target.
+If visibility observation is unavailable, `visible` mounts immediately; `idle`
+falls back to a 200 ms timer. The first interaction isn't cancelled or replayed. A native link or form can
+still work before mounting finishes. Use `load` if the first click needs the
+component already running.
 
-Unsupported methods/targets, cross-origin actions, submitter method/action/
-encoding overrides, and unsupported file encoding use native submission.
-Network/protocol errors log and emit `brevity:form-error`, retaining the input
-and restoring controls; handle that event with a visible application error.
-Completed HTML replacements emit `brevity:form-response` with `{ status }`.
-Dispose aborts in-flight work. Do not replace the target or navigate while
-keeping old listeners alive.
+::: details Server setup and asset map
+<<< @/samples/native/server.ts
 
-Form controls named `action`, `method`, `target`, or `enctype` (for example
-`<button name="action" value="publish">`) are safe: submission attributes are
-read from the form's HTML attributes, not its shadowable DOM properties.
+The server maps component names to module URLs with `islandManifest` and serves
+explicit assets with `staticAssets`. Include every module/chunk in that map;
+Brevity doesn't scan a directory or compile browser code.
+:::
 
-### Nested islands restart after replacement
+## Enhance a form without a component
 
-Around each replacement, `enhanceForm` dispatches `brevity:before-replace` and
-`brevity:replaced` on the target. When the islands loader is on the page, it
-disposes islands inside the old markup and starts islands in the new markup,
-so an island inside a re-rendered 422 form keeps working without app glue.
-Include the loader in the initial page if replacements can contain islands;
-scripts inside replaced HTML do not execute.
-
-## Form enhancement directive
-
-When a page only needs a progressively enhanced form, skip the loader,
-manifest, and island module. `createEnhance` wraps server-rendered markup in a
-stable target marked `data-brevity-enhance`, plus the standalone
-`@brevity/islands/enhance.js` script that calls `enhanceForm` on its first form:
-
-<<< @/samples/native/views/enhanced.html
+For a form-only enhancement, `createEnhance` needs no island module or manifest:
 
 <<< @/samples/native/server.ts#enhance-setup
 
+<<< @/samples/native/views/enhanced.html
+
+Render with the same target ID for GET and validation-error responses:
+
+::: details Route example
 <<< @/samples/native/server.ts#enhance-route
-
-Render with the same target ID for GET, 422 and 409 responses.
-
-Serve `enhance.js` with `staticAssets` like the loader. With JavaScript
-disabled the form submits natively. This example also nests a counter island
-that the loader restarts after each replacement.
-
-## Assets: no Vite required
-
-<<< @/samples/native/build.mjs
-
-This example uses esbuild as application tooling to bundle each native module,
-including the small form helper only where needed. Serve the exported
-`@brevity/islands/loader.js` via `staticAssets`, and serve `islandManifest(...)`
-as JSON. Manifest names map to explicit canonical same-origin module URLs;
-loader, module and chunk assets all need explicit static maps.
-Plain JavaScript modules need no bundler; TypeScript must be compiled and its
-browser imports resolved. The loader itself has no bare package imports.
-
-`islandManifest` validates a URL map; it is not a compiler or filesystem scanner.
-Its URLs may point to application-bundled hashed modules. Use `no-cache` for
-fixed names; use immutable caching only for content-hashed assets. Native import
-paths are resolved relative to the manifest URL.
-
-## Svelte and Vite
-
-<<< @/samples/island/server.ts
-
-<<< @/samples/island/client/main.ts
-
-<<< @/samples/island/vite.config.ts
-
-`svelteIsland(Component)` from `@brevity/islands-svelte` mounts Svelte 5 with props and unmounts on disposal.
-It replaces the fallback only after mounting into a new container. There is
-no Svelte runtime in the native loader. The application installs/compiles
-Svelte. A Preact adapter is not included; any framework can implement the same
-mount/cleanup function.
-
-With Vite, map your island names to built entry URLs (from your own build
-manifest or fixed library entry as here), and explicitly serve every emitted
-chunk/CSS asset.
-
-::: warning Multiple island entries
-Library mode (above) keeps each entry's exports. If you instead build several
-islands as app entries via `build.rollupOptions.input`, set
-`build.rollupOptions.preserveEntrySignatures: "strict"`. Otherwise Rollup may
-tree-shake the entry's `default` export and the loader finds no island.
 :::
 
-Vite's manifest is not the islands URL map: convert selected
-entries to `islandManifest({ name: "/assets/entry-hash.js" })` and map its
-referenced assets too. Brevity neither compiles nor rewrites Vite output.
+Serve `@brevity/islands/enhance.js` at the configured script URL. The form still
+submits normally without JavaScript. With JavaScript, it updates the target with
+server-rendered HTML and keeps validation feedback on the page.
 
-## CSP and no JavaScript
+## Control form enhancement yourself
 
-The checked browser fixture uses `script-src 'self'; object-src 'none';
-base-uri 'none'`, with no inline executable scripts. Allow same-origin manifest
-fetches in `connect-src`, and external modules in `script-src`. Nonce-based
-policies can pass `nonce` to `createIslands`; include the same nonce in the CSP
-and permit trusted dynamic imports via your policy (for example strict-dynamic).
-Static hashes/SRI require deployment-owned policy/asset handling; this package
-does not inject hashes or relax CSP. Never interpolate untrusted URLs into
-script tags or bypass the asset map.
+Use `enhanceForm` inside a component when you need custom behavior:
 
-With JavaScript disabled, failed assets, or deferred hydration, the fallback
-is already on the page. **Put usable controls and content in it**, not merely a
-spinner. The notebook and native-form browser tests submit real native forms
-with JS disabled.
+<<< @/samples/native/form.ts
+
+The target must contain the form and have a stable ID in the response HTML.
+Same-origin POSTs are enhanced; unsupported forms fall back to native submission.
+Validation responses (422/409) replace the target and focus the error. A redirect
+navigates to its same-origin destination. Server validation, CSRF checks, and
+access control still belong in the app.
+
+::: details Events, errors, and cleanup
+Pending submission disables submit buttons and sets `aria-busy`; failures restore
+them and retain input. Network/protocol failures log and emit `brevity:form-error`;
+show a visible message for that event. Successful replacement emits
+`brevity:form-response` with `{ status }`. `onResponse` receives a cloned response.
+
+The helper emits `brevity:before-replace` and `brevity:replaced`. An initial-page
+islands loader uses them to dispose and restart nested islands. Scripts in
+replacement HTML don't execute, so keep enhancement code outside the target.
+
+Submitter method/action/encoding overrides, cross-origin actions, unsupported
+file encoding, and unsupported methods/targets use native submission. Controls
+named `action`, `method`, `target`, or `enctype` don't break attribute handling.
+Disposing aborts in-flight work.
+
+A mount may be async and return cleanup when ready. Use `ctx.signal` for abortable
+listeners, validate untrusted props, and avoid changing the fallback before a
+mount can succeed. Islands mount components; they don't provide server rendering.
+
+`startIslands(root?)` scans once and returns a disposer. For custom navigation,
+dispose before removing old content and start on the new page. There's no global
+mutation observer or automatic client routing. Mount errors log and emit a
+bubbling `brevity:island-error` without stopping other islands.
+:::
+
+## Build and serve assets
+
+Compile TypeScript and resolve browser imports with your build tool. This example
+uses esbuild; plain JavaScript modules don't need a bundler:
+
+::: details Native build script
+<<< @/samples/native/build.mjs
+:::
+
+Manifest URLs are canonical same-origin paths. Imports resolve relative to the
+manifest URL. Use `no-cache` for fixed filenames and immutable caching only for
+content-hashed assets.
+
+For Svelte, follow the [Svelte recipe](/recipes/svelte). With multiple Vite app
+entries, set `build.rollupOptions.preserveEntrySignatures: "strict"` so Rollup
+keeps each island's default export. Convert Vite's manifest into your island URL
+map and serve its chunks/CSS too.
+
+## Content security policy
+
+The example uses external scripts with `script-src 'self'; object-src 'none';
+base-uri 'none'`. Allow manifest fetches in `connect-src`. For nonce-based CSP,
+pass the same nonce to `createIslands` and your policy; permit dynamic imports as
+needed. Hashes/SRI are deployment-owned. Don't put secrets in props.
 
 ## Measured payload
 
-Run `node scripts/build-islands.mjs` after install/build, then
-`node scripts/measure-islands.mjs` for loader and dependency-graph reporting.
-The loader is **1,998 minified bytes / 941 gzip bytes** (esbuild 0.28.1, ES2022,
-Node 22.21.1, Node zlib's
-default gzip). This includes scheduling, manifest fetch, dynamic import, errors
-and disposal; it excludes components, the separate form helper, Svelte and
-props/page HTML. The standalone form directive `enhance.js` (which bundles
-`enhanceForm` and needs no loader) is **2,943 minified bytes / 1,332 gzip
-bytes**. Gzip here is measured compression, not a server setting.
-There is no throughput, startup-time, or productivity claim.
+The native loader is **1,998 minified bytes / 941 gzip bytes**. The standalone
+form enhancement script is **2,943 minified bytes / 1,332 gzip bytes**. Those
+numbers exclude components, props, and Svelte.
 
-| Package        | Direct runtime dependencies | External runtime graph (excluding peers) |
-| -------------- | --------------------------: | ---------------------------------------- |
-| core           |                           0 | none                                     |
-| web            |                           0 | none (required core peer)                |
-| views          |                           1 | Eta 3.5.0 only (required core/web peers) |
-| islands        |                           0 | none (required web peer)                 |
-| islands-svelte |                           0 | none (required islands + Svelte 5 peers) |
-
-With required Brevity peers included, views needs four production package
-entries including itself (views, Eta, web, core); native islands needs three
-(islands, web, core). Optional application tools/frameworks are not in those
-counts. Installing both packages together needs five entries total.
-
-Keep the Svelte adapter out of `@brevity/islands`: an optional peer still
-makes npm treat an installed `svelte` as part of the production graph. If your
-islands are prebuilt, `@brevity/islands-svelte` and `svelte` can stay in
-`devDependencies`.
+Measured with esbuild 0.28.1, target ES2022, Node 22.21.1, and Node's default gzip.
+Run `node scripts/build-islands.mjs` and `node scripts/measure-islands.mjs` to
+repeat. Core, web, and native islands have no external runtime dependencies;
+views adds Eta. See [size and performance](./evaluating) for comparisons.

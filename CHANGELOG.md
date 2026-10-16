@@ -23,6 +23,9 @@ This file does not announce an npm publication or a signed release.
 
 ### Changed
 
+- Guides now lead with tasks and examples, with grouped navigation and expandable
+  implementation details instead of repeated test inventories and caveats.
+
 - Public documentation now leads with framework usage and deployment rather
   than project evaluation goals. The existing comparisons URL is preserved.
 - Source formatting prioritizes readable statements and function spacing.

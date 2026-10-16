@@ -1,45 +1,36 @@
 # Build a notebook
 
-Go from a JSON route to an HTML-first app with accessible form feedback,
-Drizzle/SQLite persistence, and tests over a real ephemeral HTTP listener.
-No browser JavaScript is required.
+Let's build a small app that saves notes. It uses HTML forms and SQLite, so it
+works without browser JavaScript.
 
-::: tip Follow the checked source
-Every source listing below is imported from `docs/samples/`, not copied into
-Markdown. `npm test` and `npm run typecheck` check those files.
-This is a runnable local learning app, **not a production starter**:
-it has no accounts, per-user authorization, or public deployment configuration.
-:::
+You'll keep routes, templates, and data access in separate files. The finished
+source is in `docs/samples/tutorial/`.
 
 ## 1. Set up
 
-Use Node.js 22 and npm 10+ in a checkout of this repository.
-Run these commands from the repository root:
+From a checkout of Brevity, using Node 22 or 24:
 
 ```sh
 npm ci
 npm run build:packages
 ```
 
-The tutorial's tested dependencies are Drizzle **0.45.4** and `@libsql/client`
-**0.15.15**. They are documentation-only root dev dependencies; core/web gain
-no runtime dependencies. SQLite here is a local libSQL file, not a hosted service.
+The dependencies are already installed: Brevity's optional web and views packages,
+Drizzle, and the libSQL SQLite client. This is a local learning app without accounts;
+don't expose it as a public notes service.
 
-For your own app, install `@brevity/core`, `@brevity/web`, `@brevity/views`, `drizzle-orm@0.45.4`,
-and `@libsql/client@0.15.15` (see `PUBLISH.md` if consuming local packages).
-Keep the same ESM/strict TypeScript settings:
-
+::: details TypeScript settings for a separate app
 <<< @/samples/tsconfig.json
 
-In a standalone project, adapt `include` to your own source layout; the
-exclusions above are specific to the docs' separate browser bundle.
+Adjust `include` and `exclude` to your files. For local package installation,
+see [Quick Start](https://github.com/PortableSheep/brevity/blob/main/QUICK_START.md).
+:::
 
 ## 2. Start with a route
 
 <<< @/samples/first-route.ts
 
-The route calls `res.json()` itself. Brevity does not infer a response from a
-return value. Start it from a separate entry point:
+The handler sends a JSON response. A separate entry point starts the server:
 
 <<< @/samples/first-route-start.ts
 
@@ -47,70 +38,65 @@ return value. Start it from a separate entry point:
 node --import tsx docs/samples/first-route-start.ts
 ```
 
-Visit `http://127.0.0.1:3000` and expect `{"message":"Hello, Brevity"}`.
-Stop this process with Ctrl+C before running the notebook on the same port.
-The [HTTP test recipe](/recipes/testing) exercises this exact app module.
+Visit **http://127.0.0.1:3000**. Stop this process before starting the notebook.
 
 ## 3. Build the native form
 
-Keep complete pages in HTML files with the optional [views package](./views.md).
-Eta 3.5.0 is the default engine; Brevity does not invent a template language.
-Configure the view root/layout once:
+First, configure the HTML renderer. We'll use [Eta file views](./views) with a
+shared layout:
 
 <<< @/samples/tutorial/page.ts
 
-`createFormState` snapshots values and
-errors; it does **not** validate input or invent controls. We use its field IDs,
-hint/error associations, and linked error summary to build our own markup.
+The layout wraps every page:
 
 <<< @/samples/tutorial/views/layout.html
 
+The notes page includes the form and lists saved notes:
+
 <<< @/samples/tutorial/views/notes.html
+
+The form uses `createFormState` to connect labels and errors to each field,
+and to keep the user's input after a validation error:
 
 <<< @/samples/tutorial/views/form.html
 
-The optional `enhancement` slot is unused in the basic app. The
-[Svelte recipe](/recipes/svelte) adds an island through that slot later, without
-changing the form's wire protocol.
-
-Eta's `<%= ... %>` escapes text; partials, layout bodies, and web form feedback
-are trusted Brevity fragments. Use inline `html` for small fragments/small cases,
-not as the primary full-page format.
-Do not use `trustedHtml` on note text. Escaping is not URL validation,
-CSRF protection, or authorization.
+`<%= ... %>` escapes text. Partials and form-feedback fragments keep their HTML.
+Don't mark user-entered note text as trusted markup. The `enhancement` slot stays
+empty for now; later, you can [add a Svelte counter](/recipes/svelte).
 
 ## 4. Add persistence
 
-Define the Drizzle table and open a local SQLite client. The app receives an
-explicit repository rather than resolving a database magically.
+Use Drizzle to define a table and open a local SQLite file:
 
 <<< @/samples/tutorial/store.ts
 
-`add()` uses Drizzle's transaction API; errors propagate and transactions roll
-back. The connection owner closes the client. Fixed `CREATE TABLE IF NOT EXISTS`
-is enough for this first schema, but cannot migrate an existing schema: use
-reviewed, versioned migrations before changing production tables.
+The repository exposes `list()`, `add()`, and `close()`. Routes don't need to know
+which database implements them. `add()` runs in a transaction; a thrown error
+rolls it back.
+
+This first schema uses `CREATE TABLE IF NOT EXISTS`. It won't update an existing
+table: use versioned migrations when your schema changes.
 
 ## 5. Wire GET, POST, errors, and redirect
 
 <<< @/samples/tutorial/app.ts
 
-The GET displays saved notes. The POST accepts exactly one URL-encoded `text`
-field, validates it on the server, and returns **422 with the original value**
-on failure. Body parsing is bounded to 4 KiB; malformed and oversized transport
-input is handled by core before the handler.
+The GET shows notes. The POST checks the input, saves a valid note, and redirects
+with **303** so refreshing the page doesn't submit it again. Invalid input returns
+**422** with the original value and an error message.
 
-Successful writes use **303 See Other**, so refresh repeats GET rather than
-POST. GET and HEAD are separate registrations. Expected transport errors use
-`HttpError`; unexpected persistence errors become a logged generic 500.
+The app limits request bodies to 4 KiB. It also rejects duplicate fields and
+cross-origin submissions.
 
-The local Origin check derives the expected `http://` origin from Host.
-**Do not copy that policy to a reverse-proxied/public deployment**: configure
-one trusted canonical HTTPS origin, validate Host at the edge, reject missing
-or unexpected Origin on mutations, and do not blindly trust forwarded headers.
-The [Supabase recipe](/recipes/supabase) demonstrates a configured origin.
+::: warning Before deploying this example
+Its Origin check is for local HTTP. A public app needs a configured HTTPS origin,
+trusted proxy settings, and access control. The [Supabase recipe](/recipes/supabase)
+shows a fixed-origin setup.
+:::
 
 ## 6. Own the server lifecycle
+
+Open the database, start the app, and close the database when the server stops:
 
 <<< @/samples/tutorial/start.ts
 
@@ -118,42 +104,29 @@ The [Supabase recipe](/recipes/supabase) demonstrates a configured origin.
 npm run docs:app
 ```
 
-Open `http://127.0.0.1:3000`. Submit whitespace: expect a linked error summary
-and retained whitespace. Save a real note, stop the process, and restart:
-the note remains in `notebook.db` in the repository root. The process closes the
-database after its listener drains; production shutdown also needs a deadline
-and a policy for long-running requests.
+Open **http://127.0.0.1:3000**. Try an empty note to see the error feedback. Save a
+note, restart the app, and check that it's still there in `notebook.db`.
+For a deployed service, add a [shutdown deadline](/recipes/operations).
 
 ## 7. Test through HTTP, not a private adapter
 
+Use `listen(0)` to let the OS choose a free port for each test:
+
 <<< @/samples/testing.ts
 
-The port `0` requests a free port from the OS. Await `listening`, inspect
-`server.address()`, and register cleanup immediately. Concurrent tests avoid
-fixed-port collisions and never need to reconstruct the router's dispatch internals.
-
-These are the actual checked tests, including SQLite reopen persistence,
-retained escaping, duplicate fields, HEAD, and the same app backed by Prisma:
-
-<<< @/samples/sample.test.ts
+The [notebook tests](https://github.com/PortableSheep/brevity/blob/main/docs/samples/sample.test.ts)
+check validation, escaping, redirects, and persistence after reopening the database.
+Run them with:
 
 ```sh
 npm run docs:check
 ```
 
-The command generates Prisma's client, checks strict TypeScript, builds the
-Svelte island, and runs HTTP tests. No live Supabase project or browser download
-is required for that check. [Playwright](/recipes/playwright) separately verifies
-the form in a browser with JavaScript both enabled and disabled.
+For browser tests with JavaScript on and off, use the [Playwright recipe](/recipes/playwright).
 
-## Onboarding checkpoint
+## Make it yours
 
-You should be able to explain where each concern lives: HTTP in `app.ts`, markup
-in `views/*.html`, renderer configuration in `page.ts`, data in `store.ts`,
-lifecycle in `start.ts`, and socket cleanup in `testing.ts`.
-Try adding a timestamp to a note: change the schema, migrate it,
-render it, and extend the test. Record any blockers; we have not measured
-onboarding time or claimed this tutorial proves faster development.
-
-For the next layer, choose [Prisma](/recipes/prisma),
-[identity](/recipes/supabase), or a [single Svelte island](/recipes/svelte).
+Try adding a timestamp to each note. You'll change the schema, add a migration,
+render the timestamp, and update a test. Then choose [Prisma](/recipes/prisma)
+for a different database layer, [Supabase](/recipes/supabase) for sign-in, or
+[Svelte](/recipes/svelte) for a small browser enhancement.

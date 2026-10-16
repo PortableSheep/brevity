@@ -1,9 +1,10 @@
 # Map domain errors to `HttpError`
 
-**Tested:** local @brevity/core 0.1.0, Node.js 22.
-Keep business errors independent of HTTP, then translate at the route boundary.
+Keep business errors independent of HTTP, then translate them in the route.
+Use `HttpError` for an expected failure and let unexpected errors reach the
+default logged 500 handler.
 
-<<< @/samples/routes.ts
+<<< @/samples/routes.ts#input-errors
 
 `requireId()` throws the application's `InputError`. `toHttpId()` translates
 only that known error to 422 and rethrows everything else.

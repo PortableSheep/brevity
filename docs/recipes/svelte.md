@@ -1,12 +1,9 @@
 # A Svelte island, not a second app
 
-**Tested:** Svelte 5.57.2, Vite 6.4.4, @sveltejs/vite-plugin-svelte 5.1.1,
-Node.js 22. The browser compiler remains application tooling.
+Add a Svelte character counter to the notebook's native form. Submission and
+validation still work without it. This recipe uses Svelte 5.57.2 and Vite 6.4.4.
 
-Start with the tutorial's native HTML form. Add a character counter that observes
-its textarea; it does not replace submission, validation, or error rendering.
-
-## Server: native islands and an exact asset map
+## Connect the server
 
 <<< @/samples/island/server.ts
 
@@ -16,7 +13,7 @@ including retained values containing `</script>`. The JSON manifest maps
 component names to module URLs. Never put state into executable inline JS.
 `staticAssets` serves only explicitly mapped paths; it is not a directory server.
 
-## Browser: mount one component
+## Mount the component
 
 <<< @/samples/island/client/main.ts
 

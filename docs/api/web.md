@@ -1,15 +1,7 @@
-# Optional web API
+# Web API
 
-Entry point: **`@brevity/web`**, verified against `packages/web/src/index.ts`.
-No template compiler, client runtime, persistence, or identity engine.
-
-Runtime exports: `HtmlFragment`, `html`, `escapeHtml`, `trustedHtml`, `serializeJson`, `jsonScript`,
-`renderPage`, `createFormState`, and `staticAssets`.
-Type exports: `HtmlFragment`, `HtmlValue`, `Template`, `Layout`, `PageOptions`,
-`FormOptions`, `FormField`, `FormState`, and `StaticAsset`.
-`HtmlFragment` is also a runtime class export so optional template integrations
-can recognize trusted fragments with `instanceof`. Its constructor, like
-`trustedHtml`, accepts already-trusted markup; prefer `html` for escaped content.
+Import from `@brevity/web` for HTML fragments, form feedback, and static assets.
+For examples, see [HTML helpers](/guide/web).
 
 ## Escaped fragments
 
@@ -101,3 +93,14 @@ Cache-Control, and Content-Length. Missing/unreadable/non-regular files fail
 through core's error handling, not a fabricated successful response.
 It is not a directory traversal mapper, range/ETag server, or frontend compiler.
 Build browser assets separately and supply an explicit manifest for production.
+
+::: details Exports and types
+Runtime exports: `HtmlFragment`, `html`, `escapeHtml`, `trustedHtml`, `serializeJson`, `jsonScript`,
+`renderPage`, `createFormState`, and `staticAssets`.
+Type exports: `HtmlFragment`, `HtmlValue`, `Template`, `Layout`, `PageOptions`,
+`FormOptions`, `FormField`, `FormState`, and `StaticAsset`.
+`HtmlFragment` is also a runtime class export so optional template integrations
+can recognize trusted fragments with `instanceof`. Its constructor, like
+`trustedHtml`, accepts already-trusted markup; prefer `html` for escaped content.
+
+:::

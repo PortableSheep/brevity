@@ -1,145 +1,37 @@
-# Comparisons and benchmarks
+# Size and performance
 
-Brevity combines routes, server-rendered pages, native forms, and independently
-compiled browser components through a small core and optional packages. This
-reference records example workloads, source and dependency measurements, and
-synthetic HTTP benchmarks. These results describe the measured applications,
-not a general productivity or production-performance guarantee.
+Brevity aims to keep framework overhead small. Here are the measurements we have,
+the code behind them, and what they can tell you.
 
-## Compare complete features
+## Dependencies
 
-Use one written acceptance contract for each implementation. A useful support
-inbox includes a form, server-side validation, retained invalid input, persistent
-storage, a redirect to request details, a searchable paginated inbox, and status
-updates. Navigation and submissions should work without browser JavaScript.
+Core and web have no external runtime dependencies. Views adds Eta 3.5.0;
+native islands adds no external runtime dependency. Svelte is a peer of the
+separate Svelte adapter, not part of native islands.
 
-Comparable implementations must also handle malformed and oversized bodies,
-token failures, escaping, unknown routes, persistence errors, and concurrent
-writes. Omitting those behaviors from one implementation invalidates the
-comparison. A bounded local example is not a production system: authentication,
-authorization, deployment, and real user data are separate concerns.
-
-Use documented public APIs and ordinary idioms for each framework. Do not copy
-private helpers into the Brevity app, deliberately inflate another implementation,
-or move domain code into the framework just to reduce the application count.
-
-## Count what developers maintain
-
-Report physical and nonblank lines with a reproducible file inventory:
-Also report source bytes: compressed or long template/CSS lines can make a
-line-only comparison misleading.
-
-| Category                       | Include                                                      |
-| ------------------------------ | ------------------------------------------------------------ |
-| Shared business code           | Input rules, repository, domain types, persistence policy    |
-| Framework-specific server code | Routes, middleware, transport errors, response handling      |
-| Rendering                      | Templates, layout callbacks, field/error markup              |
-| Browser code                   | Native scripts, component source, mount/save/error handling  |
-| Styling                        | Hand-authored CSS, including shared styles                   |
-| Configuration                  | Manifests, compiler/build configuration, start/build scripts |
-| Verification                   | Contract tests and measurement scripts, reported separately  |
-
-If a file mixes categories, label it mixed rather than silently assigning all of
-it to domain code. Count shared files once per runnable implementation when
-reporting each application's total. Also show framework-specific totals so a
-large shared repository cannot hide a small or absent difference in glue.
-
-Exclude generated output, lockfiles, dependencies, vendored package archives,
-runtime data, and screenshots from hand-authored line totals, but name those
-exclusions. Record the exact dependency versions and runtime requirements:
-excluding a runtime from source counts does not eliminate its cost.
-
-Report browser payload separately from source size. State which page loads each
-asset, whether dependencies are included, and whether gzip is a measured
-compression size or actually used by the server. Zero JavaScript on one page
-does not imply a JavaScript-free application.
-
-## Interpret the result
-
-Line counts measure source shape, not correctness, maintainability, execution
-speed, or developer time. Formatting, helper granularity, and template style
-affect them. One application is evidence about that application, not proof that
-Brevity is always smaller or easier.
-
-A fair outcome might be modest savings, parity, or more code in Brevity. Publish
-that result. An awkward API discovered while building a second app is useful
-evidence even when the comparison does not favor Brevity.
-
-Useful follow-up evidence includes:
-
-- Add the same field and behavior to both implementations and record the changed
-  surfaces, including validation, templates, persistence, and tests.
-- Have a developer unfamiliar with Brevity follow the guide and add a feature;
-  record blockers without inventing an onboarding-time claim.
-- Identify repeated general web glue across independent applications before
-  proposing another helper. Keep their business rules application-owned.
-
-## RSVP prototype audit
-
-A read-only audit on October 9, 2026 counted the isolated invitation prototype
-after core/web integration and the Svelte conditional editor. These are snapshot
-observations, not an equivalent-framework comparison or an onboarding study.
-Physical lines use line splitting; nonblank lines exclude blank lines but include
-comments. Categories are at file level and include mixed responsibilities.
-
-| File group                                       | Physical lines | Nonblank lines | Source bytes |
-| ------------------------------------------------ | -------------: | -------------: | -----------: |
-| Server domain/schema/repository                  |            290 |            277 |       15,871 |
-| HTTP glue and mixed controllers                  |            216 |            212 |       12,423 |
-| Templates and CSS                                |            178 |            172 |       29,475 |
-| Native browser code, Svelte component, and mount |            347 |            343 |       17,263 |
-| Configuration                                    |             85 |             84 |        2,214 |
-| **Application and configuration**                |      **1,116** |      **1,088** |   **77,246** |
-| Tests, separately                                |            737 |            705 |       41,714 |
-
-Lockfiles, compiled output, installed dependencies, vendored package archives, and
-session screenshots/browser scripts were excluded from authored totals. The
-prototype README was also counted separately: 105 physical / 68 nonblank lines.
-For perspective, its CSS occupies 6,377 bytes on only eight physical lines.
-Short files do not imply little UI code.
-
-The audit found public core/web imports, no custom stream-buffer/parser replay,
-and no custom escaping implementation. Request token policy, strict field limits,
-conditional visibility, and historical form versions remain application code.
-The controllers mix transport and domain orchestration, so the HTTP group is
-not a pure measure of framework overhead.
-
-Potential simplifications are finishing fragment-based template composition,
-reducing repeated accessible field/error markup, and replacing a test-only
-unbound-server adapter with the existing `app.listen(0)` API. A reusable
-enhanced-form transport helper requires evidence from another application first.
-None of these findings justifies moving RSVP rules into core.
+Count your app's database client, auth SDK, and browser runtime too. A small
+framework doesn't remove those costs.
 
 ## Second application: support inbox
 
-The repository now includes two runnable implementations of one acceptance
-contract in `examples/support-inbox`: Brevity core/web and Express 5.1.0.
-Both create and validate support requests, retain invalid input, persist to a
-local JSON store, show details, search/filter/paginate the inbox, and update
-request status. Both use ordinary forms and the same optional character counter.
+The [support inbox example](https://github.com/PortableSheep/brevity/tree/main/examples/support-inbox)
+implements the same app in Brevity and Express 5.1.0: validated forms, persistent
+requests, details, search, pagination, and status updates. Both work without
+JavaScript and share the business logic.
 
-| Comparable authored source                           | Brevity | Express |
-| ---------------------------------------------------- | ------: | ------: |
-| HTTP adapter and templates, nonblank lines           |     117 |     150 |
-| Runnable app, nonblank lines                         |     309 |     342 |
-| Runnable app, source bytes                           |  17,271 |  19,593 |
-| Including common build configuration, nonblank lines |     359 |     392 |
+| Authored source                      | Brevity | Express |
+| ------------------------------------ | ------: | ------: |
+| Routes and templates, nonblank lines |     117 |     150 |
+| Whole runnable app, nonblank lines   |     309 |     342 |
+| Whole runnable app, bytes            |  17,271 |  19,593 |
 
-Each app total includes the shared validation, repository, runtime configuration,
-CSS, and browser code once. The measured difference is 33 nonblank lines and
-2,322 source bytes: about 10% of the runnable source in this particular example,
-not a large reduction in all application work. The Brevity page HTML is slightly
-larger because of its generated field IDs. Both implementations serve the same
-322-byte native browser script; neither requires a browser framework.
+That's **33 fewer nonblank lines** in this example, mostly HTML/form glue.
+It's a modest reduction, not a claim that all Brevity apps take less code or time.
+Both serve the same 322-byte browser script. The local store is single-process
+and the example has no authentication.
 
-Core/web have two direct production package entries and no additional runtime
-package dependencies. Express's measured production graph has 42 distinct
-name/version pairs. Those counts are dependency observations, not a security,
-startup-time, loaded-code, or performance score.
-
-The repeatable report and all counting/fixture rules are in
-`examples/support-inbox/RESULTS.md`; run instructions and limitations are in its
-`README.md`. From that directory, after package build/install:
+::: details Reproduce the source comparison
+From `examples/support-inbox`, after installing and building packages:
 
 ```sh
 npm run typecheck
@@ -149,69 +41,62 @@ npm run smoke
 node scripts/measure.mjs | cmp - measurements.json
 ```
 
-The last command checks the committed report against the actual installed
-libraries, source inventory, and served HTTP fixture payloads. Different Node,
-framework, or dependency versions can legitimately change the report. Both
-implementations passed the shared contract and compiled-process restart smoke,
-and the report was reproduced after integration into the framework branch.
+The [results](https://github.com/PortableSheep/brevity/blob/main/examples/support-inbox/RESULTS.md)
+include the file inventory, versions, dependency graph, and counting rules.
+Each app total includes shared code once. Generated output, dependencies,
+lockfiles, and runtime data aren't counted as authored source. With common build
+configuration included, totals are 359 nonblank lines for Brevity and 392 for Express.
 
-The concrete reduction comes from escaped fragment composition, accessible
-field/error feedback, and exact asset handling. Domain input rules and
-persistence remain shared application code. Expected domain errors still need
-mapping to core `HttpError`, and HEAD page routes are explicitly registered.
-This is evidence of modest glue reduction, not proof of faster development.
-
-The local inbox is unauthenticated and loopback-only; its JSON store coordinates
-one process/repository instance, not a production database. No new framework
-features were added to make the comparison favorable.
-
-## Current boundaries
-
-`@brevity/core` and `@brevity/web` have no runtime package dependencies. They still
-use Node's runtime, and optional browser components still use their own compiler
-and runtime. Core handles bounded object-JSON/form parsing and request-local
-bindings; the web layer provides escaped fragments, form feedback, exact asset
-maps, and safe JSON state serialization.
-
-The application owns validation policy, CSRF/access control, persistence, and
-frontend compilation. Escaping is not URL validation or authorization. Read the
-[web guide](./web.md) and [core API](../api/core.md) for the precise contracts.
-Neither a local prototype nor a passing test suite establishes production
-readiness.
+Report bytes alongside lines: compressed templates and CSS can hide a lot of
+code on one line. Blank lines improve readability and aren't a cost to eliminate.
+:::
 
 ## Synthetic HTTP benchmark
 
-`examples/benchmarks` now contains a locked, repeatable comparison against
-Express 5.3.0, Fastify 5.12.5, and Nest 12.1.2 (Express adapter). Benchmark
-dependencies are isolated from framework packages. The fixtures use public
-APIs and verify every response; failed requests abort the report.
+Small JSON routes were measured against Express 5.3.0, Fastify 5.12.5, and Nest
+12.1.2 using its Express adapter:
 
-The committed `measurements.json` records three rotated-order runs per framework
-and method: 16 concurrent keep-alive clients, 500 ms warmup, then 2 seconds of
-measurement. Each scenario starts a fresh server process. This local snapshot
-used Node 22.21.1 on an Apple M1 Max/macOS ARM64 machine, not a dedicated,
-controlled performance host.
+| Framework | GET requests/s | POST requests/s |  GET p95 |
+| --------- | -------------: | --------------: | -------: |
+| Brevity   |         41,800 |          38,857 | 0.637 ms |
+| Express   |         16,542 |          14,311 | 1.745 ms |
+| Fastify   |         40,937 |          38,793 | 0.672 ms |
+| Nest      |         14,955 |          13,005 | 1.927 ms |
 
-| Framework | Median GET requests/s | Median POST requests/s | Median GET p95 (ms) | Median process-to-ready (ms) | Maximum sampled RSS (MiB) |
-| --------- | --------------------: | ---------------------: | ------------------: | ---------------------------: | ------------------------: |
-| Brevity   |                41,800 |                 38,857 |               0.637 |                         50.2 |                      91.5 |
-| Express   |                16,542 |                 14,311 |               1.745 |                         71.1 |                     126.6 |
-| Fastify   |                40,937 |                 38,793 |               0.672 |                         96.8 |                      79.8 |
-| Nest      |                14,955 |                 13,005 |               1.927 |                        237.0 |                     176.0 |
+Brevity and Fastify had similar small-route throughput in this local run.
+Fastify used less sampled memory. These routes don't include a database, auth,
+templates, or overload, so **don't use these numbers to size a production app**.
 
-Startup medians and RSS maxima combine both methods and all repeats. Startup
-includes process creation/imports/listening, not cold filesystem caches.
-RSS is the child server's sampled peak, not application or system memory.
-The JSON includes individual runs, p50/p95/p99, event-loop p99, machine/runtime,
-versions, and compiled Brevity file hashes.
+::: details Machine, method, and full report
+The snapshot used Node 22.21.1 on an Apple M1 Max running macOS ARM64. Each
+scenario started a new process, warmed up for 500 ms, and measured for two seconds
+with 16 concurrent keep-alive clients. Values above are medians of three
+rotated-order runs. The client ran on the same machine as the servers.
 
-This supports a narrow conclusion: Brevity has competitive small-route overhead
-in this local fixture. It does **not** establish better production capacity.
-Fastify used less sampled memory; Brevity's POST runs ranged from 34,091 to
-40,508 requests/s, including a run below Fastify. The co-located closed-loop
-client can bottleneck, and the routes omit persistence, authentication, schemas,
-templates, and overload. Nest's normal POST status is 201; others use 200.
+| Framework | Median process-to-ready | Maximum sampled RSS |
+| --------- | ----------------------: | ------------------: |
+| Brevity   |                 50.2 ms |            91.5 MiB |
+| Express   |                 71.1 ms |           126.6 MiB |
+| Fastify   |                 96.8 ms |            79.8 MiB |
+| Nest      |                237.0 ms |           176.0 MiB |
 
-See `examples/benchmarks/README.md` for repeat instructions and limitations.
-Dedicated-host repeats, equivalent application workloads, slow-upstream testing,
-and a soak remain necessary before advertising production performance.
+Startup includes process creation, imports, and listening, not cold filesystem
+caches. RSS is the child process's sampled peak. Startup/RSS combine both methods
+and all repeats. Brevity POST runs ranged from 34,091 to 40,508 requests/s,
+including a run below Fastify. Nest returns 201 for POST; the others return 200.
+
+See the [benchmark README](https://github.com/PortableSheep/brevity/blob/main/examples/benchmarks/README.md)
+for commands and the JSON report with individual runs, p50/p95/p99, event-loop
+delay, machine details, versions, and compiled-source hashes. Responses are
+checked; failures abort the run. A shared machine and short closed-loop run
+limit how much we can infer.
+:::
+
+## Test your workload
+
+Compare equivalent behavior: the same validation, errors, escaping, storage,
+and browser experience. Include templates, configuration, and client code when
+comparing source. Measure development time with real developers, not line counts.
+
+For hosted application results and outstanding load/recovery checks, see
+[production readiness](./production-readiness).

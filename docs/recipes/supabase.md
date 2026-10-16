@@ -1,114 +1,95 @@
-# Supabase server-side passwordless PKCE
+# Sign in with Supabase
 
-**Tested SDKs:** @supabase/ssr 0.7.0, @supabase/supabase-js 2.57.4,
-cookie 1.0.2, Node.js 22. Automated tests exercise real SDK code against a
-stubbed Auth endpoint; **they do not send email or prove live refresh**.
+Add passwordless email sign-in using Supabase's server-side SDK. The browser
+submits a native form; your server handles cookies and verifies the user.
 
-## Provider setup
+## Configure the provider
 
-Use a Supabase project's publishable/anon key, never a service-role key.
-Enable email passwordless sign-in. Configure the Site URL to your canonical
-app origin, and allowlist the exact `/auth/callback` redirect URL.
-The default magic-link email should use the provider's `ConfirmationURL`,
-so Auth verifies the email link and redirects with a **code**. Do not replace
-it with a token-hash callback without implementing that different flow.
+In your Supabase project:
 
-For local development, use `http://127.0.0.1:3000` consistently, not a mix of
-localhost and IP origins. For production, use a fixed HTTPS origin, validate
-Host at your proxy, and do not derive trusted redirects from request headers.
-Use custom SMTP for real users; configure deliverability and redirect allowlists
-in Supabase, not in Brevity.
+1. Enable passwordless email sign-in.
+2. Set the Site URL to your app's canonical origin and add its exact
+   `/auth/callback` URL to Redirect URLs. Preserve entries used by other apps.
+3. Keep the email template's `ConfirmationURL` link so the callback receives
+   an authorization code.
 
-## Request-local client and cookies
+Use the publishable/anon key, **never a service-role key**. For local work, use
+`http://127.0.0.1:3000` consistently; don't mix it with `localhost`. Public apps
+need a fixed HTTPS origin and SMTP configured for real users.
 
-<<< @/samples/supabase.ts
-
-This app creates a new SDK client per handler. `getAll` reads the requesting
-browser's cookie jar; `setAll` supports chunked cookies and appends **multiple
-Set-Cookie headers** through `res.raw`. Do not collapse them into a comma-delimited
-string. The SDK persists the verifier when requesting an email and updates/clears
-session cookies when exchanging, refreshing, or signing out.
-
-Cookies are HttpOnly, Path `/`, SameSite Lax, and Secure on HTTPS. The HTTPS
-cookie name uses `__Host-` (no Domain attribute). This is a **server-only** auth
-recipe: do not also expect a browser Supabase SDK to read its HttpOnly cookies.
-Do not share one SDK client across users or cache authenticated responses.
-
-## Why browser binding matters
-
-PKCE stores a verifier in the initiating browser's cookie jar and sends only
-its challenge to Auth. The email link returns a code; exchanging it also requires
-that verifier. Forwarding a link to another browser should fail, not silently
-create a session. We reject a missing verifier before exchange; the Auth server
-still performs the cryptographic check. Requesting another link can replace the
-verifier, so open the **newest link in the same browser**.
-
-The callback has no user-controlled redirect target. An invalid/expired code
-gets a visible 400 and instructions to request a new link. Code and tokens never
-go in application logs. A GET callback is required for email navigation; all
-application mutations, including logout, are POSTs.
-
-## Origin checks and Referrer-Policy
-
-The middleware requires the configured exact Origin for mutation requests,
-including login/logout, and rejects missing Origin. It sends
-**`Referrer-Policy: same-origin`**: do not substitute `no-referrer` blindly, since
-browser form submissions can lose the Origin needed by this policy.
-SameSite cookies alone are not the application's CSRF policy.
-If supporting non-browser clients, design an explicit separate authentication
-and CSRF contract rather than weakening the form routes.
-
-## Session verification, refresh, and logout
-
-`getUser()` verifies identity with Auth; `getSession()` alone is not authorization.
-The SSR client refreshes expired sessions when required and writes new cookies
-before the response is sent. `getUser` failures distinguish unauthenticated users
-from unavailable upstream services. The app must still enforce resource ownership,
-RLS, and permissions using the verified user's ID.
-
-Logout uses local scope and clears this browser's session. Revoking refresh
-tokens does not instantly revoke every already-issued JWT; design sensitive
-operations and session policy accordingly.
-
-## Run it
-
-<<< @/samples/supabase-start.ts
+## Run the example
 
 Set `APP_ORIGIN`, `SUPABASE_URL`, and `SUPABASE_PUBLISHABLE_KEY` in your shell or
-deployment secret manager, then run from the repository root:
+secret manager. Don't put values in source control. Then, from the repository root:
 
 ```sh
+npm run build:packages
 node --import tsx docs/samples/supabase-start.ts
 ```
 
-The entry point fails explicitly if configuration is missing. Environment
-files are not loaded automatically; Node's `--env-file` is an option if needed.
-Visit `/login`, not `/`.
+Open **http://127.0.0.1:3000/login**. Request a link and open the newest email in
+**the same browser**. PKCE binds the link to that browser; forwarding it elsewhere
+should fail.
 
-## Email rate limits are part of the UX
+::: details Entry point and environment checks
+<<< @/samples/supabase-start.ts
 
-[Supabase's rate-limit documentation](https://supabase.com/docs/guides/auth/rate-limits)
-currently describes a built-in sender limit of **2 emails per hour per project**
-and a default **60-second window per user** for OTP/magic-link requests.
-Check your actual project settings; custom SMTP can change limits.
-The recipe returns 429 visibly instead of reporting “email sent.”
+Missing configuration fails at startup. Environment files aren't loaded
+automatically; use Node's `--env-file` option if needed.
+:::
 
-Add an application/edge abuse limit and appropriate bot protection before
-public deployment. This recipe does not implement a durable multi-instance
-rate limiter. Avoid retry loops, email enumeration, and logging email/code/token
-payloads. A single-browser demo is not an auth engine.
+## How the request flow works
 
-## Acceptance checklist for your environment
+The app creates an SDK client per handler. A login request saves a PKCE verifier
+in an HttpOnly cookie. The email returns a code; the callback exchanges that code
+using the verifier and writes session cookies. Protected handlers call `getUser()`
+to verify identity, not just `getSession()`.
 
-1. Submit the native login form; confirm delivery and HttpOnly verifier cookies.
-2. Open the link in another browser: expect a controlled failure and no session.
-3. Open the newest link in the original browser: expect account page and session cookies.
-4. Use a short local JWT lifetime, wait for expiry, reload `/account`, and confirm
-   token refresh plus updated cookies and verified identity.
-5. Reject missing/cross-site Origin on login/logout; sign out and confirm account is 401.
-6. Exercise expired/reused links, SMTP failure, 429, and resource ownership checks.
+The SDK refreshes expired sessions and updates cookies before the response is
+sent. Your app still checks resource ownership and permissions using the verified
+user ID. Don't share one client across users or cache authenticated responses.
 
-`npm run docs:check` covers PKCE challenge/verifier wiring, cookie attributes,
-wrong-browser rejection, expiry failure, Origin rejection, and surfaced 429.
-Run the live checklist separately against local Supabase/Mailpit or your staging
-project; no hosted provider credentials belong in CI for the framework docs.
+::: details Complete auth implementation
+<<< @/samples/supabase.ts
+:::
+
+## Cookies and form security
+
+Cookies are HttpOnly, Path `/`, SameSite Lax, and Secure on HTTPS. HTTPS names use
+`__Host-` without a Domain attribute. The SDK supports chunked cookies; append
+separate `Set-Cookie` headers rather than combining them with commas.
+
+This is a server-only session: a browser Supabase SDK can't read these HttpOnly
+cookies. Mutations, including login/logout, use POST and require the configured
+exact Origin. Keep `Referrer-Policy: same-origin`; changing it to `no-referrer`
+can remove the Origin needed by browser forms. Don't derive trusted redirects
+from arbitrary Host/forwarded headers.
+
+The callback accepts no user-controlled destination. Expired or invalid codes
+produce a visible error, without logging codes or tokens. Asking for another link
+can replace the verifier, so use the newest link.
+
+Logout clears this browser's session using local scope. It doesn't instantly
+revoke every already-issued JWT; account for that in sensitive operations.
+
+## Handle email limits
+
+Supabase's built-in sender has restrictive
+[email rate limits](https://supabase.com/docs/guides/auth/rate-limits). Check the
+project's current limits and configure SMTP before public use. This example
+shows 429 as an error instead of pretending an email was sent.
+
+Add rate limiting and bot protection for a public login form. Don't retry email
+requests in a loop or log addresses, codes, or tokens.
+
+## Check your setup
+
+Try sign-in in the original browser and rejection in a different browser. Then
+verify expired/reused links, logout, cross-site POST rejection, email failures,
+and 429 handling. Test refresh with a short **local** token lifetime before
+changing any hosted settings.
+
+The [recipe tests](./#versions-and-checks) use Supabase SSR 0.7.0, JS 2.57.4, and
+cookie 1.0.2 against stubbed Auth HTTP. They check PKCE, cookies, Origin, and
+error handling, not email delivery or successful live refresh. Run the hosted
+checks separately with your own provider configuration.

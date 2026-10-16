@@ -1,24 +1,23 @@
-# HTTP tests with `listen(0)`
+# Test over HTTP
 
-**Tested:** local @brevity/core 0.1.0, Node.js 22, built-in `node:test`.
-Use the public listener instead of building a custom raw request adapter.
+Start your app on port `0` to get a free local port. Make requests with `fetch`
+and close the server when the test finishes. No custom request adapter needed.
 
 <<< @/samples/testing.ts
 
-Register cleanup before awaiting readiness. `once(server, "listening")` also
-rejects if the server emits `error`. `server.address()` is only useful after
-listening. Binding to loopback avoids exposing fixtures to the network.
+Register cleanup before awaiting `listening`, then read the assigned port from
+`server.address()`. `once(server, "listening")` also rejects on a server error.
 
-## Verify the real contract
+## Run the examples
 
-<<< @/samples/sample.test.ts
+```sh
+npm run docs:check
+```
 
-The suite covers the first route, form parser behavior, escaped retained input,
-database reopen, explicit HEAD, plain/decorated parity, and SDK PKCE wiring.
-Use temporary databases per test, await requests, and close sockets before
-releasing persistence. `closeAllConnections()` is appropriate for test teardown,
-not a replacement for graceful production shutdown.
+The [test suite](https://github.com/PortableSheep/brevity/blob/main/docs/samples/sample.test.ts)
+covers JSON routes, form errors, escaping, persistence after reopening SQLite,
+HEAD, decorators, and Supabase SDK wiring. Use a separate temporary database for
+each test and close sockets before closing storage.
 
-Run `npm run docs:check` from the root. Root `npm test` includes this check after
-the framework's own suite. Browser behavior needs [Playwright](./playwright.md);
-provider email delivery needs a live acceptance run.
+`closeAllConnections()` is useful for test cleanup, not graceful production
+shutdown. For browser behavior, use [Playwright](./playwright).

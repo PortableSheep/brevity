@@ -1,6 +1,7 @@
 import { createApp, HttpError, type Request, type Response } from "@brevity/core";
 import { Controller, Get, Head, registerControllers } from "@brevity/core/decorators";
 
+// #region input-errors
 export class InputError extends Error {}
 
 export function requireId(value: string | null): number {
@@ -18,6 +19,7 @@ export function toHttpId(value: string | null): number {
     throw error;
   }
 }
+// #endregion input-errors
 
 export class GreetingService {
   message(id: number) {
@@ -25,6 +27,7 @@ export class GreetingService {
   }
 }
 
+// #region plain-routes
 export function plainApp(service: GreetingService) {
   const app = createApp();
   app.router.get("/readers/:id", (req, res) => {
@@ -36,7 +39,9 @@ export function plainApp(service: GreetingService) {
   });
   return app;
 }
+// #endregion plain-routes
 
+// #region controller-routes
 @Controller("/readers")
 export class ReadersController {
   constructor(private readonly service: GreetingService) {}
@@ -52,6 +57,7 @@ export class ReadersController {
     res.header("content-type", "application/json; charset=utf-8").send("");
   }
 }
+// #endregion controller-routes
 
 export function decoratedApp(service: GreetingService) {
   const app = createApp();

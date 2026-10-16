@@ -1,7 +1,7 @@
 # Prisma
 
-**Tested:** prisma and @prisma/client 6.12.0, SQLite, Node.js 22.
-Use Prisma directly; the same notebook needs only a different repository.
+Swap the notebook's repository for Prisma without changing its routes.
+This recipe uses Prisma 6.12.0 and SQLite.
 
 ## Schema and generated client
 
@@ -30,6 +30,5 @@ Prisma owns pooling, parameterization, and transactions; Brevity owns the HTTP
 response. The async `close()` must be awaited by your entry point after the
 server stops accepting/drains requests.
 
-Run `npm run docs:check`: it generates the client and tests the adapter against
-a temporary real SQLite table. That test's fixed DDL is a fixture, not a migration
-strategy. The recipe does not claim Prisma 7 compatibility.
+Run `npm run docs:check` to generate the client and test the SQLite repository.
+Prisma 7 hasn't been checked with this recipe.

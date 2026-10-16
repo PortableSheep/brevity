@@ -1,8 +1,7 @@
 # Playwright E2E
 
-**Tested:** @playwright/test 1.56.0, Chromium, Node.js 22.
-The point is the acceptance contract: the server form works with JavaScript on
-and off, and the island only enhances it.
+Check that your form works in a real browser, with and without JavaScript.
+This recipe uses Playwright 1.56.0 and Chromium.
 
 ## Start the fixture and wait for readiness
 
@@ -30,5 +29,4 @@ On Linux CI, install browser system libraries with
 `npx playwright install --with-deps chromium`; `.github/workflows/docs.yml`
 does this before running the same tests.
 
-Keep hosted sign-in/email tests in a provider-configured application suite.
-Do not turn a mocked email endpoint into a claim of real Supabase E2E coverage.
+Test hosted sign-in separately with a configured provider.

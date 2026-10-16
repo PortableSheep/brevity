@@ -1,27 +1,9 @@
 # Core API
 
-Public entry point: **`@brevity/core`**. This reference follows
-`packages/core/src/index.ts` and the exported implementations.
-Decorators have a separate entry point; [web helpers](./web.md) and
-[plugins](./plugins.md) are separate packages.
-
-## Export inventory
-
-| Runtime export                           | Purpose                                              |
-| ---------------------------------------- | ---------------------------------------------------- |
-| `createApp`                              | App, router, container, plugin wiring, HTTP listener |
-| `Router`                                 | Explicit routes and middleware                       |
-| `Request`, `Response`                    | Node HTTP wrappers                                   |
-| `HttpError`                              | Explicit 4xx/5xx transport error                     |
-| `Container`, `ServiceProvider`, `Plugin` | Explicit dependency/provider wiring                  |
-| `Validator`                              | Small rule-based validation helper                   |
-| `Viewer`                                 | Existing file interpolation utility                  |
-
-Exported types: `App`, `CreateAppOptions`, `RouterOptions`, `HttpMethod`,
-`RouteHandler`, `MiddlewareHandler`, and `PluginLike`.
-Internal module types such as `BindingKey`, `ValidationRules`,
-`ValidationResult`, and `PluginCtor` are **not** exported from this entry point;
-use inference or the public class method types rather than undocumented subpaths.
+Import from `@brevity/core`. For a first app, start with the
+[getting-started guide](/guide/getting-started); this page is the reference for
+options and behavior. [Web helpers](./web) and [plugins](./plugins) are separate
+packages.
 
 ## `createApp(options?)`
 
@@ -224,7 +206,7 @@ Existing file utility, not a compiler:
 `render` reads synchronously and resolves dotted data paths. Double braces escape
 text; triple braces interpolate raw trusted markup. File paths must be
 application-owned. Sections live on the instance, not in a request-local store.
-For new HTML-first apps, consider `@brevity/web`'s explicit callback fragments.
+For new HTML-first apps, use [file views](/guide/views) for layouts and partials.
 
 ## Optional controller decorators
 
@@ -233,7 +215,7 @@ Entry point: **`@brevity/core/decorators`**. It exports `Controller`, `Route`,
 These are standard TS5 decorators, not legacy/reflection-based decorators.
 Keep `experimentalDecorators` and `emitDecoratorMetadata` disabled.
 
-<<< @/samples/routes.ts
+<<< @/samples/routes.ts#controller-routes
 
 `@Controller(prefix = "")` annotates the class.
 `@Route(method, path = "")` and method-specific decorators attach routes to public
@@ -253,3 +235,22 @@ undecorated) hides the base method's routes.
 Instances are reused, middleware and parsing are unchanged, and callback routes
 can coexist with controllers. Choose the form that keeps your app explicit;
 neither adds auto-serialization or automatic HEAD registration.
+
+::: details Exports and public types
+
+| Runtime export                           | Purpose                                              |
+| ---------------------------------------- | ---------------------------------------------------- |
+| `createApp`                              | App, router, container, plugin wiring, HTTP listener |
+| `Router`                                 | Explicit routes and middleware                       |
+| `Request`, `Response`                    | Node HTTP wrappers                                   |
+| `HttpError`                              | Explicit 4xx/5xx transport error                     |
+| `Container`, `ServiceProvider`, `Plugin` | Explicit dependency/provider wiring                  |
+| `Validator`                              | Small rule-based validation helper                   |
+| `Viewer`                                 | Existing file interpolation utility                  |
+
+Exported types: `App`, `CreateAppOptions`, `RouterOptions`, `HttpMethod`,
+`RouteHandler`, `MiddlewareHandler`, and `PluginLike`.
+Internal module types such as `BindingKey`, `ValidationRules`,
+`ValidationResult`, and `PluginCtor` are **not** exported from this entry point;
+use inference or the public class method types rather than undocumented subpaths.
+:::

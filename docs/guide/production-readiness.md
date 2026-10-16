@@ -1,77 +1,92 @@
-# Production checklist
+# Before you go live
 
-Use this checklist when deploying a Brevity application. It distinguishes
-framework contracts checked in CI from configuration and operational behavior
-that must be verified on your selected host.
+Brevity has been used in a Vercel app with libSQL storage and Supabase sign-in.
+That gives us useful deployment experience, not a guarantee for every app.
+Here's what to check for yours.
 
-| Gate                     | Current evidence                                                                                                                                                                                                   | Remaining proof                                                                                          |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| HTTP correctness         | Bounded parsing, controlled errors, scoped bindings, browser/no-JS contracts                                                                                                                                       | App-specific authorization and abuse cases                                                               |
-| Validation configuration | Unknown names and malformed parameters throw; regression coverage                                                                                                                                                  | Domain schemas remain app-owned                                                                          |
-| Debug diagnostics        | Disabled rendering produces generic errors                                                                                                                                                                         | Gate custom log endpoints and redact enabled diagnostics                                                 |
-| Compatibility            | Framework contracts and packed consumers passed locally and in GitHub Actions on Node 20, 22, 24                                                                                                                   | Newer versions and deployment platforms are not automatically proven                                     |
-| Documentation            | Hosted browser checks and live GitHub Pages documentation; homepage, tutorial, core API, and homepage JS/CSS verified over HTTPS                                                                                   | Ongoing documentation checks as APIs and examples change                                                 |
-| Packaging                | `npm run test:release` installs all nine tarballs in a clean temporary consumer, exercises HTTP/file views/plugins, checks no server-side Svelte, imports the optional adapter, and builds/runs the copied starter | Registry publication, provenance, and registry-consumer verification                                     |
-| Shutdown                 | Tested health/drain recipe, active-request SIGTERM, deadline failure                                                                                                                                               | Target-platform deployment and restart exercises                                                         |
-| Hosting                  | [Live Vercel Node 22 example](./deployment#vercel-node-functions): original paths, raw bodies, cookies, forms, bundled views/static assets, errors, binary bytes, and concurrent scopes verified over HTTPS        | Host limits/operations and Lambda deployment; see the application evidence below                         |
-| Performance              | Source/dependency/payload comparisons plus [repeatable synthetic HTTP benchmarks](./evaluating#synthetic-http-benchmark)                                                                                           | Dedicated-host capacity, cold starts, overload, and soak; bounded application results below              |
-| Usability                | Checked notebook and integration recipes                                                                                                                                                                           | Unfamiliar developer's onboarding and deployed second app                                                |
-| Operations               | Explicit [operations recipe](/recipes/operations)                                                                                                                                                                  | Provider-independent recovery/PITR, rollback, rate limits, and alerts; bounded staging drills below      |
-| Security                 | Bounded runtime-source review found no high-confidence actionable vulnerabilities; local production dependency audit reported none                                                                                 | Independent penetration testing and application/deployment threat review; tooling audit remains separate |
-| Release maintenance      | [Support/upgrade policy](./support), source changelog, enabled private vulnerability reporting, package install checks, and compatibility workflow                                                                 | Registry publication/consumer verification, provenance, and reproducible published releases              |
+## Your launch checklist
+
+- **Access:** verify sign-in, logout, resource ownership, and protection against
+  cross-site submissions. Keep diagnostics private.
+- **Data:** use durable storage, review migrations, and restore a backup before
+  you need one. Plan application and schema rollback separately.
+- **Hosting:** set HTTPS, trusted proxy policy, body limits, and timeouts. Include
+  templates and assets in the deployment. Check shutdown behavior on your host.
+- **Operations:** add request IDs, redacted logs, alerts, rate limits, and a
+  credential-rotation plan.
+- **Workload:** measure your own traffic, concurrency, slow dependencies, and
+  failures. The small results below aren't a capacity estimate.
+
+For setup, see [deployment](./deployment) and [health/shutdown](/recipes/operations).
+
+## What we've checked
+
+CI covers HTTP parsing/errors, request isolation, HTML/forms, browser behavior
+with and without JavaScript, and package installation on Node 20/22/24.
+Release checks build all nine packages, compile a separate TypeScript consumer,
+and run the starter from installed tarballs. Use supported Node 22/24 for deployment.
+
+Packages have an MIT license but aren't published to npm yet. Registry install
+and provenance verification are still release gates. See the
+[release runbook](https://github.com/PortableSheep/brevity/blob/main/PUBLISH.md).
 
 ## Application staging evidence (October 2026)
 
-A separate RSVP application has exercised the Node integration on Vercel with
-remote libSQL storage and Supabase authentication. Its database client, migrations,
-identity/session policy and deployment tooling remain application dependencies,
-not additions to Brevity core. These results apply to that configuration; they are
-not a blanket guarantee for other applications or providers. Private application
-source, account identifiers, data and credentials are not part of this public record.
+A separate RSVP app on Vercel uses libSQL and Supabase. It passed checks for
+submission and persistence across redeployment. A provider-side database copy
+matched the source's schema and aggregate counts.
 
-| Exercise                             | Observed result                                                                                                                                                                                                            | Limit                                                                                                                     |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Hosted HTTP and persistence          | Guest HTML/CSS, protected-route redirects, controlled 404s, escaped RSVP rendering, and a synthetic RSVP readable after redeployment                                                                                       | Not a host-capacity or all-routes guarantee                                                                               |
-| Hosted authentication                | User confirmed magic-link callback/dashboard access, reload continuity, logout denial, then continuity after about 71 minutes against a user-reported 3,600-second access-token lifetime                                   | User-observed, not independent provider refresh telemetry                                                                 |
-| Actual expiry and concurrent refresh | Local Supabase issued 60-second tokens; after 61 seconds the old token was rejected; four requests through two app instances caused exactly one rotating refresh; dashboard succeeded and logout denied old-session replay | Local instrumented evidence, not a hosted concurrency measurement                                                         |
-| Recovery                             | Provider-side copy into a separate database matched eight tables, three migrations, aggregate event/RSVP/session counts and the synthetic fixture check                                                                    | Copy creation reported 6.607 seconds; no measured end-to-end RTO/RPO, timestamp/PITR, failover or separate failure domain |
-| Bounded traffic                      | 60 hosted HTTP requests including preflight/redirect reads, six synthetic RSVP writes, 33.643 seconds, concurrency one, minimum request-start spacing 550 ms; expected 200/303 responses and no 429/5xx/transport failures | A small staging run, not throughput capacity, cold-start identification, overload or soak                                 |
+The user confirmed email sign-in, dashboard access after roughly 71 minutes
+against a one-hour token lifetime, and logout denying further access. A local,
+instrumented test separately proved expiry and exactly one rotating refresh
+across four requests through two app instances.
 
-Observed staging timings, including client/network time:
+A small hosted run completed **60 requests and six synthetic writes without
+rate limits, server errors, or transport failures**. Invitation-page p95 was
+130 ms; RSVP-submission p95 was 335 ms. These include network time and are small
+samples, not a latency promise.
 
-| Path category      | Samples |    p50 |      p95 |  Maximum |
-| ------------------ | ------: | -----: | -------: | -------: |
-| Invitation reads   |      26 | 113 ms |   130 ms |   132 ms |
-| RSVP submissions   |       6 | 154 ms |   335 ms |   335 ms |
-| Confirmation reads |       6 | 127 ms |   145 ms |   145 ms |
-| CSS                |      20 |  24 ms |    42 ms |   108 ms |
-| Preflight          |       2 | 197 ms | 1,670 ms | 1,670 ms |
+::: details Test conditions and detailed results
+The traffic run lasted 33.643 seconds with concurrency one and at least 550 ms
+between request starts. The 60 requests include preflight and redirect reads;
+all responses had their expected 200 or 303 status.
 
-Small samples, especially six writes, cannot establish a meaningful tail-latency
-SLO. The first request was not identified as a cold start. No equivalent competing
-framework workload was measured in this run.
+| Request      | Samples |    p50 |      p95 |  Maximum |
+| ------------ | ------: | -----: | -------: | -------: |
+| Invitation   |      26 | 113 ms |   130 ms |   132 ms |
+| RSVP POST    |       6 | 154 ms |   335 ms |   335 ms |
+| Confirmation |       6 | 127 ms |   145 ms |   145 ms |
+| CSS          |      20 |  24 ms |    42 ms |   108 ms |
+| Preflight    |       2 | 197 ms | 1,670 ms | 1,670 ms |
 
-The hosted bundle needed an HTTP-only libSQL client rather than its native SQLite
-entry, and templates/assets/migrations had to be inside the deployed function
-root. Keep these provider and packaging decisions in the application. File-backed
-SQLite is still appropriate for local development, not durable function storage.
+No request was independently identified as a cold start. No competing framework
+was measured in this run.
 
-Remaining operational gates include credential rotation, migration failure and
-application rollback, provider outage handling, alerts, sustained concurrency and
-abuse protection. An expiring staging credential needs rotation even when all
-framework checks pass. A retained restore copy containing sessions needs the same
-access controls and retention policy as its source. No automated ongoing backups
-or recovery schedule is implied by one successful copy drill.
+The local auth test used actual 60-second Supabase tokens, waited 61 seconds,
+confirmed the old token was rejected, and verified token rotation, authenticated
+reads, and logout denial of an old session cookie. The hosted expiry result is
+user-observed; it doesn't independently record the provider's refresh exchange.
 
-## Release candidate status
+The restore matched eight tables, three migrations, event/RSVP/session counts,
+and the synthetic fixture. Copy creation took 6.607 seconds. End-to-end recovery
+time, recovery-point loss, point-in-time restore, failover, and recovery outside
+Turso weren't measured. The retained copy includes session data and needs the
+same access controls as the source. This drill doesn't set up scheduled backups.
 
-The repository and package archives carry the maintainer-approved MIT license.
-Public npm metadata returned 404 for all nine package names on October 16, 2026;
-this does not establish npm scope ownership or permission to publish. The
-[release runbook](https://github.com/PortableSheep/brevity/blob/main/PUBLISH.md)
-separates candidate checks from explicit publication approval, trusted-publisher
-setup, registry verification and independent onboarding. No publishing workflow
-or registry release is implied by the existing verification/Pages workflow.
+The hosted bundle required an HTTP-only libSQL client and templates/assets/
+migrations inside the function root. Database and auth integrations stayed in
+the app, not core. Private source, credentials, and row data aren't published here.
+:::
+
+## Still to prove
+
+Sustained load, overload handling, cold starts, provider outages, migration
+failure/rollback, alerts, and recovery in another failure domain need further
+work. Independent onboarding and penetration testing haven't been completed.
+
+A scoped source review and dependency audit are snapshots, not security
+certifications. Docs tooling still has known VitePress/Vite/esbuild advisories;
+keep development and preview servers loopback-only.
 
 ## Run the repository gates
 
@@ -85,69 +100,18 @@ npx playwright install chromium
 npm run docs:e2e
 ```
 
-The release check validates MIT license/source/runtime metadata, all declared
-export files and repeat-pack integrity, and compiles a strict TypeScript consumer.
-It cleans up its temporary consumer even when checks fail.
-It never publishes packages. External packages come from the configured npm
-registry; no credentials or application data are part of the fixture.
+These commands don't publish packages. Temporary release consumers are cleaned
+up even on failure.
 
 ## Publishing this documentation on GitHub Pages
 
-The framework workflow verifies Node 20/22/24. On a successful default-branch
-push (or manual run on that branch), it rebuilds docs with the base path supplied
-by `actions/configure-pages`, uploads the static site, and deploys to the
-`github-pages` environment. Pull requests never deploy.
-
-The [public documentation](https://portablesheep.github.io/brevity/) is live.
-The [first successful hosted run](https://github.com/PortableSheep/brevity/actions/runs/38507762699)
-passed the Node verification matrix, browser checks, benchmark smoke, and Pages
-deployment. This establishes CI and documentation deployment, not application-host
-compatibility or production operational readiness.
-
-To publish documentation from a fork:
-
-1. Push the repository and workflow to the intended GitHub repository.
-2. In Settings → Pages, choose **GitHub Actions** as the source.
-3. Ensure the `github-pages` environment permits the default branch.
-4. Merge the changes and inspect the deployment URL and workflow results.
-
-For a local project-site build:
+The default-branch workflow checks the framework, builds the docs, and deploys
+Pages. Pull requests don't deploy. To host a fork, select **GitHub Actions** in
+Settings -> Pages and allow the default branch in the `github-pages` environment.
+For a project-site build locally:
 
 ```sh
 PAGES_BASE_PATH=/brevity npm run docs:build
 ```
 
-GitHub Pages serves documentation only. Node applications require a separate
-host.
-
-## Acceptance outside the repository
-
-The local Node runs are compatibility checks, not a support promise for end-of-life
-versions. Prefer a currently supported Node LTS version for deployment.
-
-Compatible lockfile updates reduced development-tool audit findings from eight
-to three. VitePress's nested Vite/esbuild advisories have no compatible fix in
-the current stable release. Keep docs dev/preview servers loopback-only; they
-are not production hosting. This residual tooling risk is not hidden by the
-zero-advisory production dependency result.
-
-The scoped security review covered core HTTP/scopes/validation, web escaping/assets,
-view confinement, islands loading/forms/serialization, and debug rendering. It
-did not cover every runtime file, dependency internals, application auth, or a
-live deployment. An audit reporting no known production advisories does not mean
-all dependencies or behavior are safe.
-
-Deploy a staging service with a written workload and latency/error objectives.
-Measure warm and cold behavior, increase concurrency, exercise slow upstreams,
-and run a soak while observing RSS, event-loop delay, errors, and connection
-cleanup. Compare equivalent behavior against Express, Fastify, and Nest under
-the same machine/runtime and report repeated runs, versions, and losses.
-
-Extend the bounded staging results above: kill and restart an instance, roll out
-two hosted instances, expire a session under provider failure,
-restore a backup into a new database, and roll back an application release.
-Record the actual result; keep fixtures synthetic and never reuse production
-secrets. These drills prove the application configuration, not every Brevity app.
-
-Have someone unfamiliar with Brevity build and deploy from the docs. Record time
-and blockers without counting our own familiarity as independent adoption.
+Pages hosts the documentation, not your Node application.
