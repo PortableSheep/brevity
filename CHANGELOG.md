@@ -18,6 +18,8 @@ This file does not announce an npm publication or a signed release.
 - Public documentation with checked integration recipes, Node 20/22/24 CI,
   browser tests, and clean packed-package consumer checks.
 - Support/upgrade and private vulnerability-reporting policies.
+- MIT license in the repository and each package, with repository/runtime metadata
+  and packed-export, strict consumer-type and repeat-pack integrity checks.
 
 ### Changed
 
@@ -27,8 +29,10 @@ This file does not announce an npm publication or a signed release.
 
 ### Deployment boundaries
 
-- Vercel's Node integration is verified with synthetic HTTP traffic; persistence,
-  real authentication, cold-start/load measurements, and operational drills
-  remain application-specific work.
+- Vercel Node integration also has separate application-level staging evidence
+  for durable storage, authentication, expiry/refresh, provider-side restore and
+  bounded traffic. The production checklist distinguishes local instrumented
+  tests from user-observed hosted results. Capacity, cold starts, soak, PITR and
+  rollback remain unproven; provider integrations remain application-owned.
 - Lambda requires an HTTP adapter and has not been verified. Edge/Fetch
   runtimes are not supported.

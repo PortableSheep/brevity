@@ -31,6 +31,37 @@ try {
         root,
       ),
     );
+    assert.equal(manifest.license, "MIT", `${manifest.name} must declare its license`);
+    assert.equal(manifest.engines?.node, ">=20", `${manifest.name} must declare Node support`);
+    assert.equal(manifest.repository?.url, "git+https://github.com/PortableSheep/brevity.git");
+    assert.equal(manifest.repository?.directory, `packages/${entry.name}`);
+    const files = new Set(packed.files.map(({ path }) => path));
+    assert(files.has("LICENSE"), `${manifest.name} must ship its license`);
+    assert.equal(
+      await readFile(join(directory, "LICENSE"), "utf8"),
+      await readFile(join(root, "LICENSE"), "utf8"),
+    );
+    const targets = (value) =>
+      typeof value === "string" ? [value] : Object.values(value).flatMap(targets);
+    for (const target of [manifest.main, manifest.types, ...targets(manifest.exports)]) {
+      assert.equal(typeof target, "string", `${manifest.name} has a missing entry point`);
+      assert(
+        files.has(target.replace(/^\.\//, "")),
+        `${manifest.name} is missing packed export ${target}`,
+      );
+    }
+    const [repacked] = JSON.parse(
+      run(
+        "npm",
+        ["pack", directory, "--ignore-scripts", "--json", "--pack-destination", temporary],
+        root,
+      ),
+    );
+    assert.equal(
+      repacked.integrity,
+      packed.integrity,
+      `${manifest.name} must produce identical tarballs from unchanged build output`,
+    );
     packages.push({ manifest, archive: join(temporary, packed.filename) });
   }
 
@@ -128,9 +159,56 @@ try {
       assert((await readFile(installed)).length > 0, `Missing packed export ${subpath}`);
     }
   }
+  const { devDependencies } = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
+  run("npm", [
+    "install",
+    "--save-dev",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    `typescript@${devDependencies.typescript}`,
+    `@types/node@${devDependencies["@types/node"]}`,
+  ]);
+  await writeFile(
+    join(temporary, "consumer.ts"),
+    `
+import { createServer } from "node:http";
+import { createApp, type Request, type Response } from "@brevity/core";
+import { Controller, Get, registerControllers } from "@brevity/core/decorators";
+import { html } from "@brevity/web";
+import { createViews } from "@brevity/views";
+import { createIslands } from "@brevity/islands";
+@Controller("/readers")
+class Readers {
+  @Get("/:id")
+  show(req: Request, res: Response): void {
+    res.json({ id: req.param("id"), page: req.query.page });
+  }
+}
+const app = createApp();
+registerControllers(app.router, new Readers());
+createServer(app.handler);
+const views = createViews({ root: process.cwd() });
+const island = createIslands({ manifest: "/manifest.json", loader: "/loader.js" });
+app.router.get("/", (_req, res) => views.render(res, "page", {
+  title: html\`Packed types\`, component: island("counter", {}),
+}));
+`,
+  );
+  run("npm", [
+    "exec",
+    "--",
+    "tsc",
+    "--noEmit",
+    "--strict",
+    "--module",
+    "NodeNext",
+    "--target",
+    "ES2022",
+    "consumer.ts",
+  ]);
   const adapter = packages.find(({ manifest }) => manifest.name === "@brevity/islands-svelte");
   assert(adapter);
-  const { devDependencies } = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
   run("npm", [
     "install",
     "--save-dev",
@@ -197,7 +275,7 @@ try {
   console.log(
     `Packed consumer passed: ${packages.length} packages; server production graph ${
       Object.keys(lock.packages).length - 1
-    } entries, no Svelte. Optional adapter and starter dev/compiled HTTP passed.`,
+    } entries, no Svelte. License/metadata, all export targets, repeat-pack integrity, strict consumer types, optional adapter and starter dev/compiled HTTP passed.`,
   );
 } finally {
   await rm(temporary, { recursive: true, force: true });

@@ -31,5 +31,15 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PortableSheep/brevity.git",
+    "directory": "packages/views"
+  },
+  "homepage": "https://portablesheep.github.io/brevity/",
+  "bugs": {
+    "url": "https://github.com/PortableSheep/brevity/issues"
   }
 }

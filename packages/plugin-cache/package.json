@@ -22,5 +22,19 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PortableSheep/brevity.git",
+    "directory": "packages/plugin-cache"
+  },
+  "homepage": "https://portablesheep.github.io/brevity/",
+  "bugs": {
+    "url": "https://github.com/PortableSheep/brevity/issues"
+  },
+  "description": "Optional process-local cache services for Brevity"
 }

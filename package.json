@@ -32,7 +32,6 @@
     "node": ">=20"
   },
   "devDependencies": {
-    "esbuild": "0.28.1",
     "@libsql/client": "0.15.15",
     "@playwright/test": "1.56.0",
     "@prisma/client": "6.12.0",
@@ -40,15 +39,17 @@
     "@supabase/supabase-js": "2.57.4",
     "@sveltejs/vite-plugin-svelte": "5.1.1",
     "@types/node": "^22.17.0",
-    "tsx": "^4.20.3",
-    "typescript": "^5.9.2",
-    "vitepress": "^1.6.4",
     "cookie": "1.0.2",
     "drizzle-orm": "0.45.4",
+    "esbuild": "0.28.1",
     "prettier": "3.9.10",
     "prisma": "6.12.0",
     "svelte": "5.57.2",
     "svelte-check": "4.3.3",
-    "vite": "6.4.4"
-  }
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "vite": "6.4.4",
+    "vitepress": "^1.6.4"
+  },
+  "license": "MIT"
 }

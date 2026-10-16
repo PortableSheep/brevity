@@ -14,7 +14,16 @@ Frontend compilation and business rules stay application-owned.
 
 ## 🚀 Getting Started
 
-**Try the existing starter:**
+**Try the repository examples now:**
+
+```bash
+npm ci
+npm run dev
+```
+
+**Use the starter after registry publication**, or install local tarballs using
+[Quick Start](QUICK_START.md#option-2-use-the-existing-starter-template).
+The source packages are release candidates, not published npm releases:
 
 ```bash
 cp -r starter ~/my-app
@@ -78,7 +87,8 @@ npm run docs:build   # Build static docs
 - **[Operations](docs/recipes/operations.md)** — Checked health and shutdown recipe
 - **[Deployment](docs/guide/deployment.md)** — Node services, host-owned handlers, and serverless integration boundaries
 - **[Support & Upgrades](docs/guide/support.md)** — Runtime policy, versioning, migration, and bug reporting
-- **[Changelog](CHANGELOG.md)** · **[Security Policy](SECURITY.md)**
+- **[Release Preparation](PUBLISH.md)** — Candidate gates, provenance, and publication approval
+- **[Changelog](CHANGELOG.md)** · **[Security Policy](SECURITY.md)** · **[MIT License](LICENSE)**
 - **[HTTP Benchmarks](examples/benchmarks/README.md)** — Reproducible Brevity/Express/Fastify/Nest fixtures and limitations
 
 Tutorial/recipe listings import executable files from `docs/samples/`.

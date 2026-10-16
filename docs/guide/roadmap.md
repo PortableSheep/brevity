@@ -30,26 +30,29 @@ rules into the framework.
 - Runnable Vercel Node 22 deployment example, verified over HTTPS with forms,
   cookies, raw bodies, file views, static assets, and concurrent request scopes.
 - Public documentation and Node 20/22/24 verification in GitHub Actions.
+- Application-level Vercel/libSQL/Supabase staging evidence for durable RSVP data,
+  authentication, expiry/refresh, a provider-side restore and bounded traffic.
+  See the production checklist for scope and limits.
 - Support/upgrade and private vulnerability-reporting policies, with a source
   changelog.
 
 ## Next, ranked
 
-1. **Hosted application deployment.** Extend the verified Vercel Node integration
-   to real application persistence and authentication. Verify a Lambda recipe
-   without adding platform SDKs to core.
-2. **Operational exercises.** Run restart, migration/rollback, backup restore,
-   session expiry, rate-limit, and alerting drills in staging. The existing
-   health/shutdown recipe covers SIGTERM draining and deadline failures locally.
-3. **Release maintenance.** Keep support/upgrade policies and the changelog
-   current. Verify registry installation and release provenance before calling
-   a release reproducible.
-4. **Application load and soak measurements.** Extend the synthetic HTTP
-   benchmarks with dedicated-host workloads, slow upstreams, overload, and
-   sustained operation.
-5. **Starter experience.** Provide HTML-only and optional-island starters with
-   build, test, and browser checks. Have an unfamiliar developer follow the
-   documentation and record onboarding blockers.
+1. **Release preparation and maintenance.** MIT licensing, package source/runtime
+   metadata, conditional export/type checks and isolated starter consumers are
+   checked before publication. Confirm npm scope ownership and publication approval;
+   verify registry installation and provenance before calling a release reproducible.
+2. **Operational exercises.** Extend the staging recovery and expiry evidence with
+   provider-independent restore/PITR, migration failure/rollback, credential rotation,
+   rate limits and alerting. Local health/shutdown covers bounded SIGTERM draining.
+3. **Application load and soak measurements.** Extend the small bounded staging run
+   and synthetic HTTP benchmarks with sustained concurrency, dedicated-host workloads,
+   slow upstreams, overload and observed cold/warm behavior.
+4. **Starter experience.** Have an unfamiliar developer follow the public docs and
+   record onboarding blockers. Automated packed-consumer checks are not independent
+   adoption evidence.
+5. **Additional hosting.** Verify a Lambda HTTP-adapter recipe without adding platform
+   SDKs to core. Other hosts and Edge/Fetch remain unverified or unsupported.
 
 See [Production readiness](./production-readiness) for explicit gates, package
 consumer checks, Node compatibility, Pages setup, and remaining external proof.
