@@ -21,9 +21,7 @@ npm ci
 npm run dev
 ```
 
-**Use the starter after registry publication**, or install local tarballs using
-[Quick Start](QUICK_START.md#option-2-use-the-existing-starter-template).
-The source packages are release candidates, not published npm releases:
+**Start your own app.** All nine packages are available on npm at `0.1.0`:
 
 ```bash
 cp -r starter ~/my-app

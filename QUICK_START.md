@@ -26,27 +26,7 @@ loopback-only demos without authenticated administration.
 ## Option 2: Use the Existing Starter Template
 
 The **starter/** folder is a minimal, copy-paste template for new projects.
-The registry packages are not yet verified as published. Until publication, use
-repository examples above or build and install local tarballs:
-
-```sh
-# From the framework checkout; creates archives but does not publish.
-npm ci
-npm run publish:dry-run
-# Copy the starter into a new empty directory, then install the exact archives.
-cp -r starter ../my-brevity-app
-cd ../my-brevity-app
-npm install ../brevity/portablesheep-brevity-0.1.0.tgz ../brevity/portablesheep-brevity-plugin-cache-0.1.0.tgz ../brevity/portablesheep-brevity-plugin-debug-0.1.0.tgz ../brevity/portablesheep-brevity-plugin-viewer-0.1.0.tgz ../brevity/portablesheep-brevity-plugin-validation-0.1.0.tgz
-npm run dev
-```
-
-The example paths assume the checkout is named `brevity`; adjust that path to your
-checkout name. Install all five starter dependencies together so npm does not
-try to resolve an unpublished internal dependency from the registry. The automated
-`npm run test:release` performs this isolated-consumer rehearsal in a temporary
-directory and removes it afterward. Keep generated tarballs out of commits.
-
-After registry publication, the normal starter flow is:
+Its dependencies install from npm:
 
 ```bash
 # Copy the starter to your project
@@ -69,12 +49,13 @@ That's it! Read the [starter README](starter/README.md) for usage patterns.
 
 ## Option 3: Manual API Setup
 
-After registry publication, create a new TypeScript project:
+Create a new TypeScript project:
 
 ```bash
 mkdir my-app
 cd my-app
 npm init -y
+npm pkg set type=module
 npm install @portablesheep/brevity
 npm install -D typescript tsx @types/node
 ```

@@ -13,7 +13,7 @@ details, and status controls deliberately have no login.
 ## Run either implementation
 
 Node 20+ and npm are required. Start from this repository's checkout of the
-framework source, not the registry (these packages aren't published yet):
+framework source, not the published registry packages:
 
 ```sh
 # Repository root: compile the public packages from this checkout.

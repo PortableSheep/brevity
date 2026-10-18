@@ -8,6 +8,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const registry = process.argv.includes("--registry");
 const temporary = await mkdtemp(join(tmpdir(), "brevity-release-"));
 function run(command, args, cwd = temporary) {
   const result = spawnSync(command, args, { cwd, encoding: "utf8" });
@@ -75,6 +76,17 @@ try {
       packed.integrity,
       `${manifest.name} must produce identical tarballs from unchanged build output`,
     );
+    if (registry) {
+      const metadata = JSON.parse(
+        run("npm", ["view", `${manifest.name}@${manifest.version}`, "--json"]),
+      );
+      assert.equal(
+        metadata.dist.integrity,
+        packed.integrity,
+        "Registry archive differs from local build",
+      );
+      assert.deepEqual(metadata.repository, manifest.repository);
+    }
     packages.push({ manifest, archive: join(temporary, packed.filename) });
   }
 
@@ -102,7 +114,10 @@ try {
       private: true,
       type: "module",
       dependencies: Object.fromEntries(
-        serverPackages.map(({ manifest, archive }) => [manifest.name, `file:${archive}`]),
+        serverPackages.map(({ manifest, archive }) => [
+          manifest.name,
+          registry ? manifest.version : `file:${archive}`,
+        ]),
       ),
     }),
   );
@@ -231,7 +246,7 @@ app.router.get("/", (_req, res) => views.render(res, "page", {
     "--ignore-scripts",
     "--no-audit",
     "--no-fund",
-    adapter.archive,
+    registry ? `${adapter.manifest.name}@${adapter.manifest.version}` : adapter.archive,
     `svelte@${devDependencies.svelte}`,
   ]);
   run(process.execPath, [
@@ -246,7 +261,7 @@ app.router.get("/", (_req, res) => views.render(res, "page", {
     Object.keys(starterManifest.dependencies).map((name) => {
       const packed = packages.find(({ manifest }) => manifest.name === name);
       assert(packed, `Starter depends on unpacked package ${name}`);
-      return [name, `file:${packed.archive}`];
+      return [name, registry ? packed.manifest.version : `file:${packed.archive}`];
     }),
   );
   await writeFile(join(starter, "package.json"), JSON.stringify(starterManifest));
@@ -288,8 +303,12 @@ app.router.get("/", (_req, res) => views.render(res, "page", {
       assert.equal(code, 0, errors);
     }
   }
+  if (registry) {
+    console.log(run("npm", ["audit", "signatures"]));
+    console.log(run("npm", ["audit", "--omit=dev"]));
+  }
   console.log(
-    `Packed consumer passed: ${packages.length} packages; server production graph ${
+    `${registry ? "Registry" : "Packed"} consumer passed: ${packages.length} packages; server production graph ${
       Object.keys(lock.packages).length - 1
     } entries, no Svelte. License/metadata, all export targets, repeat-pack integrity, strict consumer types, optional adapter and starter dev/compiled HTTP passed.`,
   );

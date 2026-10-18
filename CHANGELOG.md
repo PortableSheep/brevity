@@ -1,9 +1,12 @@
 # Changelog
 
-Changes described here are source changes awaiting a registry release.
-This file does not announce an npm publication or a signed release.
+Published versions and noteworthy source changes.
 
-## Unreleased
+## 0.1.0 - 2026-10-18
+
+Initial npm release of all nine `@portablesheep` packages from
+`8d5ff11ba8c9e154da54278af8f391c9215c0bb5`. Published through authenticated
+local npm access, without a provenance attestation.
 
 ### Added
 

@@ -29,7 +29,7 @@ minor version and include migration notes. Only the latest development code and
 latest published release are maintenance targets; older branches have no promised
 backports. There's no fixed release schedule.
 
-Packages aren't published to npm yet. See the
+Version `0.1.0` is available on npm under `@portablesheep`. See the
 [release runbook](https://github.com/PortableSheep/brevity/blob/main/PUBLISH.md)
 for publication and provenance checks.
 

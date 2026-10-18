@@ -1,9 +1,9 @@
 # Releasing Brevity
 
-Packages are release candidates at `0.1.0`; this document does not announce an
-npm publication. Packing, verifying, and publishing are separate actions.
-Publication requires explicit maintainer approval, npm scope ownership, and a
-reviewed source commit. Do not disable 2FA or place registry tokens in this repo.
+All nine packages are published at `0.1.0`. Packing, verifying, and publishing
+remain separate actions. Future publication requires explicit maintainer approval,
+npm scope ownership, and a reviewed source commit. Do not disable 2FA or place
+registry tokens in this repo.
 
 The framework is called **Brevity**. Packages use the maintainer's
 `@portablesheep` scope: `@portablesheep/brevity` is core; optional packages are
@@ -11,9 +11,17 @@ The framework is called **Brevity**. Packages use the maintainer's
 `brevity-islands-svelte`, and `brevity-plugin-{cache,debug,viewer,validation}`
 under that same scope. The `@brevity` organization belongs to someone else.
 
-On October 18, 2026 (UTC), `npm whoami` confirmed `portablesheep` and public
-registry lookups returned 404 for all nine new names. The names are unpublished;
-the registry must still accept each name/version at publication time.
+The initial release was published on October 18, 2026 (UTC) by `portablesheep`
+from `8d5ff11ba8c9e154da54278af8f391c9215c0bb5`, using Node 22.21.1 and
+npm 11.13.0. Its [source CI run](https://github.com/PortableSheep/brevity/actions/runs/39102612653)
+passed. This authenticated local bootstrap has no provenance attestation.
+Registry metadata does not include `gitHead`; matching archive integrity ties
+the registry artifacts to the checked local build, not an independent build.
+The [0.1.0 release](https://github.com/PortableSheep/brevity/releases/tag/v0.1.0)
+includes a per-package integrity and verification record. Registry consumer and
+starter checks passed; npm verified 32 registry signatures and seven dependency
+attestations, and the consumer's production audit found no vulnerabilities.
+Those dependency attestations are not provenance for Brevity.
 
 ## Candidate checks (no publication)
 
@@ -93,16 +101,19 @@ and never overwrite or blindly repeat a partially completed release.
 
 After publication, install the **exact released versions** in a new directory
 outside this checkout, without tarball paths, workspace links, or overrides.
-Repeat the server/HTTP/types/starter checks against registry packages, then run:
+Run the existing consumer checks in registry mode:
 
 ```sh
-npm audit signatures
+npm run build:packages
+node scripts/check-release.mjs --registry
 ```
 
-Inspect each package's registry integrity and provenance information and confirm
-its repository/commit matches the reviewed release. Signature verification is
-not a vulnerability audit or an independent reproducible-build proof. Run a
-production dependency audit separately and report limitations honestly.
+This compares published and local archive integrity and repository metadata,
+installs exact registry versions, exercises server/HTTP/types/adapter/starter
+behavior, and runs `npm audit signatures` and a production dependency audit in
+the isolated consumer. Signature verification is not a vulnerability audit or an
+independent reproducible-build proof. Inspect provenance information separately;
+do not infer a source commit from a signature.
 
 Only after registry verification, publish release notes/tag for that exact
 commit and record versions, Node/npm/toolchain, CI run, registry integrity,
@@ -115,5 +126,5 @@ Have someone unfamiliar with Brevity follow the public getting-started guide and
 starter README from a fresh checkout/registry consumer. Record the actual steps,
 blockers and time, including ESM setup, template copying, startup and shutdown.
 Our automated packed consumer is a useful rehearsal, not independent onboarding.
-Until packages are published, use repository examples or the local tarball path
-in `QUICK_START.md`; unqualified registry installation is not a usable substitute.
+The starter now installs from npm; repository examples remain available for
+framework development.

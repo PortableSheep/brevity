@@ -7,8 +7,7 @@ HTTP startup.
 
 ## Quick start
 
-Install from the configured npm registry once the Brevity packages are published,
-or use local package tarballs during framework development.
+Install the published packages from npm:
 
 ```sh
 npm install
