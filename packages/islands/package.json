@@ -1,5 +1,5 @@
 {
-  "name": "@brevity/islands",
+  "name": "@portablesheep/brevity-islands",
   "version": "0.1.0",
   "description": "Optional HTML-first native islands and progressive forms",
   "type": "module",
@@ -30,7 +30,7 @@
     "prepack": "npm run build"
   },
   "peerDependencies": {
-    "@brevity/web": "^0.1.0"
+    "@portablesheep/brevity-web": "^0.1.0"
   },
   "engines": {
     "node": ">=20"

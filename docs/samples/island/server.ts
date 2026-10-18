@@ -1,6 +1,6 @@
 import { fileURLToPath } from "node:url";
-import { html, staticAssets } from "@brevity/web";
-import { createIslands, islandManifest } from "@brevity/islands";
+import { html, staticAssets } from "@portablesheep/brevity-web";
+import { createIslands, islandManifest } from "@portablesheep/brevity-islands";
 import { createNotebook } from "../tutorial/app.js";
 import type { NoteStore } from "../tutorial/store.js";
 import { nativeRoutes } from "../native/server.js";
@@ -25,7 +25,7 @@ export function islandApp(store: NoteStore) {
         file: fileURLToPath(new URL("./dist/counter.js", import.meta.url)),
       },
       "/assets/loader.js": {
-        file: fileURLToPath(import.meta.resolve("@brevity/islands/loader.js")),
+        file: fileURLToPath(import.meta.resolve("@portablesheep/brevity-islands/loader.js")),
       },
     }),
   );

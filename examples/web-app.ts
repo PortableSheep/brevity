@@ -1,4 +1,4 @@
-import { createApp } from "@brevity/core";
+import { createApp } from "@portablesheep/brevity";
 import {
   createFormState,
   html,
@@ -6,7 +6,7 @@ import {
   staticAssets,
   type FormState,
   type HtmlFragment,
-} from "@brevity/web";
+} from "@portablesheep/brevity-web";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 

@@ -6,7 +6,7 @@ const start = performance.now();
 let server;
 let close;
 if (framework === "brevity") {
-  const { createApp } = await import("@brevity/core");
+  const { createApp } = await import("@portablesheep/brevity");
   const app = createApp({ maxBodyBytes: 1_048_576 });
   app.router.get("/json", (_req, res) => res.json(payload));
   app.router.post("/echo", (req, res) => res.json(req.body));

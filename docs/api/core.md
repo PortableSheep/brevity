@@ -1,6 +1,6 @@
 # Core API
 
-Import from `@brevity/core`. For a first app, start with the
+Import from `@portablesheep/brevity`. For a first app, start with the
 [getting-started guide](/guide/getting-started); this page is the reference for
 options and behavior. [Web helpers](./web) and [plugins](./plugins) are separate
 packages.
@@ -210,7 +210,7 @@ For new HTML-first apps, use [file views](/guide/views) for layouts and partials
 
 ## Optional controller decorators
 
-Entry point: **`@brevity/core/decorators`**. It exports `Controller`, `Route`,
+Entry point: **`@portablesheep/brevity/decorators`**. It exports `Controller`, `Route`,
 `Get`, `Post`, `Put`, `Patch`, `Delete`, `Head`, `Options`, and `registerControllers`.
 These are standard TS5 decorators, not legacy/reflection-based decorators.
 Keep `experimentalDecorators` and `emitDecoratorMetadata` disabled.

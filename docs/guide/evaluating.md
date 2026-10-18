@@ -38,11 +38,14 @@ npm run typecheck
 npm run build
 npm test
 npm run smoke
-node scripts/measure.mjs | cmp - measurements.json
+node scripts/measure.mjs > /tmp/brevity-inbox-current.json
+node scripts/measure.mjs | cmp - /tmp/brevity-inbox-current.json
 ```
 
-The [results](https://github.com/PortableSheep/brevity/blob/main/examples/support-inbox/RESULTS.md)
-include the file inventory, versions, dependency graph, and counting rules.
+The historical [results](https://github.com/PortableSheep/brevity/blob/main/examples/support-inbox/RESULTS.md)
+include the file inventory, versions, dependency graph, and counting rules from
+before the npm scope migration. Current imports are longer, so byte counts
+change; rerun the script to measure your checkout.
 Each app total includes shared code once. Generated output, dependencies,
 lockfiles, and runtime data aren't counted as authored source. With common build
 configuration included, totals are 359 nonblank lines for Brevity and 392 for Express.

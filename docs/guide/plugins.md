@@ -6,8 +6,8 @@ need, or write a small provider for your own integration.
 ## Add a plugin
 
 ```ts
-import { createApp } from "@brevity/core";
-import { CachePlugin, CacheManager } from "@brevity/plugin-cache";
+import { createApp } from "@portablesheep/brevity";
+import { CachePlugin, CacheManager } from "@portablesheep/brevity-plugin-cache";
 
 const app = createApp({
   plugins: [new CachePlugin({ defaultTtl: 120 })],
@@ -22,12 +22,12 @@ after creating the app.
 
 ## Built-in plugins
 
-| Package                      | What it registers                            |
-| ---------------------------- | -------------------------------------------- |
-| `@brevity/plugin-cache`      | A process-local cache, under `cache`         |
-| `@brevity/plugin-validation` | Core's rule validator, under `validator`     |
-| `@brevity/plugin-viewer`     | The simple file interpolator, under `viewer` |
-| `@brevity/plugin-debug`      | Development diagnostics, under `debug`       |
+| Package                                    | What it registers                            |
+| ------------------------------------------ | -------------------------------------------- |
+| `@portablesheep/brevity-plugin-cache`      | A process-local cache, under `cache`         |
+| `@portablesheep/brevity-plugin-validation` | Core's rule validator, under `validator`     |
+| `@portablesheep/brevity-plugin-viewer`     | The simple file interpolator, under `viewer` |
+| `@portablesheep/brevity-plugin-debug`      | Development diagnostics, under `debug`       |
 
 For layouts and partials, use [HTML views](./views). For sign-in, start with the
 [Supabase recipe](/recipes/supabase). There's no built-in durable session or
@@ -38,7 +38,7 @@ rate-limit plugin.
 Extend `Plugin` and register a service. For example, expose an app-owned logger:
 
 ```ts
-import { Plugin, type Container } from "@brevity/core";
+import { Plugin, type Container } from "@portablesheep/brevity";
 
 type Logger = { info(message: string): void };
 

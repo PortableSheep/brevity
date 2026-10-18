@@ -4,7 +4,7 @@ Add a plugin with `app.usePlugin(new PluginClass(options))`, then retrieve its
 service from `app.container`. The [plugins guide](/guide/plugins) shows setup
 and how to write your own.
 
-## `@brevity/plugin-cache`
+## `@portablesheep/brevity-plugin-cache`
 
 Runtime exports: `CachePlugin`, `CacheManager`, `MemoryCacheAdapter`,
 `NullCacheAdapter`. Type exports: `CacheAdapter`, `CachePluginOptions`.
@@ -25,21 +25,21 @@ Null adapter stores nothing and returns defaults.
 `remember` is synchronous; it does not await/deduplicate async work.
 No Redis adapter is exported today.
 
-## `@brevity/plugin-validation`
+## `@portablesheep/brevity-plugin-validation`
 
 Exports `ValidationPlugin` and type `ValidationPluginOptions`.
 `new ValidationPlugin({ key? } = {})` registers core `Validator` as a singleton,
 default key `"validator"`. It does not install route validation middleware.
 See the [core validator contract](./core.md#validator).
 
-## `@brevity/plugin-viewer`
+## `@portablesheep/brevity-plugin-viewer`
 
 Exports `ViewerPlugin` and type `ViewerPluginOptions`.
 `new ViewerPlugin({ baseDir, key? })` registers core `Viewer` as a singleton,
 default key `"viewer"`. baseDir is required.
 See [Viewer](./core.md#viewer) for file interpolation and instance-state limits.
 
-## `@brevity/plugin-debug`
+## `@portablesheep/brevity-plugin-debug`
 
 Runtime exports: `DebugPlugin`, `DebugService`.
 Type exports: `DebugConfig`, `DebugPluginOptions`.

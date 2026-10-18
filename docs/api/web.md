@@ -1,6 +1,6 @@
 # Web API
 
-Import from `@brevity/web` for HTML fragments, form feedback, and static assets.
+Import from `@portablesheep/brevity-web` for HTML fragments, form feedback, and static assets.
 For examples, see [HTML helpers](/guide/web).
 
 ## Escaped fragments

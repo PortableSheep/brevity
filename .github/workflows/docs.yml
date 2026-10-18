@@ -60,7 +60,7 @@ jobs:
           cache: npm
           cache-dependency-path: examples/benchmarks/package-lock.json
       - run: npm ci
-      - run: npm run build --workspace @brevity/core
+      - run: npm run build --workspace @portablesheep/brevity
       - run: npm ci --prefix examples/benchmarks
       - run: npm run bench --prefix examples/benchmarks --silent > benchmark-smoke.json
         env:

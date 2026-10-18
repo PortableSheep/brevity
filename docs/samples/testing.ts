@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { once } from "node:events";
 import type { TestContext } from "node:test";
-import type { App } from "@brevity/core";
+import type { App } from "@portablesheep/brevity";
 
 export async function serve(t: TestContext, app: App): Promise<string> {
   const server = app.listen(0, "127.0.0.1");

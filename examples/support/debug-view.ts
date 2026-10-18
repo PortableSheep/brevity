@@ -1,5 +1,5 @@
-import { Viewer } from "@brevity/core";
-import { type DebugService } from "@brevity/plugin-debug";
+import { Viewer } from "@portablesheep/brevity";
+import { type DebugService } from "@portablesheep/brevity-plugin-debug";
 
 type DebugLog = ReturnType<DebugService["getLogs"]>[number];
 

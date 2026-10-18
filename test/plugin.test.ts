@@ -1,11 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { join } from "node:path";
-import { createApp, Plugin, type Container } from "@brevity/core";
-import { CachePlugin } from "@brevity/plugin-cache";
-import { ViewerPlugin } from "@brevity/plugin-viewer";
-import { DebugPlugin } from "@brevity/plugin-debug";
-import { ValidationPlugin } from "@brevity/plugin-validation";
+import { createApp, Plugin, type Container } from "@portablesheep/brevity";
+import { CachePlugin } from "@portablesheep/brevity-plugin-cache";
+import { ViewerPlugin } from "@portablesheep/brevity-plugin-viewer";
+import { DebugPlugin } from "@portablesheep/brevity-plugin-debug";
+import { ValidationPlugin } from "@portablesheep/brevity-plugin-validation";
 
 test("app registers plugins and exposes bindings", () => {
   const app = createApp({

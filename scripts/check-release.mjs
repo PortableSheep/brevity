@@ -31,6 +31,19 @@ try {
         root,
       ),
     );
+    const expectedName =
+      entry.name === "core" ? "@portablesheep/brevity" : `@portablesheep/brevity-${entry.name}`;
+    assert.equal(manifest.name, expectedName, "Package name must match its workspace");
+    assert(
+      !JSON.stringify(manifest).includes("@brevity/"),
+      `${manifest.name} must not reference the former package scope`,
+    );
+    for (const file of packed.files.filter(({ path }) => /\.(?:js|ts)$/.test(path))) {
+      assert(
+        !(await readFile(join(directory, file.path), "utf8")).includes("@brevity/"),
+        `${manifest.name} ships a reference to the former package scope in ${file.path}`,
+      );
+    }
     assert.equal(manifest.license, "MIT", `${manifest.name} must declare its license`);
     assert.equal(manifest.engines?.node, ">=20", `${manifest.name} must declare Node support`);
     assert.equal(manifest.repository?.url, "git+https://github.com/PortableSheep/brevity.git");
@@ -66,14 +79,15 @@ try {
   }
 
   const serverPackages = packages.filter(
-    ({ manifest }) => manifest.name !== "@brevity/islands-svelte",
+    ({ manifest }) => manifest.name !== "@portablesheep/brevity-islands-svelte",
   );
   for (const { manifest } of packages.filter(({ manifest }) =>
-    ["@brevity/core", "@brevity/web"].includes(manifest.name),
+    ["@portablesheep/brevity", "@portablesheep/brevity-web"].includes(manifest.name),
   )) {
     for (const category of ["dependencies", "optionalDependencies", "peerDependencies"]) {
       const external = Object.keys(manifest[category] ?? {}).filter(
-        (name) => !(manifest.name === "@brevity/web" && name === "@brevity/core"),
+        (name) =>
+          !(manifest.name === "@portablesheep/brevity-web" && name === "@portablesheep/brevity"),
       );
       assert.equal(
         external.length,
@@ -106,17 +120,17 @@ import assert from "node:assert/strict";
 import { once } from "node:events";
 import { createServer } from "node:http";
 import { writeFile } from "node:fs/promises";
-import { createApp, Validator } from "@brevity/core";
-import * as decorators from "@brevity/core/decorators";
-import { html, HtmlFragment } from "@brevity/web";
-import { createViews } from "@brevity/views";
-import { createIslands, createEnhance } from "@brevity/islands";
-import { defineIsland, startIslands, disposeIslands } from "@brevity/islands/client";
-import { enhanceForm } from "@brevity/islands/forms";
-import { CachePlugin } from "@brevity/plugin-cache";
-import { DebugPlugin, DebugService } from "@brevity/plugin-debug";
-import { ViewerPlugin } from "@brevity/plugin-viewer";
-import { ValidationPlugin } from "@brevity/plugin-validation";
+import { createApp, Validator } from "@portablesheep/brevity";
+import * as decorators from "@portablesheep/brevity/decorators";
+import { html, HtmlFragment } from "@portablesheep/brevity-web";
+import { createViews } from "@portablesheep/brevity-views";
+import { createIslands, createEnhance } from "@portablesheep/brevity-islands";
+import { defineIsland, startIslands, disposeIslands } from "@portablesheep/brevity-islands/client";
+import { enhanceForm } from "@portablesheep/brevity-islands/forms";
+import { CachePlugin } from "@portablesheep/brevity-plugin-cache";
+import { DebugPlugin, DebugService } from "@portablesheep/brevity-plugin-debug";
+import { ViewerPlugin } from "@portablesheep/brevity-plugin-viewer";
+import { ValidationPlugin } from "@portablesheep/brevity-plugin-validation";
 assert.equal(typeof decorators.registerControllers, "function");
 for (const fn of [defineIsland, startIslands, disposeIslands, enhanceForm]) {
   assert.equal(typeof fn, "function");
@@ -173,11 +187,11 @@ try {
     join(temporary, "consumer.ts"),
     `
 import { createServer } from "node:http";
-import { createApp, type Request, type Response } from "@brevity/core";
-import { Controller, Get, registerControllers } from "@brevity/core/decorators";
-import { html } from "@brevity/web";
-import { createViews } from "@brevity/views";
-import { createIslands } from "@brevity/islands";
+import { createApp, type Request, type Response } from "@portablesheep/brevity";
+import { Controller, Get, registerControllers } from "@portablesheep/brevity/decorators";
+import { html } from "@portablesheep/brevity-web";
+import { createViews } from "@portablesheep/brevity-views";
+import { createIslands } from "@portablesheep/brevity-islands";
 @Controller("/readers")
 class Readers {
   @Get("/:id")
@@ -207,7 +221,9 @@ app.router.get("/", (_req, res) => views.render(res, "page", {
     "ES2022",
     "consumer.ts",
   ]);
-  const adapter = packages.find(({ manifest }) => manifest.name === "@brevity/islands-svelte");
+  const adapter = packages.find(
+    ({ manifest }) => manifest.name === "@portablesheep/brevity-islands-svelte",
+  );
   assert(adapter);
   run("npm", [
     "install",
@@ -221,7 +237,7 @@ app.router.get("/", (_req, res) => views.render(res, "page", {
   run(process.execPath, [
     "--input-type=module",
     "-e",
-    'import { svelteIsland } from "@brevity/islands-svelte"; if (typeof svelteIsland !== "function") throw new Error("Missing adapter");',
+    'import { svelteIsland } from "@portablesheep/brevity-islands-svelte"; if (typeof svelteIsland !== "function") throw new Error("Missing adapter");',
   ]);
   const starter = join(temporary, "starter");
   await cp(join(root, "starter"), starter, { recursive: true });

@@ -1,5 +1,5 @@
-import type { App } from "@brevity/core";
-import { CacheManager } from "@brevity/plugin-cache";
+import type { App } from "@portablesheep/brevity";
+import { CacheManager } from "@portablesheep/brevity-plugin-cache";
 
 export function registerRequestCounter(app: App): void {
   app.use(async (req, _res, next, container) => {

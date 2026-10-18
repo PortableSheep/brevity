@@ -1,4 +1,4 @@
-import type { App, Validator } from "@brevity/core";
+import type { App, Validator } from "@portablesheep/brevity";
 import { NoteService } from "../services/note-service.js";
 
 export function registerNoteRoutes(app: App): void {

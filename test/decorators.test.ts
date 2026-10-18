@@ -1,7 +1,13 @@
 import test, { type TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { once } from "node:events";
-import { createApp, type App, type Container, type Request, type Response } from "@brevity/core";
+import {
+  createApp,
+  type App,
+  type Container,
+  type Request,
+  type Response,
+} from "@portablesheep/brevity";
 import {
   Controller,
   Get,
@@ -13,7 +19,7 @@ import {
   Options,
   Route,
   registerControllers,
-} from "@brevity/core/decorators";
+} from "@portablesheep/brevity/decorators";
 import { createControllerApp } from "../examples/controllers.js";
 
 async function serve(t: TestContext, app: App): Promise<string> {
@@ -31,7 +37,7 @@ async function serve(t: TestContext, app: App): Promise<string> {
 }
 
 test("optional decorator entry point does not change the core exports", async () => {
-  const core = await import("@brevity/core");
+  const core = await import("@portablesheep/brevity");
   assert.equal("Controller" in core, false);
   assert.equal("registerControllers" in core, false);
 });

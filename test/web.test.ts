@@ -5,7 +5,7 @@ import { request } from "node:http";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createApp, Request, Response, type App, type Router } from "@brevity/core";
+import { createApp, Request, Response, type App, type Router } from "@portablesheep/brevity";
 import {
   html,
   escapeHtml,
@@ -16,7 +16,7 @@ import {
   jsonScript,
   staticAssets,
   type HtmlFragment,
-} from "@brevity/web";
+} from "@portablesheep/brevity-web";
 import { createWebExampleApp } from "../examples/web-app.js";
 
 async function serve(t: TestContext, app: App): Promise<string> {

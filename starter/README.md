@@ -36,12 +36,12 @@ path works from both `src/` and `dist/`.
 This starter uses the existing `Viewer` interpolation utility: `{{ title }}`
 escapes a value; triple braces accept trusted raw markup. It does **not**
 execute JavaScript loops in templates. For layouts, partials, and Eta logic,
-use the checked `@brevity/views` notebook tutorial in the framework docs.
+use the checked `@portablesheep/brevity-views` notebook tutorial in the framework docs.
 
 ## Validation and optional plugins
 
-Resolve container services with explicit types (`Validator` from `@brevity/core`,
-`CacheManager` from `@brevity/plugin-cache`) rather than unchecked optional calls.
+Resolve container services with explicit types (`Validator` from `@portablesheep/brevity`,
+`CacheManager` from `@portablesheep/brevity-plugin-cache`) rather than unchecked optional calls.
 The cache uses `put`, not `set`, and is process-local, not durable storage.
 
 Validator supports `required`, `email`, `int`, `slug`, `min:x`, and `max:x`.

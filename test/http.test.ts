@@ -10,7 +10,7 @@ import {
   ServiceProvider,
   type App,
   type CreateAppOptions,
-} from "@brevity/core";
+} from "@portablesheep/brevity";
 
 async function serve(t: TestContext, app: App, externalServer = false): Promise<string> {
   const server = externalServer ? createServer(app.handler).listen(0, "127.0.0.1") : app.listen(0);

@@ -1,4 +1,4 @@
-import type { Response } from "@brevity/core";
+import type { Response } from "@portablesheep/brevity";
 
 export class HtmlFragment {
   #markup: string;

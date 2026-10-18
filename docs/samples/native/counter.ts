@@ -1,4 +1,4 @@
-import { defineIsland } from "@brevity/islands/client";
+import { defineIsland } from "@portablesheep/brevity-islands/client";
 
 export default defineIsland<{ text: string }>((element, props, context) => {
   element.dataset.hydrated = "true";

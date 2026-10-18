@@ -1,5 +1,5 @@
-import { Plugin } from "@brevity/core";
-import type { Container } from "@brevity/core";
+import { Plugin } from "@portablesheep/brevity";
+import type { Container } from "@portablesheep/brevity";
 
 export interface CacheAdapter {
   get<T = unknown>(key: string, defaultValue?: T | null): T | null;

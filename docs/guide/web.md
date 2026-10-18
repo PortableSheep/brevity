@@ -1,13 +1,13 @@
 # HTML helpers
 
-`@brevity/web` provides escaped HTML fragments, form feedback, and static assets.
+`@portablesheep/brevity-web` provides escaped HTML fragments, form feedback, and static assets.
 Use [file views](./views) for full pages; use these helpers for smaller pieces.
 The package has no external runtime dependencies.
 
 ## Compose HTML safely
 
 ```ts
-import { html } from "@brevity/web";
+import { html } from "@portablesheep/brevity-web";
 
 const greeting = (name: string) => html`<p>Hello, ${name}!</p>`;
 const page = html`<main>${greeting("<reader>")}</main>`;
@@ -30,8 +30,14 @@ values, and use a distinct `idPrefix` for each form on a page.
 ::: details Complete contact form example
 
 ```ts
-import { createApp } from "@brevity/core";
-import { html, renderPage, createFormState, type FormState, type HtmlFragment } from "@brevity/web";
+import { createApp } from "@portablesheep/brevity";
+import {
+  html,
+  renderPage,
+  createFormState,
+  type FormState,
+  type HtmlFragment,
+} from "@portablesheep/brevity-web";
 
 const app = createApp();
 const layout = (body: HtmlFragment) =>
@@ -105,7 +111,7 @@ Map public URLs to files explicitly:
 
 ```ts
 import { resolve } from "node:path";
-import { staticAssets } from "@brevity/web";
+import { staticAssets } from "@portablesheep/brevity-web";
 
 app.use(
   staticAssets({

@@ -2,7 +2,7 @@
 
 ## Option 1: Try HTML-first pages in this repository
 
-The web example uses the public `@brevity/core` and optional `@brevity/web` APIs:
+The web example uses the public `@portablesheep/brevity` and optional `@portablesheep/brevity-web` APIs:
 
 ```bash
 npm ci
@@ -36,7 +36,7 @@ npm run publish:dry-run
 # Copy the starter into a new empty directory, then install the exact archives.
 cp -r starter ../my-brevity-app
 cd ../my-brevity-app
-npm install ../brevity/brevity-core-0.1.0.tgz ../brevity/brevity-plugin-cache-0.1.0.tgz ../brevity/brevity-plugin-debug-0.1.0.tgz ../brevity/brevity-plugin-viewer-0.1.0.tgz ../brevity/brevity-plugin-validation-0.1.0.tgz
+npm install ../brevity/portablesheep-brevity-0.1.0.tgz ../brevity/portablesheep-brevity-plugin-cache-0.1.0.tgz ../brevity/portablesheep-brevity-plugin-debug-0.1.0.tgz ../brevity/portablesheep-brevity-plugin-viewer-0.1.0.tgz ../brevity/portablesheep-brevity-plugin-validation-0.1.0.tgz
 npm run dev
 ```
 
@@ -75,7 +75,7 @@ After registry publication, create a new TypeScript project:
 mkdir my-app
 cd my-app
 npm init -y
-npm install @brevity/core
+npm install @portablesheep/brevity
 npm install -D typescript tsx @types/node
 ```
 
@@ -97,7 +97,7 @@ Create `tsconfig.json`:
 Create `src/index.ts`:
 
 ```typescript
-import { createApp } from "@brevity/core";
+import { createApp } from "@portablesheep/brevity";
 
 const app = createApp();
 

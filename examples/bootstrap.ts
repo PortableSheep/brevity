@@ -1,9 +1,9 @@
 import { join } from "node:path";
-import { createApp, type App } from "@brevity/core";
-import { CachePlugin } from "@brevity/plugin-cache";
-import { ViewerPlugin } from "@brevity/plugin-viewer";
-import { DebugPlugin } from "@brevity/plugin-debug";
-import { ValidationPlugin } from "@brevity/plugin-validation";
+import { createApp, type App } from "@portablesheep/brevity";
+import { CachePlugin } from "@portablesheep/brevity-plugin-cache";
+import { ViewerPlugin } from "@portablesheep/brevity-plugin-viewer";
+import { DebugPlugin } from "@portablesheep/brevity-plugin-debug";
+import { ValidationPlugin } from "@portablesheep/brevity-plugin-validation";
 import { AppProvider } from "./providers/app-provider.js";
 import { registerErrorHandler } from "./middleware/error-handler.js";
 import { registerRequestLogger } from "./middleware/request-logger.js";

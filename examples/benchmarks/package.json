@@ -9,7 +9,7 @@
     "bench": "node measure.mjs"
   },
   "dependencies": {
-    "@brevity/core": "file:../../packages/core",
+    "@portablesheep/brevity": "file:../../packages/core",
     "@nestjs/common": "12.1.2",
     "@nestjs/core": "12.1.2",
     "@nestjs/platform-express": "12.1.2",

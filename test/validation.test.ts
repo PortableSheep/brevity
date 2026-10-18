@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { IncomingMessage } from "node:http";
 import { Socket } from "node:net";
-import { Request, Validator } from "@brevity/core";
+import { Request, Validator } from "@portablesheep/brevity";
 
 test("validator rejects unknown rules instead of accepting unchecked input", () => {
   const validator = new Validator();

@@ -1,4 +1,4 @@
-import { ServiceProvider, type Container } from "@brevity/core";
+import { ServiceProvider, type Container } from "@portablesheep/brevity";
 import { UserService } from "../services/user-service.js";
 import { NoteService } from "../services/note-service.js";
 

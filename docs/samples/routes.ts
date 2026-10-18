@@ -1,5 +1,5 @@
-import { createApp, HttpError, type Request, type Response } from "@brevity/core";
-import { Controller, Get, Head, registerControllers } from "@brevity/core/decorators";
+import { createApp, HttpError, type Request, type Response } from "@portablesheep/brevity";
+import { Controller, Get, Head, registerControllers } from "@portablesheep/brevity/decorators";
 
 // #region input-errors
 export class InputError extends Error {}

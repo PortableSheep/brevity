@@ -33,6 +33,6 @@ curl -X POST http://127.0.0.1:3000/users \
 Imports come from the workspace packages:
 
 ```ts
-import { createApp } from "@brevity/core";
-import { DebugPlugin } from "@brevity/plugin-debug";
+import { createApp } from "@portablesheep/brevity";
+import { DebugPlugin } from "@portablesheep/brevity-plugin-debug";
 ```

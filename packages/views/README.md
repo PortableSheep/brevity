@@ -1,10 +1,10 @@
-# @brevity/views
+# @portablesheep/brevity-views
 
 Optional file views for Brevity. Eta **3.5.0** is pinned exactly (one runtime
 dependency; Eta has zero runtime dependencies). Requires core/web peers.
 
 ```ts
-import { createViews } from "@brevity/views";
+import { createViews } from "@portablesheep/brevity-views";
 const views = createViews({ root: "/app/views", layout: "layout" });
 app.router.get("/", (_req, res) => views.render(res, "home", { title: "Hello" }));
 ```

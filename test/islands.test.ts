@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createIslands, islandManifest } from "@brevity/islands";
-import { html } from "@brevity/web";
+import { createIslands, islandManifest } from "@portablesheep/brevity-islands";
+import { html } from "@portablesheep/brevity-web";
 import { readFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
 
@@ -62,11 +62,11 @@ test("manifest and loader URLs are explicit same-origin canonical assets", () =>
 test("built standalone loader stays within its measured ~1 KB gzip budget", async () => {
   const loader = await readFile(new URL("../packages/islands/dist/loader.js", import.meta.url));
   assert.ok(gzipSync(loader).length <= 1100);
-  assert.doesNotMatch(loader.toString(), /from\s*["']@brevity/);
+  assert.doesNotMatch(loader.toString(), /from\s*["'](?:@portablesheep\/brevity|@brevity\/)/);
 });
 
 test("createEnhance wraps content in a stable target with an external directive script", async () => {
-  const { createEnhance } = await import("@brevity/islands");
+  const { createEnhance } = await import("@portablesheep/brevity-islands");
   const enhanced = createEnhance({ script: "/assets/enhance.js", nonce: "n" });
   const markup = String(enhanced("rsvp", html`<form method="post"></form>`));
   assert.equal(
@@ -77,5 +77,5 @@ test("createEnhance wraps content in a stable target with an external directive 
   assert.throws(() => createEnhance({ script: "//evil/x.js" }), TypeError);
   const script = await readFile(new URL("../packages/islands/dist/enhance.js", import.meta.url));
   assert.ok(gzipSync(script).length <= 1400);
-  assert.doesNotMatch(script.toString(), /from\s*["']@brevity/);
+  assert.doesNotMatch(script.toString(), /from\s*["'](?:@portablesheep\/brevity|@brevity\/)/);
 });

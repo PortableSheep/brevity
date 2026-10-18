@@ -1,7 +1,7 @@
 {
-  "name": "@brevity/islands-svelte",
+  "name": "@portablesheep/brevity-islands-svelte",
   "version": "0.1.0",
-  "description": "Svelte 5 adapter for @brevity/islands",
+  "description": "Svelte 5 adapter for @portablesheep/brevity-islands",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,7 +20,7 @@
     "prepack": "npm run build"
   },
   "peerDependencies": {
-    "@brevity/islands": "^0.1.0",
+    "@portablesheep/brevity-islands": "^0.1.0",
     "svelte": "^5.0.0"
   },
   "engines": {

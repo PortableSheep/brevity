@@ -1,5 +1,5 @@
-import { createApp, HttpError, type Request, type Response } from "@brevity/core";
-import { html, renderPage } from "@brevity/web";
+import { createApp, HttpError, type Request, type Response } from "@portablesheep/brevity";
+import { html, renderPage } from "@portablesheep/brevity-web";
 import { createServerClient } from "@supabase/ssr";
 import { parse, serialize } from "cookie";
 

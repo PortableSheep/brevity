@@ -1,5 +1,5 @@
 {
-  "name": "@brevity/views",
+  "name": "@portablesheep/brevity-views",
   "version": "0.1.0",
   "description": "Optional file views with Eta, layouts, and safe partial resolution",
   "type": "module",
@@ -23,8 +23,8 @@
     "eta": "3.5.0"
   },
   "peerDependencies": {
-    "@brevity/core": "^0.1.0",
-    "@brevity/web": "^0.1.0"
+    "@portablesheep/brevity": "^0.1.0",
+    "@portablesheep/brevity-web": "^0.1.0"
   },
   "engines": {
     "node": ">=20"

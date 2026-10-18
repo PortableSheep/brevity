@@ -1,5 +1,5 @@
-import { createApp, HttpError, type RouteHandler } from "@brevity/core";
-import { html, renderPage, staticAssets } from "@brevity/web";
+import { createApp, HttpError, type RouteHandler } from "@portablesheep/brevity";
+import { html, renderPage, staticAssets } from "@portablesheep/brevity-web";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { Repository, InputError, isStatus, list, validate } from "./domain.js";

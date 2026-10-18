@@ -1,5 +1,5 @@
-import { createApp, HttpError } from "@brevity/core";
-import { DebugPlugin, type DebugService } from "@brevity/plugin-debug";
+import { createApp, HttpError } from "@portablesheep/brevity";
+import { DebugPlugin, type DebugService } from "@portablesheep/brevity-plugin-debug";
 
 export function debugApp(enabled = process.env.NODE_ENV !== "production") {
   let debug: DebugService;

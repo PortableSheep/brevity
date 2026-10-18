@@ -1,6 +1,6 @@
 # Debugging
 
-`@brevity/plugin-debug` adds development logs and error pages. It doesn't create
+`@portablesheep/brevity-plugin-debug` adds development logs and error pages. It doesn't create
 routes or middleware automatically; you choose what to expose.
 
 ## Add diagnostics
@@ -25,4 +25,4 @@ up to 100 entries.
 
 `getLogs()` returns a copy; `clear()` removes history. Disabling doesn't erase
 existing entries. For durable production logs and metrics, use your host's
-observability tools. See the [plugin reference](/api/plugins#brevity-plugin-debug).
+observability tools. See the [plugin reference](/api/plugins#portablesheep-brevity-plugin-debug).

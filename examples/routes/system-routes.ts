@@ -1,6 +1,6 @@
-import type { App, Viewer } from "@brevity/core";
-import { CacheManager } from "@brevity/plugin-cache";
-import { DebugService } from "@brevity/plugin-debug";
+import type { App, Viewer } from "@portablesheep/brevity";
+import { CacheManager } from "@portablesheep/brevity-plugin-cache";
+import { DebugService } from "@portablesheep/brevity-plugin-debug";
 import { renderDebugLogEntries } from "../support/debug-view.js";
 
 export function registerSystemRoutes(app: App): void {

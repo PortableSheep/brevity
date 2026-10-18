@@ -1,4 +1,4 @@
-import { createApp } from "@brevity/core";
+import { createApp } from "@portablesheep/brevity";
 
 type ServiceOptions = {
   port?: number;

@@ -1,8 +1,8 @@
 import { fileURLToPath } from "node:url";
-import type { App, Response } from "@brevity/core";
-import { createViews } from "@brevity/views";
-import { createEnhance, createIslands, islandManifest } from "@brevity/islands";
-import { createFormState, html, staticAssets } from "@brevity/web";
+import type { App, Response } from "@portablesheep/brevity";
+import { createViews } from "@portablesheep/brevity-views";
+import { createEnhance, createIslands, islandManifest } from "@portablesheep/brevity-islands";
+import { createFormState, html, staticAssets } from "@portablesheep/brevity-web";
 
 const island = createIslands({ manifest: "/native/manifest.json", loader: "/assets/loader.js" });
 // #region enhance-setup
@@ -23,9 +23,11 @@ export function nativeRoutes(app: App) {
     staticAssets({
       "/native/counter.js": { file: fileURLToPath(new URL("./dist/counter.js", import.meta.url)) },
       "/native/form.js": { file: fileURLToPath(new URL("./dist/form.js", import.meta.url)) },
-      "/native/client.js": { file: fileURLToPath(import.meta.resolve("@brevity/islands/client")) },
+      "/native/client.js": {
+        file: fileURLToPath(import.meta.resolve("@portablesheep/brevity-islands/client")),
+      },
       "/native/enhance.js": {
-        file: fileURLToPath(import.meta.resolve("@brevity/islands/enhance.js")),
+        file: fileURLToPath(import.meta.resolve("@portablesheep/brevity-islands/enhance.js")),
       },
     }),
   );

@@ -1,5 +1,5 @@
 {
-  "name": "@brevity/web",
+  "name": "@portablesheep/brevity-web",
   "version": "0.1.0",
   "description": "Optional escaped HTML, forms, and explicit static assets for Brevity",
   "type": "module",
@@ -20,7 +20,7 @@
     "prepack": "npm run build"
   },
   "peerDependencies": {
-    "@brevity/core": "^0.1.0"
+    "@portablesheep/brevity": "^0.1.0"
   },
   "engines": {
     "node": ">=20"

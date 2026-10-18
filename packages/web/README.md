@@ -1,22 +1,22 @@
-# @brevity/web
+# @portablesheep/brevity-web
 
 Optional server-rendered HTML, accessible form state, and explicit static assets for
-`@brevity/core`. No runtime dependencies, template parser, frontend runtime, or compiler.
+`@portablesheep/brevity`. No runtime dependencies, template parser, frontend runtime, or compiler.
 Importing core does not load this package. Requires Node 20+.
 
 ```sh
-npm install @brevity/core @brevity/web
+npm install @portablesheep/brevity @portablesheep/brevity-web
 ```
 
 ## Pages and partials
 
-Prefer `@brevity/views` for complete HTML files with layouts/partials; inline
-`html` remains available for small pages and fragments. `@brevity/islands`
+Prefer `@portablesheep/brevity-views` for complete HTML files with layouts/partials; inline
+`html` remains available for small pages and fragments. `@portablesheep/brevity-islands`
 optionally provides deferred native mounts and progressive-form transport.
 
 ```ts
-import { createApp } from "@brevity/core";
-import { html, renderPage, type HtmlFragment } from "@brevity/web";
+import { createApp } from "@portablesheep/brevity";
+import { html, renderPage, type HtmlFragment } from "@portablesheep/brevity-web";
 
 const app = createApp();
 const greeting = (name: string) => html`<p>Hello ${name}</p>`;
@@ -72,7 +72,7 @@ supplied strings and field-error arrays. It does not parse requests, validate
 domain rules, authorize users, or persist data.
 
 ```ts
-import { createFormState, html, renderPage, type FormState } from "@brevity/web";
+import { createFormState, html, renderPage, type FormState } from "@portablesheep/brevity-web";
 
 const formPage = (form: FormState) => {
   const name = form.field("name", { describedBy: "name-help" });
@@ -136,7 +136,7 @@ Only retain explicitly allowed fields; never echo passwords or sensitive fields.
 
 ```ts
 import { resolve } from "node:path";
-import { staticAssets } from "@brevity/web";
+import { staticAssets } from "@portablesheep/brevity-web";
 
 app.use(
   staticAssets({
@@ -172,7 +172,7 @@ while preserving a `JSON.parse` round trip. Nonserializable input (cycles, bigin
 undefined at the top level) throws; usual `JSON.stringify` property semantics apply.
 
 ```ts
-import { html, jsonScript } from "@brevity/web";
+import { html, jsonScript } from "@portablesheep/brevity-web";
 
 const island = (initial: unknown) =>
   html`<div id="questions"></div>

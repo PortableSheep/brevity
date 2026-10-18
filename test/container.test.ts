@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { Container } from "@brevity/core";
+import { Container } from "@portablesheep/brevity";
 
 test("container singleton returns same instance", () => {
   const container = new Container();

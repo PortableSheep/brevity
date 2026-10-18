@@ -16,8 +16,8 @@
     "measure": "node scripts/measure.mjs"
   },
   "dependencies": {
-    "@brevity/core": "file:../../packages/core",
-    "@brevity/web": "file:../../packages/web",
+    "@portablesheep/brevity": "file:../../packages/core",
+    "@portablesheep/brevity-web": "file:../../packages/web",
     "express": "5.1.0"
   },
   "devDependencies": {

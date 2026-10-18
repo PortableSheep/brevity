@@ -1,11 +1,11 @@
-# @brevity/islands-svelte
+# @portablesheep/brevity-islands-svelte
 
-Svelte 5 adapter for `@brevity/islands`. Install it only when an island uses
-Svelte; `@brevity/islands` itself has no Svelte peer, so native-only apps never
+Svelte 5 adapter for `@portablesheep/brevity-islands`. Install it only when an island uses
+Svelte; `@portablesheep/brevity-islands` itself has no Svelte peer, so native-only apps never
 pull Svelte into their production dependency graph.
 
 ```ts
-import { svelteIsland } from "@brevity/islands-svelte";
+import { svelteIsland } from "@portablesheep/brevity-islands-svelte";
 import Counter from "./Counter.svelte";
 export default svelteIsland(Counter);
 ```

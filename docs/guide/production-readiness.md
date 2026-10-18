@@ -26,7 +26,8 @@ with and without JavaScript, and package installation on Node 20/22/24.
 Release checks build all nine packages, compile a separate TypeScript consumer,
 and run the starter from installed tarballs. Use supported Node 22/24 for deployment.
 
-Packages have an MIT license but aren't published to npm yet. Registry install
+Packages use the `@portablesheep` scope (`@portablesheep/brevity` for core),
+have an MIT license, and aren't published to npm yet. Registry install
 and provenance verification are still release gates. See the
 [release runbook](https://github.com/PortableSheep/brevity/blob/main/PUBLISH.md).
 

@@ -1,4 +1,4 @@
-import { createFormState, html, type HtmlFragment } from "@brevity/web";
+import { createFormState, html, type HtmlFragment } from "@portablesheep/brevity-web";
 import {
   fields,
   labels,

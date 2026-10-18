@@ -1,5 +1,5 @@
 {
-  "name": "@brevity/plugin-validation",
+  "name": "@portablesheep/brevity-plugin-validation",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
@@ -18,7 +18,7 @@
     "prepack": "npm run build"
   },
   "dependencies": {
-    "@brevity/core": "^0.1.0"
+    "@portablesheep/brevity": "^0.1.0"
   },
   "publishConfig": {
     "access": "public"

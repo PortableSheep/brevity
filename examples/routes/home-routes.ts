@@ -1,4 +1,4 @@
-import type { App, Viewer } from "@brevity/core";
+import type { App, Viewer } from "@portablesheep/brevity";
 import { UserService } from "../services/user-service.js";
 import { NoteService } from "../services/note-service.js";
 

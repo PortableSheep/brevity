@@ -1,7 +1,7 @@
 # Support inbox: a second complete app
 
 Two implementations of the same small, server-rendered support inbox: public
-`@brevity/core` + `@brevity/web`, and Express 5 with ordinary escaped templates.
+`@portablesheep/brevity` + `@portablesheep/brevity-web`, and Express 5 with ordinary escaped templates.
 No RSVP code, private framework imports, frontend compiler, external database,
 real email delivery, or authentication service.
 
@@ -13,13 +13,13 @@ details, and status controls deliberately have no login.
 ## Run either implementation
 
 Node 20+ and npm are required. Start from this repository's checkout of the
-framework branch, not the registry's potentially different `0.1.0` release:
+framework source, not the registry (these packages aren't published yet):
 
 ```sh
 # Repository root: compile the public packages from this checkout.
 npm ci
-npm run build --workspace @brevity/core
-npm run build --workspace @brevity/web
+npm run build --workspace @portablesheep/brevity
+npm run build --workspace @portablesheep/brevity-web
 
 cd examples/support-inbox
 npm ci

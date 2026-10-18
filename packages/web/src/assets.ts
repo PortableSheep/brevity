@@ -1,7 +1,7 @@
 import { open } from "node:fs/promises";
 import { validateHeaderValue } from "node:http";
 import { extname } from "node:path";
-import type { Router } from "@brevity/core";
+import type { Router } from "@portablesheep/brevity";
 
 type MiddlewareHandler = Parameters<Router["middleware"]>[0];
 

@@ -1,5 +1,5 @@
-import { createApp, type Request, type Response } from "@brevity/core";
-import { Controller, Get, registerControllers } from "@brevity/core/decorators";
+import { createApp, type Request, type Response } from "@portablesheep/brevity";
+import { Controller, Get, registerControllers } from "@portablesheep/brevity/decorators";
 
 class UserService {
   find(id: string | null) {

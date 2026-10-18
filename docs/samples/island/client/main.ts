@@ -1,5 +1,5 @@
-import { defineIsland } from "@brevity/islands/client";
-import { svelteIsland } from "@brevity/islands-svelte";
+import { defineIsland } from "@portablesheep/brevity-islands/client";
+import { svelteIsland } from "@portablesheep/brevity-islands-svelte";
 import NoteCounter from "./NoteCounter.svelte";
 
 const mountCounter = svelteIsland(NoteCounter);

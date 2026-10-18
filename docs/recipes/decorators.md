@@ -15,7 +15,7 @@ Construct the controller yourself and pass it to `registerControllers(router, in
 The [complete example](https://github.com/PortableSheep/brevity/blob/main/docs/samples/routes.ts)
 uses the same greeting service and ID validation in both versions.
 
-Import decorators from **`@brevity/core/decorators`**, not the default core
+Import decorators from **`@portablesheep/brevity/decorators`**, not the default core
 entry point. Leave legacy `experimentalDecorators` and `emitDecoratorMetadata`
 disabled. Use public instance methods and keep request-specific state in locals:
 one controller instance is reused across requests.

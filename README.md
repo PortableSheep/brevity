@@ -7,9 +7,9 @@ A small TypeScript backend for APIs and server-rendered pages. Start with ordina
 HTTP routes and forms; add browser components only where they help.
 
 Core handles HTTP, middleware, and explicit dependency wiring. The optional
-`@brevity/views` package renders HTML files with Eta layouts/partials.
-`@brevity/web` supplies escaped fragments, form feedback, assets, and safe JSON;
-`@brevity/islands` adds opt-in native browser mounts and enhanced forms.
+`@portablesheep/brevity-views` package renders HTML files with Eta layouts/partials.
+`@portablesheep/brevity-web` supplies escaped fragments, form feedback, assets, and safe JSON;
+`@portablesheep/brevity-islands` adds opt-in native browser mounts and enhanced forms.
 Frontend compilation and business rules stay application-owned.
 
 ## 🚀 Getting Started
@@ -44,17 +44,17 @@ Visit **http://127.0.0.1:3000**, then:
 
 The framework is split into publishable packages:
 
-| Package                        | Purpose                                                              |
-| ------------------------------ | -------------------------------------------------------------------- |
-| **@brevity/core**              | Router, DI container, request/response                               |
-| **@brevity/web**               | Optional escaped fragments, accessible forms, explicit static assets |
-| **@brevity/views**             | Optional file views with Eta 3.5.0, layouts, partials and caching    |
-| **@brevity/islands**           | Optional lazy native components and enhanced forms                   |
-| **@brevity/islands-svelte**    | Separate optional Svelte 5 mount adapter                             |
-| **@brevity/plugin-cache**      | Memory & no-op caching adapters                                      |
-| **@brevity/plugin-debug**      | Dev-mode error pages & logs                                          |
-| **@brevity/plugin-viewer**     | Template rendering                                                   |
-| **@brevity/plugin-validation** | Request validation                                                   |
+| Package                                      | Purpose                                                              |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| **@portablesheep/brevity**                   | Router, DI container, request/response                               |
+| **@portablesheep/brevity-web**               | Optional escaped fragments, accessible forms, explicit static assets |
+| **@portablesheep/brevity-views**             | Optional file views with Eta 3.5.0, layouts, partials and caching    |
+| **@portablesheep/brevity-islands**           | Optional lazy native components and enhanced forms                   |
+| **@portablesheep/brevity-islands-svelte**    | Separate optional Svelte 5 mount adapter                             |
+| **@portablesheep/brevity-plugin-cache**      | Memory & no-op caching adapters                                      |
+| **@portablesheep/brevity-plugin-debug**      | Dev-mode error pages & logs                                          |
+| **@portablesheep/brevity-plugin-viewer**     | Template rendering                                                   |
+| **@portablesheep/brevity-plugin-validation** | Request validation                                                   |
 
 Use what you need; leave the rest out.
 
@@ -133,9 +133,9 @@ verified hosted deployments.
 ## 📖 Example
 
 ```typescript
-import { createApp } from "@brevity/core";
-import { ViewerPlugin } from "@brevity/plugin-viewer";
-import { ValidationPlugin } from "@brevity/plugin-validation";
+import { createApp } from "@portablesheep/brevity";
+import { ViewerPlugin } from "@portablesheep/brevity-plugin-viewer";
+import { ValidationPlugin } from "@portablesheep/brevity-plugin-validation";
 
 const app = createApp({
   plugins: [new ViewerPlugin({ baseDir: "./views" }), new ValidationPlugin()],
@@ -175,8 +175,8 @@ app.listen(3000);
 Keep callback routes, or opt into standard TypeScript 5+ decorators:
 
 ```typescript
-import { createApp, type Request, type Response } from "@brevity/core";
-import { Controller, Get, registerControllers } from "@brevity/core/decorators";
+import { createApp, type Request, type Response } from "@portablesheep/brevity";
+import { Controller, Get, registerControllers } from "@portablesheep/brevity/decorators";
 
 @Controller("/users")
 class UsersController {

@@ -5,9 +5,15 @@ npm publication. Packing, verifying, and publishing are separate actions.
 Publication requires explicit maintainer approval, npm scope ownership, and a
 reviewed source commit. Do not disable 2FA or place registry tokens in this repo.
 
-A public-registry metadata check on October 16, 2026 returned 404 for all nine
-package names. That means they were not publicly installable at that time; it
-does **not** establish name availability or control of the `@brevity` scope.
+The framework is called **Brevity**. Packages use the maintainer's
+`@portablesheep` scope: `@portablesheep/brevity` is core; optional packages are
+`@portablesheep/brevity-web`, `brevity-views`, `brevity-islands`,
+`brevity-islands-svelte`, and `brevity-plugin-{cache,debug,viewer,validation}`
+under that same scope. The `@brevity` organization belongs to someone else.
+
+On October 18, 2026 (UTC), `npm whoami` confirmed `portablesheep` and public
+registry lookups returned 404 for all nine new names. The names are unpublished;
+the registry must still accept each name/version at publication time.
 
 ## Candidate checks (no publication)
 
@@ -41,7 +47,7 @@ views-package dependency; Svelte stays in the optional adapter's peer graph.
 
 ## Before approving publication
 
-- Confirm control of the **@brevity** npm scope and permission for all nine names.
+- Confirm control of the **@portablesheep** npm scope and permission for all nine names.
   Public repository ownership does not grant npm scope ownership. If names must
   change, update manifests, dependency ranges, starter, imports, and docs together;
   rerun the candidate checks rather than applying a blind rename.

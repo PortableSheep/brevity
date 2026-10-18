@@ -1,5 +1,10 @@
 # Measured support-inbox comparison
 
+This is a historical snapshot from before the npm scope migration. Its package
+names and byte counts describe that snapshot; current packages use
+`@portablesheep/brevity` and `@portablesheep/brevity-web`. Re-run the measurement
+script for current source rather than editing recorded observations.
+
 Recorded from public core/web revision
 `6ea67baf511b97a0f780f2d1b71c741920b54efe`, Node `v22.21.1`, and the example's
 committed npm lockfile. These are actual measurements of this implementation,
@@ -9,8 +14,8 @@ From this directory, after the README's package build/install steps:
 
 ```sh
 npm run build
-node scripts/measure.mjs > measurements.json
-node scripts/measure.mjs | cmp - measurements.json
+node scripts/measure.mjs > /tmp/brevity-inbox-current.json
+node scripts/measure.mjs | cmp - /tmp/brevity-inbox-current.json
 ```
 
 The second command checks repeatability. The script uses fixed fictional

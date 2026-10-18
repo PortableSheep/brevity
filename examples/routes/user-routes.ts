@@ -1,5 +1,5 @@
-import type { App, Validator } from "@brevity/core";
-import { CacheManager } from "@brevity/plugin-cache";
+import type { App, Validator } from "@portablesheep/brevity";
+import { CacheManager } from "@portablesheep/brevity-plugin-cache";
 import { UserService } from "../services/user-service.js";
 import { NoteService } from "../services/note-service.js";
 

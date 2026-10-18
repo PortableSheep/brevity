@@ -23,6 +23,10 @@ This file does not announce an npm publication or a signed release.
 
 ### Changed
 
+- Package names now use `@portablesheep`: core is `@portablesheep/brevity`;
+  optional packages use `@portablesheep/brevity-*`. Update imports and package
+  dependencies together when moving from an earlier source snapshot.
+
 - Guides now lead with tasks and examples, with grouped navigation and expandable
   implementation details instead of repeated test inventories and caveats.
 

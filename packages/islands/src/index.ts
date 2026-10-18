@@ -1,4 +1,4 @@
-import { html, serializeJson, type HtmlFragment } from "@brevity/web";
+import { html, serializeJson, type HtmlFragment } from "@portablesheep/brevity-web";
 
 export type Hydration = "load" | "visible" | "idle" | "interaction";
 

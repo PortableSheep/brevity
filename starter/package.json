@@ -10,11 +10,11 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@brevity/core": "^0.1.0",
-    "@brevity/plugin-cache": "^0.1.0",
-    "@brevity/plugin-debug": "^0.1.0",
-    "@brevity/plugin-viewer": "^0.1.0",
-    "@brevity/plugin-validation": "^0.1.0"
+    "@portablesheep/brevity": "^0.1.0",
+    "@portablesheep/brevity-plugin-cache": "^0.1.0",
+    "@portablesheep/brevity-plugin-debug": "^0.1.0",
+    "@portablesheep/brevity-plugin-viewer": "^0.1.0",
+    "@portablesheep/brevity-plugin-validation": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

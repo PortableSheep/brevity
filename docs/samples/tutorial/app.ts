@@ -1,5 +1,5 @@
-import { createApp, HttpError } from "@brevity/core";
-import { createFormState, type FormState, type HtmlFragment } from "@brevity/web";
+import { createApp, HttpError } from "@portablesheep/brevity";
+import { createFormState, type FormState, type HtmlFragment } from "@portablesheep/brevity-web";
 import { views, emptyForm } from "./page.js";
 import type { NoteStore } from "./store.js";
 

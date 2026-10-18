@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { CacheManager, MemoryCacheAdapter, NullCacheAdapter } from "@brevity/plugin-cache";
+import {
+  CacheManager,
+  MemoryCacheAdapter,
+  NullCacheAdapter,
+} from "@portablesheep/brevity-plugin-cache";
 
 test("memory cache stores and retrieves", () => {
   const cache = new CacheManager(new MemoryCacheAdapter(), 10);

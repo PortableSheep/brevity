@@ -154,7 +154,10 @@ for (let run = 0; run < repeats; run++) {
 }
 const lock = JSON.parse(await readFile(new URL("./package-lock.json", import.meta.url), "utf8"));
 const core = JSON.parse(
-  await readFile(new URL("./node_modules/@brevity/core/package.json", import.meta.url), "utf8"),
+  await readFile(
+    new URL("./node_modules/@portablesheep/brevity/package.json", import.meta.url),
+    "utf8",
+  ),
 );
 const coreFiles = ["index", "request", "response", "router", "container", "validation"];
 const coreDigests = Object.fromEntries(
@@ -163,7 +166,9 @@ const coreDigests = Object.fromEntries(
       `${name}.js`,
       createHash("sha256")
         .update(
-          await readFile(new URL(`./node_modules/@brevity/core/dist/${name}.js`, import.meta.url)),
+          await readFile(
+            new URL(`./node_modules/@portablesheep/brevity/dist/${name}.js`, import.meta.url),
+          ),
         )
         .digest("hex"),
     ]),

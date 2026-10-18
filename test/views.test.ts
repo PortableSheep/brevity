@@ -3,9 +3,9 @@ import assert from "node:assert/strict";
 import { mkdtemp, mkdir, writeFile, symlink, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createViews, etaEngine, type ViewEngine } from "@brevity/views";
-import { html } from "@brevity/web";
-import { createApp } from "@brevity/core";
+import { createViews, etaEngine, type ViewEngine } from "@portablesheep/brevity-views";
+import { html } from "@portablesheep/brevity-web";
+import { createApp } from "@portablesheep/brevity";
 import { serve } from "../docs/samples/testing.js";
 
 test("Eta views escape data, compose file partials/layouts, and expose trusted helpers", async (t) => {

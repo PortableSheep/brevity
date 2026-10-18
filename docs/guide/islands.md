@@ -3,8 +3,8 @@
 An island adds interaction to part of an HTML page: a counter, an editor, or an
 enhanced form. The rest of the page stays ordinary HTML. No client router needed.
 
-Use `@brevity/islands` for plain TypeScript components. Add
-`@brevity/islands-svelte` only if you want Svelte.
+Use `@portablesheep/brevity-islands` for plain TypeScript components. Add
+`@portablesheep/brevity-islands-svelte` only if you want Svelte.
 
 ## Write a component
 
@@ -60,7 +60,7 @@ Render with the same target ID for GET and validation-error responses:
 <<< @/samples/native/server.ts#enhance-route
 :::
 
-Serve `@brevity/islands/enhance.js` at the configured script URL. The form still
+Serve `@portablesheep/brevity-islands/enhance.js` at the configured script URL. The form still
 submits normally without JavaScript. With JavaScript, it updates the target with
 server-rendered HTML and keeps validation feedback on the page.
 

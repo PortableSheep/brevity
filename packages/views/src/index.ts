@@ -1,8 +1,8 @@
 import { readFile, realpath } from "node:fs/promises";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 import { Eta } from "eta";
-import type { Response } from "@brevity/core";
-import { createFormState, escapeHtml, HtmlFragment, trustedHtml } from "@brevity/web";
+import type { Response } from "@portablesheep/brevity";
+import { createFormState, escapeHtml, HtmlFragment, trustedHtml } from "@portablesheep/brevity-web";
 
 export type ViewData = Readonly<Record<string, unknown>>;
 

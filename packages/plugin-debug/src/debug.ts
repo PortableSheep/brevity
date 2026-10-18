@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { Plugin } from "@brevity/core";
-import type { Container, Response } from "@brevity/core";
+import { Plugin } from "@portablesheep/brevity";
+import type { Container, Response } from "@portablesheep/brevity";
 
 export type DebugConfig = {
   enabled: boolean;

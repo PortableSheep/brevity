@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import { strict as assert } from "node:assert";
 import { once } from "node:events";
-import { createApp } from "@brevity/core";
-import { DebugService } from "@brevity/plugin-debug";
+import { createApp } from "@portablesheep/brevity";
+import { DebugService } from "@portablesheep/brevity-plugin-debug";
 
 test("debug service logs when enabled", () => {
   const debug = new DebugService({ enabled: true });

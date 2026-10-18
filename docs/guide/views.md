@@ -1,11 +1,11 @@
 # HTML views
 
-Keep page markup in HTML files with `@brevity/views`. It uses
+Keep page markup in HTML files with `@portablesheep/brevity-views`. It uses
 [Eta](https://eta.js.org/) for templates, layouts, and partials.
 
 ## Set up the renderer
 
-Install `@brevity/core`, `@brevity/web`, and `@brevity/views` using
+Install `@portablesheep/brevity`, `@portablesheep/brevity-web`, and `@portablesheep/brevity-views` using
 [local packages while npm publication is pending](https://github.com/PortableSheep/brevity/blob/main/QUICK_START.md).
 Configure the template directory once:
 

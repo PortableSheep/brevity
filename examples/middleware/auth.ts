@@ -1,4 +1,4 @@
-import type { App } from "@brevity/core";
+import type { App } from "@portablesheep/brevity";
 
 // Simple API key auth — demonstrates how to protect routes.
 // In real apps, replace with JWT verification or session lookup.

@@ -97,7 +97,7 @@ async function packagePath(name, from) {
 const runtimeLibraries = {};
 const dependencies = {};
 for (const [name, direct] of Object.entries({
-  brevity: ["@brevity/core", "@brevity/web"],
+  brevity: ["@portablesheep/brevity", "@portablesheep/brevity-web"],
   express: ["express"],
 })) {
   const installed = new Map();

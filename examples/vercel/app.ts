@@ -1,7 +1,7 @@
 import { fileURLToPath } from "node:url";
-import { createApp, HttpError, type Request } from "@brevity/core";
-import { createViews } from "@brevity/views";
-import { html } from "@brevity/web";
+import { createApp, HttpError, type Request } from "@portablesheep/brevity";
+import { createViews } from "@portablesheep/brevity-views";
+import { html } from "@portablesheep/brevity-web";
 
 const app = createApp({ maxBodyBytes: 1024 });
 const views = createViews({ root: fileURLToPath(new URL("./views/", import.meta.url)) });

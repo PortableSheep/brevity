@@ -1,5 +1,5 @@
-import { Plugin, Validator } from "@brevity/core";
-import type { Container } from "@brevity/core";
+import { Plugin, Validator } from "@portablesheep/brevity";
+import type { Container } from "@portablesheep/brevity";
 
 export type ValidationPluginOptions = {
   key?: string;

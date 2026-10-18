@@ -1,5 +1,5 @@
-import type { App } from "@brevity/core";
-import { DebugService } from "@brevity/plugin-debug";
+import type { App } from "@portablesheep/brevity";
+import { DebugService } from "@portablesheep/brevity-plugin-debug";
 
 export function registerErrorHandler(app: App): void {
   app.use(async (req, res, next) => {
